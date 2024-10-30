@@ -1,19 +1,33 @@
 
+import { useState } from 'react';
+
 import { Text, View, TextInput, StyleSheet } from 'react-native';
 import * as style from '@/assets/styles/styles'
 
 
-const CustomInput = ({label, placeholder}) => {
+const CustomInput = ({showLabel = true, label = "My Form", placeholder, value, onChangeText}) => {
+
+
+
     return ( 
-        <View style={{flexDirection: 'column', gap: 20}}>
+        <View style={{flexDirection: 'column', gap: 25}}>
+
             {/* Label */}
+            {/* Make label dynamic based on the prop insertion, it is true by default though */}
+            { showLabel && 
+
             <Text style={{color:style.gray_500, fontSize: style.text_lg, fontWeight: '500'}}> {label}: </Text>
 
+            }
+        
             {/* Form */}
             <TextInput style={styles.form} 
                         placeholder= { placeholder }
-                        autoCorrect={false}
+                        value={ value } 
+                        onChangeText={ onChangeText }
+                        autoCorrect={ false }
                         autoCapitalize='none'/>
+                        
         </View>
      );
 }

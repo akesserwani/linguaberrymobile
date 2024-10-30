@@ -10,10 +10,9 @@ import CustomButton from "./CustomButton";
 
 
 //Props: title, function to close, function to toggle, children  
-const CustomModal = ({title="My Modal", onClose, children }) => {
+const CustomModal = ({title="My Modal", onClose, children, overrideStyle ={} }) => {
 
     //Width logic
-
     //get window width
     const windowWidth = useWindowDimensions().width;
 
@@ -27,7 +26,7 @@ const CustomModal = ({title="My Modal", onClose, children }) => {
             {/* Backdrop with black opacity */}
             <View style={styles.modalOverlay} >
                 {/* Main Content - White Div */}
-                <View style={[styles.modalContainer, { width: dynamicWidth }]}>
+                <View style={[styles.modalContainer, { width: dynamicWidth }, overrideStyle ]}>
 
                     {/* Top Bar with Title and exit button */}
                     <View style ={styles.topBar}>

@@ -17,10 +17,10 @@ import { languagesSupported } from '@/app/data/LangData';
 import { CurrentLangContext } from '@/app/data/CurrentLangContext.tsx';
 
 //data from the datafile to get the current language
-import { setCurrentLangStorage } from './Data';
+import { setCurrentLangStorage } from './DataLanguages';
 
 //get the data from the data file for all the users languages 
-import { getLangStorage, setLangStorage } from './Data'; 
+import { getLangStorage, setLangStorage } from './DataLanguages'; 
 
 //import modal components
 import AddLanguageModal from './AddLanguageModal';

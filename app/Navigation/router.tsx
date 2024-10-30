@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { CurrentLangContext } from '@/app/data/CurrentLangContext.tsx';
 
 //import data from the Data file
-import { getCurrentLangStorage } from '../HomeScreen/LanguageSelection/Data'; 
+import { getCurrentLangStorage } from '../HomeScreen/LanguageSelection/DataLanguages'; 
 
 //import navigation components
 import MobileNav from './MobileNav';

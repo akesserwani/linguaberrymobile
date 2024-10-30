@@ -13,6 +13,9 @@ import CustomFab from '../components/CustomFab';
 import CustomModal from '../components/CustomModal';
 import CustomInput from '../components/CustomInput';
 
+//Import Modal component to create a deck
+import CreateDeckModal from './Components/CreateDeckModal';
+
 import * as style from '@/assets/styles/styles'
 import Icon from '@expo/vector-icons/FontAwesome6'
 
@@ -29,6 +32,7 @@ const DecksHome = ({ navigation }) => {
     // State to track the active tab
     const [activeTab, setActiveTab] = useState('All');
 
+    //initialize user data from the database 
 
     //word data from object
     const deckData = {
@@ -49,16 +53,12 @@ const DecksHome = ({ navigation }) => {
     //variable to toggle the modal
     const [newDeckModal, setnewDeckModal] = useState(false);
 
-    //fab action
-    const newDeck = () =>{
-        console.log("Hello world - creating new deck");
-    }
-
 
     //responsive variable for container padding
     //if width is less than 600 then padding is 40, if between 600 and 1000 then padding is 100, 1k+, padding is 200
     //40 < 100 < 200
     const responsiveHorizontalPadding = width < 600 ? 40 : width < 1000 ? 100 : 200;
+
 
     return ( 
         <>
@@ -114,18 +114,15 @@ const DecksHome = ({ navigation }) => {
             </ScrollView>
 
             {/* Add Button - Absolute positioning from bottom */}
-            <CustomFab onPress={newDeck} />
+            <CustomFab onPress={() => setnewDeckModal(true)} />
         </View>    
 
 
 
         {/* Modal to create a new deck */}
-        <CustomModal title='New Deck' onClose={()=>{}} >
-                <CustomInput label={ "Deck name"} placeholder={"Type deck name here..." }/>
-                
-
-        </CustomModal>
-
+        { newDeckModal &&
+            <CreateDeckModal onClose={() => setnewDeckModal(false)} />
+        }
 
         </>
     );

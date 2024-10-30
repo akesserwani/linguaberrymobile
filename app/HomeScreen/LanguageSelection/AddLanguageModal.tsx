@@ -7,6 +7,7 @@ import { ScrollView, Text, View, TextInput, StyleSheet,useWindowDimensions } fro
 import CustomModal from '@/app/components/CustomModal';
 import CustomButton from '@/app/components/CustomButton';
 import CustomAlert from '@/app/components/CustomAlert';
+import CustomInput from '@/app/components/CustomInput';
 
 //styles
 import * as style from '@/assets/styles/styles'
@@ -79,10 +80,12 @@ const AddLanguageModal = ({ languagesSupported, userLanguages, addLanguage, onCl
                 { customLangForm && 
                 <View style={{ flexDirection: "column", gap: 40, justifyContent: "center", marginTop: 20, marginBottom: 30,}}>
                     {/* Input Form */}
-                    <TextInput style={styles.form} value={langInput} onChangeText={setLangInput}
+                    <CustomInput 
+                        showLabel={false}
+                        value={langInput} 
+                        onChangeText={setLangInput}
                         placeholder='Type language here...'
-                        autoCorrect={false}
-                        autoCapitalize='none'/>
+                        />
 
                     {/* Submit Button */}
                     <CustomButton onPress={submitLang} customStyle={null}>
@@ -117,22 +120,6 @@ const AddLanguageModal = ({ languagesSupported, userLanguages, addLanguage, onCl
         </>
      );
 }
-
-const styles = StyleSheet.create({
- 
-    form: {
-        backgroundColor: style.white,
-        borderWidth: 2,
-        borderRadius: style.rounded_md,
-        borderColor: style.gray_200,
-
-        height: 50,
-        padding: 10,
-        color: style.gray_400
-    },
-    
-  
-  });
 
  
 export default AddLanguageModal;
