@@ -6,7 +6,7 @@ import { Image } from 'react-native';
 
 //Import components 
 import Home from '../HomeScreen/Home'
-import DecksHome from '../DecksScreens/DecksHome';
+import DecksStack from '../DecksScreens/DecksStack';
 import ReaderStack from '../ReaderScreens/ReaderStack';
 import ExplorerHome from '../ExplorerScreen/ExplorerHome';
 
@@ -70,7 +70,7 @@ const MobileNav = () => {
                     }}/>
 
         {/* Decks Screen   */}     
-        <Tab.Screen name="Decks" component={ DecksHome } 
+        <Tab.Screen name="Decks" component={ DecksStack } 
                     options={{
                         headerShown:false,
                         tabBarIcon: ({color}) => <Icon name="list-ul" size={20} color={color} />

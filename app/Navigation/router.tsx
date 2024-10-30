@@ -5,15 +5,21 @@ import {  useWindowDimensions } from 'react-native'
 
 //import provider data
 import { useState } from 'react';
-import { CurrentLangContext } from '@/assets/data/data';
+import { CurrentLangContext } from '@/app/data/CurrentLangContext.tsx';
+
+//import data from the Data file
+import { getCurrentLangStorage } from '../HomeScreen/LanguageSelection/Data'; 
 
 //import navigation components
 import MobileNav from './MobileNav';
 
+
 const Router = () => {
 
     //import provider for useContext for the currentLanguage to be accessible throughout the application
-    const [currentLang, setCurrentLang] = useState("Spanish");
+    //set the language based on the variable in the local storage
+
+    const [currentLang, setCurrentLang] = useState(getCurrentLangStorage());
 
 
     //While the width of the screen is mobile < 800, will render MobileNav

@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import * as style from '@/assets/styles/styles';
-import CustomButton from '@/components/CustomButton';
+import CustomButton from '@/app/components/CustomButton';
 import Icon from '@expo/vector-icons/FontAwesome6'
 
 
@@ -36,27 +36,33 @@ const BookmarksList = () => {
 
         {/* Content Area */}
         <View style={styles.contentContainer}>
+
             {/* Individual Bookmarked box */}
             {items.map((item, index) => (
-                <TouchableOpacity key={index} style={[styles.item, index === items.length - 1 && styles.lastItem]} activeOpacity={0.7}>
-
-                    <Text style={{ color: style.gray_500, fontSize: style.text_md }}>{item}</Text>
+                <View key={index} style={[styles.item, index === items.length - 1 && styles.lastItem]}>
+                    <Text style={{ color: style.gray_500, fontSize: style.text_md, marginLeft: 10}}>{item}</Text>
 
                     {/* Buttons show if activeTab == "Decks" */}
-                    <View style={{flexDirection: "row", gap:10, position: 'relative', bottom: 7,}}>
-                        {/* Button to redirect to study the deck */}
-                        <CustomButton onPress={()=>{}} customStyle={{padding: 10}}>
-                            <Icon name={'rectangle-list'} solid={true} size={15} color={style.white} />
+                    {activeTab == "Decks" ? (
+                        
+                        <View style={{flexDirection: "row", gap:10, position: 'relative', bottom: 7,}}>
+                            {/* Button to redirect to study the deck */}
+                            <CustomButton onPress={()=>{}} customStyle={{padding: 10}}>
+                                <Icon name={'rectangle-list'} solid={true} size={15} color={style.white} />
+                            </CustomButton>
+                            {/* Button to redirect to practice the deck */}
+                            <CustomButton onPress={()=>{}} customStyle={{padding: 10, backgroundColor: style.blue_100}}>
+                                <Icon name={'dumbbell'} solid={true} size={15} color={style.blue_400} />
+                            </CustomButton>
+                        </View>
+
+                    ) : (
+                        //If it is not Decks,  render a book open to open the story 
+                        <CustomButton onPress={()=>{}} customStyle={{padding: 10, position: 'relative', bottom: 7,}}>
+                            <Icon name={'book-open'} solid={true} size={15} color={style.white} />
                         </CustomButton>
-                        {/* Button to redirect to practice the deck */}
-                        <CustomButton onPress={()=>{}} customStyle={{padding: 10, backgroundColor: style.blue_100}}>
-                            <Icon name={'dumbbell'} solid={true} size={15} color={style.blue_400} />
-                        </CustomButton>
-
-
-                    </View>
-
-                </TouchableOpacity>
+                    )} 
+                </View>
             ))}
         </View>
         </>
@@ -89,7 +95,6 @@ const styles = StyleSheet.create({
         borderBottomColor: style.blue_500,
     },
     contentContainer: {
-        paddingVertical: 5,
         paddingHorizontal: 10,
         flexDirection: 'column',
         gap: 20,
@@ -97,7 +102,7 @@ const styles = StyleSheet.create({
 
     },
     item: {
-        paddingVertical: 15,
+        paddingVertical: 8,
         borderBottomWidth: 1,
         borderBottomColor: style.gray_200, 
         flexDirection:'row',

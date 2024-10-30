@@ -3,8 +3,8 @@ import React from 'react';
 import { ScrollView, Text, View, useWindowDimensions } from 'react-native';
 
 //components
-import CustomModal from '@/components/CustomModal';
-import CustomButton from '@/components/CustomButton';
+import CustomModal from '@/app/components/CustomModal';
+import CustomButton from '@/app/components/CustomButton';
 
 //styles
 import * as style from '@/assets/styles/styles'

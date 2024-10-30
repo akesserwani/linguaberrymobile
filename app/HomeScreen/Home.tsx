@@ -1,11 +1,14 @@
 
 import { View, Text, StyleSheet, useWindowDimensions } from "react-native";
+import { useEffect, useState } from "react";
+
 import * as style from "@/assets/styles/styles";
 import Icon from '@expo/vector-icons/FontAwesome6'
 
 //import components
 import LanguageSelection from "./LanguageSelection/LanguageSelection";
 import BookmarksList from "./components/BookmarksList";
+
 
 const Home = () => {
 
@@ -42,6 +45,7 @@ const Home = () => {
                 </View>
 
                 {/* Main Content Here */}
+
                 <BookmarksList />
 
             </View>

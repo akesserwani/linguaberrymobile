@@ -1,6 +1,6 @@
 
 import { Modal, Text, View, StyleSheet, useWindowDimensions } from "react-native";
-import * as style from '../assets/styles/styles'
+import * as style from '@/assets/styles/styles'
 
 //Import styles
 import Icon from '@expo/vector-icons/FontAwesome6'
