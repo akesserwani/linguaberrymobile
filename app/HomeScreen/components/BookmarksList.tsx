@@ -47,19 +47,19 @@ const BookmarksList = () => {
                         
                         <View style={{flexDirection: "row", gap:10, position: 'relative', bottom: 7,}}>
                             {/* Button to redirect to study the deck */}
-                            <CustomButton onPress={()=>{}} customStyle={{padding: 10}}>
-                                <Icon name={'rectangle-list'} solid={true} size={15} color={style.white} />
+                            <CustomButton onPress={()=>{}} customStyle={{height: 40, width: 40}}>
+                                <Icon name={'rectangle-list'} solid={true} width={15} color={style.white} />
                             </CustomButton>
                             {/* Button to redirect to practice the deck */}
-                            <CustomButton onPress={()=>{}} customStyle={{padding: 10, backgroundColor: style.blue_100}}>
-                                <Icon name={'dumbbell'} solid={true} size={15} color={style.blue_400} />
+                            <CustomButton onPress={()=>{}} customStyle={{height: 40, width: 40, backgroundColor: style.blue_100}}>
+                                <Icon name={'dumbbell'} solid={true} width={15} color={style.blue_400} />
                             </CustomButton>
                         </View>
 
                     ) : (
                         //If it is not Decks,  render a book open to open the story 
-                        <CustomButton onPress={()=>{}} customStyle={{padding: 10, position: 'relative', bottom: 7,}}>
-                            <Icon name={'book-open'} solid={true} size={15} color={style.white} />
+                        <CustomButton onPress={()=>{}} customStyle={{height: 40, width: 40, position: 'relative', bottom: 7,}}>
+                            <Icon name={'book-open'} solid={true} width={15} color={style.white} />
                         </CustomButton>
                     )} 
                 </View>
@@ -95,7 +95,6 @@ const styles = StyleSheet.create({
         borderBottomColor: style.blue_500,
     },
     contentContainer: {
-        paddingHorizontal: 10,
         flexDirection: 'column',
         gap: 20,
         zIndex: -1,

@@ -8,9 +8,9 @@ import CustomButton from './CustomButton'
 
 const CustomFab = ({icon='plus', onPress}) => {
     return ( 
-    <View style={{position: 'absolute', bottom: 0, right:0, height: 80, width: 80, margin:30,}}>
+    <View style={{position: 'absolute', bottom: 0, right:0, height: 70, width: 70, margin:30, backgroundColor: style.white, borderRadius: style.rounded_full}}>
         <CustomButton onPress={onPress} customStyle={ styles.buttonStyle }>
-            <Icon name={icon} solid={true} size={25} color={style.white} />
+            <Icon name={icon} solid={true} size={20} color={style.white} />
         </CustomButton>
     </View>
 
@@ -19,8 +19,8 @@ const CustomFab = ({icon='plus', onPress}) => {
 
 const styles = StyleSheet.create({
     buttonStyle: {
-        width: 80, 
-        height: 80, 
+        width: 70, 
+        height: 70, 
         borderRadius: style.rounded_full,
 
         shadowColor: '#000',

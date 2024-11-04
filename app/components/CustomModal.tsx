@@ -31,13 +31,13 @@ const CustomModal = ({title="My Modal", onClose, children, overrideStyle ={} }) 
                     {/* Top Bar with Title and exit button */}
                     <View style ={styles.topBar}>
                         {/* Modal Title */}
-                        <Text style={{ fontSize: style.text_xl, color: style.gray_600, margin: 5, fontWeight:"500" }}>
+                        <Text style={{ fontSize: style.text_lg, color: style.gray_600, margin: 5, fontWeight:"500" }}>
                             { title }
                         </Text>
                         
                         {/* Button to Close */}
-                        <CustomButton onPress={onClose} customStyle={{ width:40, height: 40, borderRadius: 40, backgroundColor: style.gray_300, padding: 15, }}>
-                            <Icon name={"xmark"} size={20} color={style.gray_500}/>
+                        <CustomButton onPress={onClose} customStyle={{ borderRadius: 40, backgroundColor: style.gray_300, paddingVertical: 10, paddingHorizontal: 11}}>
+                            <Icon name={"xmark"} width={10} color={style.gray_500}/>
                         </CustomButton>
                     </View>
 

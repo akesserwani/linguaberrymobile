@@ -4,7 +4,7 @@ import * as React from 'react';
 import {  useWindowDimensions } from 'react-native'
 
 //import provider data
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { CurrentLangContext } from '@/app/data/CurrentLangContext.tsx';
 
 //import data from the Data file

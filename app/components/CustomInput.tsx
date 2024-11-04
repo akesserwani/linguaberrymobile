@@ -5,7 +5,7 @@ import { Text, View, TextInput, StyleSheet } from 'react-native';
 import * as style from '@/assets/styles/styles'
 
 
-const CustomInput = ({showLabel = true, label = "My Form", placeholder, value, onChangeText}) => {
+const CustomInput = ({showLabel = true, label = "My Form", placeholder, value, onChangeText, maxLength=100}) => {
 
 
 
@@ -26,7 +26,8 @@ const CustomInput = ({showLabel = true, label = "My Form", placeholder, value, o
                         value={ value } 
                         onChangeText={ onChangeText }
                         autoCorrect={ false }
-                        autoCapitalize='none'/>
+                        autoCapitalize='none'
+                        maxLength={maxLength} />
                         
         </View>
      );

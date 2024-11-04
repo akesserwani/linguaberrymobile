@@ -1,6 +1,6 @@
 
 import { Text, View, StyleSheet, TouchableOpacity, useWindowDimensions, ScrollView } from 'react-native'
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect} from 'react';
 
 //styles
 import * as style from '@/assets/styles/styles'
@@ -16,11 +16,9 @@ import { languagesSupported } from '@/app/data/LangData';
 //data for context
 import { CurrentLangContext } from '@/app/data/CurrentLangContext.tsx';
 
-//data from the datafile to get the current language
-import { setCurrentLangStorage } from './DataLanguages';
 
 //get the data from the data file for all the users languages 
-import { getLangStorage, setLangStorage } from './DataLanguages'; 
+import { getLangStorage, addLangStorage, deleteLangStorage, setCurrentLangStorage } from './DataLanguages'; 
 
 //import modal components
 import AddLanguageModal from './AddLanguageModal';
@@ -35,9 +33,21 @@ const LanguageSelection = () => {
     const windowWidth = useWindowDimensions().width;
 
 
-    //users languages data
+    //Get the data of the languages that the user has
     const [userLanguages, editUserLanguages] = useState(getLangStorage());
+    
+    
+    // useEffect(() => {
+    //     // Define an async function to fetch data
+    //     const fetchData = async () => {
+    //         const languages = await getLangStorage();
+    //         editUserLanguages(languages); // Update the state with fetched languages
+    //     };
+    
+    //     fetchData(); // Call the async function
+    // }, []); // Empty dependency array to run only on mount
 
+          
     //function to open dropdown
     const toggleDropdown = () =>{
         openDropdown(!dropdownOpen);
@@ -106,8 +116,8 @@ const LanguageSelection = () => {
                                     setCurrentLanguage(updatedLanguages[0]);  
                                 }
 
-                                //save the newly set updated language(s) to the newly created variable
-                                setLangStorage(updatedLanguages);
+                                //delete language from storage
+                                deleteLangStorage(language);
 
                                 //return updatedLanguages so it is reflected in the reactive variable
                                 return updatedLanguages;
@@ -132,7 +142,7 @@ const LanguageSelection = () => {
         editUserLanguages(updatedLanguages);
 
         //update the database here with the updatedLanguages variable
-        setLangStorage(updatedLanguages);
+        addLangStorage(language);
 
         //close the modal
         openAddModal(false);

@@ -10,10 +10,17 @@ import CustomButton from '@/app/components/CustomButton';
 import * as style from '@/assets/styles/styles'
 
 //import data
-import { createNewDeck } from '../DataDecks';
+import { createNewDeck } from '../../DataDecks';
+
+//import current language
+import { CurrentLangContext } from '@/app/data/CurrentLangContext.tsx';
 
 
-const CreateDeckModal = ({onClose}) => {
+const CreateDeckModal = ({onClose, refresh, scrollToBottom}) => {
+
+    //get the current language
+    const { currentLang } = useContext(CurrentLangContext);
+
 
     // Get screen width dynamically
     const { width } = useWindowDimensions();
@@ -24,14 +31,17 @@ const CreateDeckModal = ({onClose}) => {
     //get the data from the form
     const [formInput, setFormInput] = useState("");
 
-    //get the data from the deck
-
-
 
     //function to create a new deck
     const createDeck = () =>{
         //call the database function
-        createNewDeck(formInput);
+        createNewDeck(formInput, currentLang);
+        
+        //function to refresh to deck
+        refresh();
+
+        //function to scroll to the bottom
+        scrollToBottom(); 
 
         //close the modal
         onClose();
@@ -41,10 +51,11 @@ const CreateDeckModal = ({onClose}) => {
         <CustomModal title='New Deck' onClose={onClose} overrideStyle={{width: dynamicWidth, height: 330 }}>
 
                 {/* Input form here */}
-                <CustomInput label={ "Deck name"} placeholder={"Type deck name..." } value={formInput} onChangeText={setFormInput}/>
+                <CustomInput label={ "Deck name"} placeholder={"Type deck name..." } value={formInput} onChangeText={setFormInput} maxLength={30}/>
+                
 
                 {/* Submit button */}
-                <CustomButton onPress={createDeck} customStyle={{marginTop: 40}}>
+                <CustomButton onPress={createDeck} customStyle={{marginTop: 40, height:45}}>
                     <Text style={{color:style.white, fontSize: style.text_md}}>Create Deck</Text>
                 </CustomButton>
 
