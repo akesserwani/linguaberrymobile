@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
       backgroundColor: style.white, 
       borderTopRightRadius: 20,
       borderTopLeftRadius: 20,
-      borderWidth: style.border_md,
+      borderWidth: style.border_sm,
       borderBottomWidth: 0,
       borderColor: style.gray_200,
       marginTop: 20,

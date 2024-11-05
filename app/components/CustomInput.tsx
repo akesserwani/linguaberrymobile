@@ -5,12 +5,12 @@ import { Text, View, TextInput, StyleSheet } from 'react-native';
 import * as style from '@/assets/styles/styles'
 
 
-const CustomInput = ({showLabel = true, label = "My Form", placeholder, value, onChangeText, maxLength=100}) => {
+const CustomInput = ({showLabel = true, label = "My Form", placeholder, value, onChangeText, maxLength=100, customStyle=null, customFormStyle=null, multiline=false }) => {
 
 
 
     return ( 
-        <View style={{flexDirection: 'column', gap: 25}}>
+        <View style={[{flexDirection: 'column', gap: 25}, customStyle]}>
 
             {/* Label */}
             {/* Make label dynamic based on the prop insertion, it is true by default though */}
@@ -21,13 +21,14 @@ const CustomInput = ({showLabel = true, label = "My Form", placeholder, value, o
             }
         
             {/* Form */}
-            <TextInput style={styles.form} 
+            <TextInput style={[styles.form, customFormStyle]} 
                         placeholder= { placeholder }
                         value={ value } 
                         onChangeText={ onChangeText }
                         autoCorrect={ false }
                         autoCapitalize='none'
-                        maxLength={maxLength} />
+                        maxLength={maxLength}
+                        multiline={multiline} />
                         
         </View>
      );

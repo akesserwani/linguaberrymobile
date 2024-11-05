@@ -65,8 +65,8 @@ const styles = StyleSheet.create({
       backgroundColor: style.white,
       borderRadius: 20,
       width: '80%',
-      height: '80%',
       alignItems: 'center',
+      paddingBottom: 30
     },
     topBar: {
         alignSelf: 'stretch', 

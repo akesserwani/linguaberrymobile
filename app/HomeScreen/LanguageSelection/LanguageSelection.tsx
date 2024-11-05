@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
     dropdownBtn: {
         backgroundColor: style.white,
         borderColor: style.gray_200,
-        borderWidth: style.border_md,
+        borderWidth: style.border_sm,
         borderRadius: 16,
     
         height: 50,
@@ -262,9 +262,9 @@ const styles = StyleSheet.create({
         borderColor: style.gray_200,
         borderRadius: style.rounded_lg,
         backgroundColor: style.white,
-        shadowOpacity: 0.2,
+        shadowOpacity: 0.1,
         shadowOffset: { width: 0, height: 1 },
-        shadowRadius: 4,
+        shadowRadius: 2,
         elevation: 2,       
 
         flexDirection:"column",

@@ -4,7 +4,7 @@ import { Platform } from "react-native";
 
 //sqlite cheat sheet
     //function to delete
-    //db.runSync(`DROP TABLE IF EXISTS general;`);
+    //db.runSync(`DROP TABLE IF EXISTS word;`);
 
     //to add data and insert or replace
     // db.runSync(
@@ -28,23 +28,19 @@ function openDatabase() {
     //create table 
     db.withTransactionSync(() => {
 
-    // db.runSync(`INSERT INTO general (id, current_language) VALUES (1, 'French');`);
+      // // Insert initial data into the general table
+      // db.runSync(
+      //   `INSERT OR IGNORE INTO general (id, current_language) VALUES (1, 'French');`
+      // );
 
-    // db.runSync(
-    //   `INSERT INTO user_languages (language) VALUES (?);`,
-    //   ['French']
-    // );
-  
-    // db.runSync(
-    //   `INSERT INTO user_languages (language) VALUES (?);`,
-    //   ['Spanish']
-    // );
-  
-    // db.runSync(
-    //   `INSERT INTO user_languages (language) VALUES (?);`,
-    //   ['German']
-    // );
-  
+      // // Insert initial data into the user_languages table
+      // db.runSync(
+      //   `INSERT OR IGNORE INTO user_languages (language) VALUES ('French');`
+      // );
+
+      // db.runSync(
+      //   `INSERT OR IGNORE INTO user_languages (language) VALUES ('Spanish');`
+      // );
 
       // Create tables
       db.runSync(
@@ -77,7 +73,6 @@ function openDatabase() {
           translation TEXT NOT NULL,
           etymology TEXT NOT NULL,
           starred INTEGER NOT NULL,
-          deck_id INTEGER,
           FOREIGN KEY(deck_id) REFERENCES deck(id),
           FOREIGN KEY(language_id) REFERENCES user_languages(id)
         );`
@@ -88,7 +83,6 @@ function openDatabase() {
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           name TEXT NOT NULL,
           words TEXT NOT NULL,
-          deck_id INTEGER,
           FOREIGN KEY(deck_id) REFERENCES deck(id),
           FOREIGN KEY(language_id) REFERENCES user_languages(id)
         );`

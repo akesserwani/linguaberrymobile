@@ -1,10 +1,13 @@
 
-import { View, Text, StyleSheet, useWindowDimensions, TouchableOpacity} from 'react-native';
-import { useContext, useLayoutEffect, useState } from 'react';
+import { View, Text, StyleSheet, useWindowDimensions, TouchableOpacity, ScrollView} from 'react-native';
+import { useContext, useLayoutEffect, useState, useEffect, useRef } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 //data for context
 import { CurrentLangContext } from '@/app/data/CurrentLangContext.tsx';
+
+//get data from the database
+import { getWords } from '../DataDecks';
 
 //styles
 import * as style from '@/assets/styles/styles'
@@ -13,10 +16,13 @@ import Icon from '@expo/vector-icons/FontAwesome6'
 //custom components
 import CustomButton from '@/app/components/CustomButton';
 import CustomFab from '@/app/components/CustomFab';
+import CustomModal from '@/app/components/CustomModal';
 
 //import relative components
 import TagDropdown from './components/TagDropdown';
 import HeaderRight from './components/HeaderRight';
+import CreateWordModal from './components/CreateWordModal';
+import WordModal from './components/WordModal';
 
 const UserDeck = ({route}) => {
 
@@ -35,14 +41,35 @@ const UserDeck = ({route}) => {
       }, [navigation]);
     
     //current language
-    const { currentLang, setCurrentLang } = useContext(CurrentLangContext);
+    const { currentLang } = useContext(CurrentLangContext);
+
+    //functionality to pull the words from the database in the respective deck
+
+    //data for the words
+    const [wordData, setWordData] = useState([]);
+
+    //send it as a prop during CRUD functionalities 
+    const fetchDecks = () => {
+        const data = getWords(currentLang, deckName); // Assume synchronous data retrieval
+        setWordData(data);
+
+    };
+
+    // Initialize user data from the database and update it when component mounts
+    useEffect(() => {
+        fetchDecks(); // Call `fetchDecks` when the component mounts
+    }, []); 
 
     // State to track the active tab
     const [activeTab, setActiveTab] = useState('All');
 
+    //Trigger for Create Word Modal
+    const [createModal, openCreateModal ] = useState(false);
 
-    //data for the words
-    const [wordData, setWordData] = useState(['Word 1', 'Word 2', 'Word 3']);
+    //Trigger for Word information modal
+    const [wordModal, openWordModal] = useState(false);
+    //Store the data for the word information modal
+    const [selectedWord, setSelectedWord] = useState(null);
 
 
     // Get screen width dynamically
@@ -50,6 +77,12 @@ const UserDeck = ({route}) => {
     //responsive padding
     const responsiveHorizontalPadding = width < 600 ? 40 : width < 1000 ? 100 : 200;
 
+    // Function to scroll to the bottom, send as prop for the CreateDeckModal
+    const scrollViewRef = useRef(null);
+    const scrollToBottom = () => {
+        scrollViewRef.current?.scrollToEnd({ animated: true });
+    };
+    
     return ( 
         <View style={[styles.mainContainer, { paddingHorizontal: responsiveHorizontalPadding }]}>
             {/* Top Container with title, buttons, and tag dropdown */}
@@ -64,12 +97,14 @@ const UserDeck = ({route}) => {
 
                 {/* Container with study and practice butons */}
                 <View style={{flexDirection:"row", justifyContent:"space-between"}}>
-                    <CustomButton onPress={()=>{}} customStyle={null}>
+                    <CustomButton onPress={()=>{}} customStyle={{flexDirection:'row', gap:8}}>
                         <Text style={{color:style.white, fontWeight:'500'}}>Study</Text>
+                        <Icon name={'book-open'} solid={true} width={15} color={style.white} />
                     </CustomButton>
 
-                    <CustomButton onPress={()=>{}} customStyle={{backgroundColor:style.blue_100}}>
+                    <CustomButton onPress={()=>{}} customStyle={{backgroundColor:style.blue_100, flexDirection:'row', gap:8}}>
                         <Text style={{color:style.blue_500, fontWeight:'500'}}>Practice</Text>
+                        <Icon name={'dumbbell'} solid={true} width={15} color={style.blue_400} />
                     </CustomButton>
 
                 </View>
@@ -88,27 +123,57 @@ const UserDeck = ({route}) => {
             </View>
 
             {/* Content Area */}
-            <View style={styles.contentContainer}>
+            <ScrollView ref={scrollViewRef} style={styles.contentContainer} contentContainerStyle={{ paddingBottom: 200 }}>
                 {/* Individual Bookmarked box */}
+                {/* Click on a word and triggle modal with word data */}
                 {wordData.map((item, index) => (
-                    <View key={index} style={styles.item}>
-                        {/* Text */}
-                        <Text style={{ color: style.gray_500, fontSize: style.text_md, marginLeft: 10}}> 
-                            {item} 
-                        </Text>
 
-                        {/* Word Data Icon */}
-                        <TouchableOpacity activeOpacity={0.5} style={{ height:20, width:20}}>
-                            <Icon name={"ellipsis-vertical"} size={16} color={style.gray_500} style={{marginLeft:10}} />
-                        </TouchableOpacity>
+                    <TouchableOpacity onPress={() => {
+                        setSelectedWord(item); // Set the selected word data
+                        openWordModal(true);   // Open the modal
+                       }} key={index} style={styles.item} activeOpacity={0.7}>
 
-                    </View>
+                        <Text style={{ color: style.gray_400, fontSize: style.text_md}}> 
+                            { index + 1 } 
+                        </Text> 
+
+                        {/* Container for Term */}
+                        <View style={{ width:'40%', height: 60, justifyContent:'center' }}>
+                            <Text style={{ color: style.gray_500, fontSize: style.text_md, padding:1}}> 
+                                {item.term} 
+                            </Text>
+                        </View>
+
+                        {/* Container for Translation */}
+                        <View style={{ width:'40%', height: 60, justifyContent:'center' }}>
+                            <Text style={{ color: style.gray_400, fontSize: style.text_md}}> 
+                                {item.translation} 
+                            </Text>
+                        </View>
+
+
+
+                    </TouchableOpacity>
+
                 ))}
-            </View>
+            </ScrollView>
+
+            {/*COMPONENTS */}
 
             {/* FAB button to create new word */}
-            <CustomFab onPress={() => {}} />
+            <CustomFab onPress={() => openCreateModal(!createModal)} />
 
+            {/* Create Word Modal - Triggered by FAB  */}
+            { createModal && 
+                <CreateWordModal onClose={()=> openCreateModal(false)} deckName={deckName} refresh={fetchDecks} scrollToBottom={scrollToBottom} />
+
+            }
+
+            {/* Modal to show information about the selected word */}
+            {  wordModal &&
+                <WordModal onClose={()=> openWordModal(false)} wordData={selectedWord}  deckName={deckName}  />
+
+            }
 
 
         </View>
@@ -159,12 +224,13 @@ const styles = StyleSheet.create({
         height: 60, 
         borderRadius: style.rounded_md, 
         borderColor: style.gray_200,
-        borderWidth: style.border_md,
+        borderWidth: style.border_sm,
 
         flexDirection: 'row',
-        justifyContent:'space-between',
+        gap: 20,
         alignItems:'center',
         paddingHorizontal: 15,
+        marginBottom: 10
     },
 
 
