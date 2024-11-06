@@ -4,7 +4,10 @@ import { Platform } from "react-native";
 
 //sqlite cheat sheet
     //function to delete
-    //db.runSync(`DROP TABLE IF EXISTS word;`);
+    // db.runSync(`DROP TABLE IF EXISTS general;`);
+    // db.runSync(`DROP TABLE IF EXISTS user_languages;`);
+    // db.runSync(`DROP TABLE IF EXISTS deck;`);
+    // db.runSync(`DROP TABLE IF EXISTS word;`);
 
     //to add data and insert or replace
     // db.runSync(
@@ -27,7 +30,6 @@ function openDatabase() {
 
     //create table 
     db.withTransactionSync(() => {
-
       // // Insert initial data into the general table
       // db.runSync(
       //   `INSERT OR IGNORE INTO general (id, current_language) VALUES (1, 'French');`
@@ -62,6 +64,7 @@ function openDatabase() {
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           name TEXT NOT NULL,
           bookmarked INTEGER NOT NULL,
+          language_id INTEGER,
           FOREIGN KEY(language_id) REFERENCES user_languages(id)
         );`
       );
@@ -73,6 +76,8 @@ function openDatabase() {
           translation TEXT NOT NULL,
           etymology TEXT NOT NULL,
           starred INTEGER NOT NULL,
+          deck_id INTEGER,
+          language_id INTEGER,
           FOREIGN KEY(deck_id) REFERENCES deck(id),
           FOREIGN KEY(language_id) REFERENCES user_languages(id)
         );`
@@ -83,6 +88,8 @@ function openDatabase() {
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           name TEXT NOT NULL,
           words TEXT NOT NULL,
+          deck_id INTEGER,
+          language_id INTEGER,
           FOREIGN KEY(deck_id) REFERENCES deck(id),
           FOREIGN KEY(language_id) REFERENCES user_languages(id)
         );`
@@ -96,6 +103,7 @@ function openDatabase() {
           contents TEXT NOT NULL,
           reader_data TEXT NOT NULL,
           bookmarked BOOLEAN,
+          language_id INTEGER,
           FOREIGN KEY(language_id) REFERENCES user_languages(id)
         );`
       );
@@ -106,14 +114,36 @@ function openDatabase() {
           story_name TEXT NOT NULL,
           highlighted_words TEXT NOT NULL,
           bookmarked BOOLEAN,
+          language_id INTEGER,
           FOREIGN KEY(language_id) REFERENCES user_languages(id)
         );`
       );
+
+      pushInitialData(db);
+
     });
 
     return db;
 }
   
+function pushInitialData(db) {
+  // Insert initial data into the general table
+  db.runSync(
+    `INSERT OR IGNORE INTO general (id, current_language) VALUES (1, 'French');`
+  );
+
+  // Insert initial data into the user_languages table
+  db.runSync(
+    `INSERT OR IGNORE INTO user_languages (language) VALUES ('French');`
+  );
+
+  db.runSync(
+    `INSERT OR IGNORE INTO user_languages (language) VALUES ('Spanish');`
+  );
+
+  // Add more initial data here as needed...
+}
+
 //export the database constant
 export const db = openDatabase();
 

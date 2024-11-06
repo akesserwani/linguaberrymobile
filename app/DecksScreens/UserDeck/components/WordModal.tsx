@@ -6,13 +6,14 @@ import { CurrentLangContext } from '@/app/data/CurrentLangContext.tsx';
 import CustomButton from '@/app/components/CustomButton';
 import CustomModal from '@/app/components/CustomModal';
 import CustomInput from '@/app/components/CustomInput';
+import CustomAlert from '@/app/components/CustomAlert';
 
 //styles
 import * as style from '@/assets/styles/styles'
 import Icon from '@expo/vector-icons/FontAwesome6'
 
 //import function to toggle the starred value
-import { toggleStar } from '../../DataDecks';
+import { toggleStar, getStarred, updateWord, deleteWord } from '../../DataDecks';
 
 
 const WordModal = ({onClose, deckName, wordData}) => {
@@ -31,19 +32,61 @@ const WordModal = ({onClose, deckName, wordData}) => {
     const [formTransl, setFormTransl] = useState(wordData.translation);
     //get form data for etymology
     const [formEty, setFormEty] = useState(wordData.etymology);
-    
+
+
+    //function to get the value of starred and thus which star to render
+    const [starred, setStarred] = useState(getStarred(currentLang, deckName, wordData.term));
+
+    //funcitonality to toggle the star once a change has been made
+    const toggleStarredFunc = () =>{
+
+        //send the functionalities to the database
+        toggleStar(currentLang, deckName, wordData.term);
+
+        //set the starred variable to rerender the UI
+        setStarred(getStarred(currentLang, deckName, wordData.term));
+
+    }
+
     //update word
     //function to update the word
-    const updateWord = () =>{
+    const updateWordFunc = () =>{
 
         //call function to the database 
-
+        updateWord(currentLang, deckName, wordData.term, formWord, formTransl, formEty);
 
         toggleEdit(false);
 
-        //make a refresh function
+        //refresh the data in word data
+        wordData.term = formWord;
+        wordData.translation = formTransl;
+        wordData.etymology = formEty;
 
     }
+
+    //delete word
+    //function to delete the word
+    const deleteWordFunc = () =>{
+
+        //Make alert to confirm the deletion
+        CustomAlert(
+            `Are you sure you want to delete this word?`, 
+            'You will not be able to recover it.',  
+            [
+                { text: 'No',  onPress: () => console.log('Delete canceled'), style: 'cancel', },
+                { text: 'Yes', onPress: () => {
+                        // If "Yes" is pressed, delete the word
+                        deleteWord(currentLang, deckName, wordData.term);
+                        //closeModal
+                        onClose();
+                    }
+                }
+            ],
+            { cancelable: false } // Prevent dismissing the alert by tapping outside
+        );
+    
+    }
+    
 
     return ( 
         <CustomModal onClose={onClose} title={ deckName }>
@@ -58,7 +101,7 @@ const WordModal = ({onClose, deckName, wordData}) => {
 
                 ) : (
                     // {/* Save Button */}
-                    <CustomButton onPress={updateWord} customStyle={{flexDirection:'row', gap:8}}>
+                    <CustomButton onPress={updateWordFunc} customStyle={{flexDirection:'row', gap:8}}>
                         <Text style={{color:style.white}}>Save</Text>
                         <Icon name={"download"} size={12} color={style.white} />
                     </CustomButton>
@@ -67,10 +110,17 @@ const WordModal = ({onClose, deckName, wordData}) => {
 
 
             {/*Starred Button - this will toggle the starred button*/}
-            <TouchableOpacity onPress={ () => toggleStar(currentLang, deckName, wordData.term) } 
+            <TouchableOpacity onPress={ () => toggleStarredFunc() } 
                 activeOpacity={0.7}>
-                <Icon name={"star"} size={20} color={style.gray_500} style={{margin: 10}} />
+                {/* Render the Star based on whether it is starred (1) or not starred (0) */}
+                { starred == 0 ? (
+                    <Icon name={"star"} size={20} color={style.gray_500} style={{margin: 10}} />
+
+                ) : (
+                    <Icon name={"star"} solid={true} size={20} color={'#facc15'} style={{margin: 10}} />
+                )}
             </TouchableOpacity>
+
         </View>
 
         <ScrollView style={{flexDirection:'column', borderTopWidth: 1, borderTopColor: style.gray_200}}>
@@ -117,6 +167,13 @@ const WordModal = ({onClose, deckName, wordData}) => {
             }
 
         </ScrollView>
+
+        {/* DELETE BUTTON */}
+        <View style={{flexDirection:'column', alignItems:'center',justifyContent:'center', borderTopWidth: 1, borderTopColor: style.gray_200, marginTop:15}}>
+            <TouchableOpacity onPress={()=>deleteWordFunc()} style={{ marginTop:30 }} activeOpacity={0.7}>
+                        <Text style={{color:style.red_400, fontSize:style.text_md}}>Delete</Text>
+            </TouchableOpacity>
+        </View>
 
     </CustomModal>
 

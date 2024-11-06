@@ -21,7 +21,6 @@ const Router = () => {
 
     const [currentLang, setCurrentLang] = useState(getCurrentLangStorage());
 
-
     //While the width of the screen is mobile < 800, will render MobileNav
     //If the width is > 800, render SideNav for larger screens 
     const windowWidth = useWindowDimensions().width;
