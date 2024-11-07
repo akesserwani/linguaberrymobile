@@ -6,23 +6,71 @@ import { db } from "../data/Database";
 //READ DECKS
 //create function to read data from the deck
 
-
 export const getAllDecks = (currentLang) => {
-
-  //define variable to hold array
-  let deckNames = [];
+  let deckData = [];
 
   db.withTransactionSync(() => {
-
-    const results = db.getAllSync(`SELECT * FROM deck WHERE language_id = ?;`, [currentLang]);
-    deckNames = results.map(deck => deck.name);
-  
+    const results = db.getAllSync(
+      `SELECT d.id, d.name, d.bookmarked, COUNT(w.id) AS word_count
+       FROM deck d
+       LEFT JOIN word w ON d.id = w.deck_id
+       WHERE d.language_id = ?
+       GROUP BY d.id, d.name, d.bookmarked;`,
+      [currentLang]
+    );
+    
+    // Map results to an array of objects with id, name, bookmarked, and word_count
+    deckData = results.map(deck => ({
+      id: deck.id,
+      name: deck.name,
+      bookmarked: deck.bookmarked,
+      word_count: deck.word_count
+    }));
   });
 
-  return deckNames;
-
+  return deckData;
 };
+
+
   
+// Get the name of a deck based on its ID
+export const getDeckName = (currentLang, deckId) => {
+  let deckName = null;
+
+  db.withTransactionSync(() => {
+    const result = db.getFirstSync(
+      `SELECT name FROM deck WHERE language_id = ? AND id = ?;`,
+      [currentLang, deckId]
+    );
+
+    // Check if a result was returned and set the deckName
+    if (result) {
+      deckName = result.name;
+    }
+  });
+
+  return deckName;
+};
+
+
+//CHECK IF DECK NAME ALREADY EXISTS
+export const deckNameExist = (deckName, currentLang) => {
+  let exists = false;
+
+  db.withTransactionSync(() => {
+    const result = db.getFirstSync(
+      `SELECT id FROM deck WHERE name = ? AND language_id = ?;`,
+      [deckName, currentLang]
+    );
+
+    // If a result is found, set exists to true
+    if (result) {
+      exists = true;
+    }
+  });
+
+  return exists;
+};
   
 //CREATE DECK
 //Function to create a new deck 
@@ -36,21 +84,39 @@ export const createNewDeck = (deckName, currentLang) => {
   
 
 //UPDATE DECK
-
+export const updateDeck = (currentLang, deckId, newDeckName) =>{
+  db.withTransactionSync(() => {
+    db.runSync(
+      `UPDATE deck 
+       SET name = ?
+       WHERE language_id = ? AND id = ?;`,
+      [newDeckName, currentLang, deckId]
+    );
+  });
+}
 
 //DELETE DECK
+export const deleteDeck = (currentLang, deckId) => {
+  db.withTransactionSync(() => {
+    db.runSync(
+      `DELETE FROM deck 
+       WHERE language_id = ? AND id = ?;`,
+      [currentLang, deckId]
+    );
+  });
+};
 
 
 
 //READ WORDS
 //GET WORDS FROM A CERTAIN DECK
-export const getWords = (currentLang, deckName) => {
+export const getWords = (currentLang, deckId) => {
 
   //define variable to hold array
   let wordsList = [];
 
   db.withTransactionSync(() => {
-    const results = db.getAllSync(`SELECT * FROM word WHERE language_id = ? AND deck_id = ?;`, [currentLang, deckName]);
+    const results = db.getAllSync(`SELECT * FROM word WHERE language_id = ? AND deck_id = ?;`, [currentLang, deckId]);
     wordsList = results.map(word => ({
       term: word.term,
       translation: word.translation,
@@ -66,46 +132,97 @@ export const getWords = (currentLang, deckName) => {
 
 
 //CREATE WORD
-export const createNewWord = (currentLang, deckName, term, translation, etymology) => {
+export const createNewWord = (currentLang, deckId, term, translation, etymology) => {
 
   db.withTransactionSync(() => {
     db.runSync(`INSERT INTO word (term, translation, etymology, starred, deck_id, language_id) VALUES (?, ?, ?, ?, ?, ?);`, 
-      [term, translation, etymology, false, deckName, currentLang]);
+      [term, translation, etymology, false, deckId, currentLang]);
   });
 
 }
 
+// Function to insert multiple words into the database as objects, skipping duplicates
+export const createBulkWords = (words, deck_id, language_id) => {
+  try {
+    db.withTransactionSync(() => {
+      words.forEach(word => {
+        const { term, translation, etymology, starred } = word;
+
+        // Check if the term already exists in the deck
+        const exists = db.getFirstSync(
+          `SELECT 1 FROM word WHERE term = ? AND deck_id = ? AND language_id = ?;`,
+          [term, deck_id, language_id]
+        );
+
+        // If the term doesn't exist, insert it
+        if (!exists) {
+          db.runSync(
+            `INSERT INTO word (term, translation, etymology, starred, deck_id, language_id)
+             VALUES (?, ?, ?, ?, ?, ?);`,
+            [term, translation, etymology, starred, deck_id, language_id]
+          );
+        }
+      });
+    });
+    return true;
+
+  } catch (error) {
+    // Log the error and return a message indicating failure
+    return false;
+  }
+};
+
+
 //UPDATE WORD
-export const updateWord = (currentLang, deckName, originalTerm, newTerm, translation, etymology) => {
+export const updateWord = (currentLang, deckId, originalTerm, newTerm, translation, etymology) => {
   
   db.withTransactionSync(() => {
     db.runSync(`UPDATE word SET term = ?, translation = ?, etymology = ?
       WHERE term = ? AND deck_id = ? AND language_id = ?;`, 
-      [newTerm, translation, etymology, originalTerm, deckName, currentLang]);
+      [newTerm, translation, etymology, originalTerm, deckId, currentLang]);
   });
 
 }
 
 //DELETE WORD
-export const deleteWord = (currentLang, deckName, term) => {
+export const deleteWord = (currentLang, deckId, term) => {
   db.withTransactionSync(() => {
     db.runSync(
       `DELETE FROM word 
        WHERE term = ? AND deck_id = ? AND language_id = ?;`, 
-      [term, deckName, currentLang]
+      [term, deckId, currentLang]
     );
   });
 };
 
+//CHECK IF WORD EXISTS IN A DECK
+export const wordExistsInDeck = (currentLang, deckId, term) => {
+  let exists = false;
+
+  db.withTransactionSync(() => {
+    const result = db.getFirstSync(
+      `SELECT 1 FROM word WHERE term = ? AND deck_id = ? AND language_id = ?;`,
+      [term, deckId, currentLang]
+    );
+
+    // If result is found, set exists to true
+    if (result) {
+      exists = true;
+    }
+  });
+
+  return exists;
+};
+
 
 //FUNCTION TO GET VALUE OF STARRED
-export const getStarred = (currentLang, deckName, term) => {
+export const getStarred = (currentLang, deckId, term) => {
   let starredValue;
 
   db.withTransactionSync(() => {
     starredValue = db.getFirstSync(
       `SELECT starred FROM word WHERE language_id = ? AND deck_id = ? AND term = ?;`,
-      [currentLang, deckName, term]
+      [currentLang, deckId, term]
     );
   });
 
@@ -113,20 +230,20 @@ export const getStarred = (currentLang, deckName, term) => {
 }
 
 //FUNCTION TO TOGGLE A STAR
-export const toggleStar = (currentLang, deckName, term) => {
+export const toggleStar = (currentLang, deckId, term) => {
   let newStarredValue;
 
   db.withTransactionSync(() => {
     const result = db.getFirstSync(
       `SELECT starred FROM word WHERE language_id = ? AND deck_id = ? AND term = ?;`,
-      [currentLang, deckName, term]
+      [currentLang, deckId, term]
     );
 
     if (result) {
       newStarredValue = result.starred === 0 ? 1 : 0;
       db.runSync(
         `UPDATE word SET starred = ? WHERE language_id = ? AND deck_id = ? AND term = ?;`,
-        [newStarredValue, currentLang, deckName, term]
+        [newStarredValue, currentLang, deckId, term]
       );
     }
   });
@@ -139,13 +256,13 @@ export const toggleStar = (currentLang, deckName, term) => {
 //DECK BOOKMARKS
 //Functionality to get bookmark status
 // FUNCTION TO GET BOOKMARKED STATUS
-export const getBookmarkedStatus = (currentLang, deckName) => {
+export const getBookmarkedStatus = (currentLang, deckId) => {
   let bookmarkedStatus = 0; // Default to 0 if no result is found
 
   db.withTransactionSync(() => {
     const result = db.getFirstSync(
-      `SELECT bookmarked FROM deck WHERE language_id = ? AND name = ?;`,
-      [currentLang, deckName]
+      `SELECT bookmarked FROM deck WHERE language_id = ? AND id = ?;`,
+      [currentLang, deckId]
     );
 
     // Check if result is not null/undefined before accessing bookmarked
@@ -159,9 +276,9 @@ export const getBookmarkedStatus = (currentLang, deckName) => {
 };
 
 //function to toggle bookmark
-export const toggleBookmark = (currentLang, deckName) =>{
+export const toggleBookmark = (currentLang, deckId) =>{
     // Get the current bookmark status (true if 1, false if 0)
-    const isBookmarked = getBookmarkedStatus(currentLang, deckName);
+    const isBookmarked = getBookmarkedStatus(currentLang, deckId);
 
     // Determine new status: if currently bookmarked (true), set to 0; if not (false), set to 1
     const newStatus = isBookmarked ? 0 : 1;
@@ -169,8 +286,8 @@ export const toggleBookmark = (currentLang, deckName) =>{
     // Update the database with the new bookmarked status
     db.withTransactionSync(() => {
       db.runSync(
-        `UPDATE deck SET bookmarked = ? WHERE language_id = ? AND name = ?;`,
-        [newStatus, currentLang, deckName]
+        `UPDATE deck SET bookmarked = ? WHERE language_id = ? AND id = ?;`,
+        [newStatus, currentLang, deckId]
       );
     });
 

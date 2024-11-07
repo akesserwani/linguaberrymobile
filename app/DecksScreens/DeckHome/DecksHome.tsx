@@ -1,8 +1,8 @@
 
-
+import { useFocusEffect } from '@react-navigation/native';
 import { View, Text, TouchableOpacity, StyleSheet, useWindowDimensions } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { useContext, useState, useEffect, useRef } from 'react';
+import { useContext, useState, useEffect, useRef, useCallback } from 'react';
 
 //data for context
 import { CurrentLangContext } from '@/app/data/CurrentLangContext.tsx';
@@ -32,22 +32,44 @@ const DecksHome = ({ navigation }) => {
     // State to track the active tab
     const [activeTab, setActiveTab] = useState('All');
 
-
-
     // Word data from object
     const [deckData, setDeckData] = useState([]);
+    // bookmarked deck data
+    const [bookmarkedDeckData, setBookmarkedDeckData] = useState([]);
+
+    //rendered data
+    //this is the data that is rendered in the dropdown
+    const [ renderedData, setRenderedData ] = useState([])
+
 
     // Function to fetch decks
-    //send it as a prop during CRUD functionalities 
     const fetchDecks = () => {
-        const data = getAllDecks(currentLang); // Assume synchronous data retrieval
-        setDeckData(data);
+        //Initialize all the data
+        //call the function to get all decks
+        const data = getAllDecks(currentLang); 
+
+        //set all the deck data
+        setDeckData(data);    
+
+        //set bookmarked deck data
+        const bookmarkedData = data.filter(deck => deck.bookmarked === 1);
+        setBookmarkedDeckData(bookmarkedData);  
+
+        //get the current tab then set to the rendered data
+        if (activeTab === "All"){
+            setRenderedData(data);
+        } else if (activeTab === "Bookmarks"){
+            setRenderedData(bookmarkedData);
+        }
     };
 
-    // Initialize user data from the database and update it when component mounts
-    useEffect(() => {
-        fetchDecks(); // Call `fetchDecks` when the component mounts
-    }, []); 
+
+    // Fetch data every time the component is focused
+    useFocusEffect(
+        useCallback(() => {
+            fetchDecks(); // Fetch decks whenever the screen is focused
+        }, [currentLang, activeTab]) // Add any dependencies if needed
+    );
       
 
     //LOGIC TO CREATE NEW DECK
@@ -75,7 +97,7 @@ const DecksHome = ({ navigation }) => {
                     <Text style={[styles.tabText, activeTab === 'All' && styles.activeTab]} >
                         All
                         {/* Count of All */}
-                        <Text style={{fontSize: style.text_xs }}>{'\u00A0'} (16)</Text>
+                        <Text style={{fontSize: style.text_xs }}>{'\u00A0'} ({deckData.length})</Text>
                     </Text>
                 </TouchableOpacity>
 
@@ -83,7 +105,7 @@ const DecksHome = ({ navigation }) => {
                     <Text style={[styles.tabText, activeTab === 'Bookmarks' && styles.activeTab]} >
                         Bookmarks
                         {/* Count of Bookmarks */}
-                        <Text style={{fontSize: style.text_xs }}>{'\u00A0'} (16)</Text>
+                        <Text style={{fontSize: style.text_xs }}>{'\u00A0'} ({ bookmarkedDeckData.length })</Text>
                     </Text>
                 </TouchableOpacity>
             </View>
@@ -92,29 +114,43 @@ const DecksHome = ({ navigation }) => {
             {/* Container for Individual Decks rendered as cards  */}
             <ScrollView ref={scrollViewRef} style={{ paddingTop: 30, flexDirection: 'column'  }} contentContainerStyle={{ paddingBottom: 200 }}  >
 
-                {/* Mapping the deck data for each individual box */}
-                {deckData.map((deck, index) => (
-                    // {/* Individual Deck */}
-                    <TouchableOpacity onPress={ ()=> navigation.navigate("UserDeck", { deckName: deck })} key={index} style={[styles.wordCard, { marginBottom: 10 }]} activeOpacity={0.7}> 
-                        <View style={{ flexDirection: 'row', gap:15 }}> 
-                                    {/* Index Number for the Card */}
-                            <Text style={{color: style.gray_300, fontSize: style.text_md,}}>
-                                {index + 1}
-                            </Text>
+                {/* Display no decks text if deckData is empty, else render everything  */}
+                {renderedData.length === 0 ? (
+                    <Text style={{ color: style.gray_400, fontSize: style.text_md, textAlign: 'center', marginTop: 20 }}>
+                        {activeTab === "All" ? "No decks" : "No Bookmarked decks"}
+                    </Text>
 
-                            {/* Title for Deck */}
-                            <Text style={{color: style.gray_500, fontWeight: '500', fontSize: style.text_md,}}>
-                                {/* Render only first 15 characters */}
-                                {deck.length > 20 ? `${deck.slice(0, 20)}...` : deck}
-                            </Text>
-                        </View>
+                    ) : (
 
-                        {/* Word Count */}
-                        <Text style={{color: style.gray_400, fontWeight: '400'}}>
-                            10 words
-                        </Text>
-                    </TouchableOpacity>
-                ))}
+                    // Mapping the deck data for each individual box
+                    renderedData.map((deck, index) => (
+                        // Individual Deck
+                        <TouchableOpacity 
+                            onPress={() => navigation.navigate("UserDeck", { deckName: deck.name, deckId: deck.id })}
+                            key={index}
+                            style={[styles.wordCard, { marginBottom: 10 }]}
+                            activeOpacity={0.7}
+                        > 
+                            <View style={{ flexDirection: 'row', gap: 15 }}> 
+                                {/* Index Number for the Card */}
+                                <Text style={{ color: style.gray_300, fontSize: style.text_md }}>
+                                    {index + 1}
+                                </Text>
+
+                                {/* Title for Deck */}
+                                <Text style={{ color: style.gray_500, fontWeight: '500', fontSize: style.text_md }}>
+                                    {/* Render only the first 20 characters */}
+                                    {deck.name.length > 20 ? `${deck.name.slice(0, 20)}...` : deck.name}
+                                </Text>
+                            </View>
+
+                            {/* Word Count */}
+                            <Text style={{ color: style.gray_400, fontWeight: '400' }}>
+                                { deck.word_count } words
+                            </Text>
+                        </TouchableOpacity>
+                    ))
+                )}
 
             </ScrollView>
 

@@ -6,7 +6,7 @@ import * as style from '@/assets/styles/styles'
 
 import EditDeckModal from "./EditDeckModal";
 
-const HeaderRight = ({currentLang, deckName}) => {
+const HeaderRight = ({currentLang, deckId, deckName, refreshDeck, refreshWords }) => {
 
     const [buttonClicked, setClick] = useState(false);
 
@@ -23,7 +23,7 @@ const HeaderRight = ({currentLang, deckName}) => {
 
     return ( 
         <>
-            <TouchableOpacity onPress={()=>setClick(!buttonClicked)} style={{marginRight:30}} activeOpacity={0.7}>
+            <TouchableOpacity onPress={()=>setClick(!buttonClicked)} style={{marginRight:30, width:30, height: 40, alignItems:'center', justifyContent:'center'}} activeOpacity={0.7}>
                 <Icon name={"ellipsis-vertical"} size={20} color={style.gray_500} />
             </TouchableOpacity>
 
@@ -38,7 +38,7 @@ const HeaderRight = ({currentLang, deckName}) => {
 
             {/* Modal to edit Deck */}
             {   modalActive &&
-                <EditDeckModal onClose={openModal(false)} currentLang={currentLang} deckName={deckName} />
+                <EditDeckModal onClose={()=>openModal(false)} currentLang={currentLang} deckId={deckId} deckName={deckName} refreshDeck={refreshDeck} refreshWords={refreshWords} />
             }
 
 

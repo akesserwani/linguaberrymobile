@@ -10,13 +10,13 @@ const CustomInput = ({showLabel = true, label = "My Form", placeholder, value, o
 
 
     return ( 
-        <View style={[{flexDirection: 'column', gap: 25}, customStyle]}>
+        <View style={[{flexDirection: 'column', gap: 15}, customStyle]}>
 
             {/* Label */}
             {/* Make label dynamic based on the prop insertion, it is true by default though */}
             { showLabel && 
 
-            <Text style={{color:style.gray_500, fontSize: style.text_lg, fontWeight: '500'}}> {label}: </Text>
+            <Text style={{color:style.gray_500, fontSize: style.text_md, fontWeight: '500'}}> {label}: </Text>
 
             }
         

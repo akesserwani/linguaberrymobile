@@ -9,13 +9,13 @@ import CustomButton from "@/app/components/CustomButton";
 import CustomInput from "@/app/components/CustomInput";
 
 //database functionality 
-import { createNewWord } from "../../DataDecks";
+import { createNewWord, wordExistsInDeck } from "../../DataDecks";
 
 //get current language from provider
 import { CurrentLangContext } from "@/app/data/CurrentLangContext.tsx";
 
 
-const CreateWordModal = ({ onClose, refresh, scrollToBottom, deckName }) => {
+const CreateWordModal = ({ onClose, refresh, scrollToBottom, deckId }) => {
 
     //current language
     const { currentLang } = useContext(CurrentLangContext);
@@ -36,20 +36,34 @@ const CreateWordModal = ({ onClose, refresh, scrollToBottom, deckName }) => {
     //var to toggle etymology form
     const [etyShow, toggleEty] = useState(false);
 
+    //check to see if term already exists in deck
+    const [termExist, setTermExist] = useState(false);
 
     //function to create a new word
     const createWord = () =>{
-        //call the database function and pass the values
-        createNewWord(currentLang, deckName, formWord, formTransl, formEty);
-        
-        //function to refresh to deck
-        refresh();
 
-        //function to scroll to the bottom
-        scrollToBottom(); 
+        //check if the word already exists
+        if (wordExistsInDeck(currentLang, deckId, formWord)){
+            //set warning to true therefore rendering it
+            setTermExist(true);
+        } else{
+            //If the word doesnt already exist then allow it to be added
 
-        //close the modal
-        onClose();
+            //call the database function and pass the values
+            const etymologyValue = formEty === "" ? "none" : formEty;
+            
+            createNewWord(currentLang, deckId, formWord, formTransl, etymologyValue);
+            
+            //function to refresh to deck
+            refresh();
+
+            //function to scroll to the bottom
+            scrollToBottom(); 
+
+            //close the modal
+            onClose();
+        }
+ 
     }
     
     
@@ -60,6 +74,11 @@ const CreateWordModal = ({ onClose, refresh, scrollToBottom, deckName }) => {
                 <CustomInput label={ "Word"} placeholder={"Type word..." } value={formWord} onChangeText={setFormWord} 
                         maxLength={100} multiline={true} customFormStyle={{height: 80}}/>
                 
+                {/* term already exists in deck */}
+                { termExist && 
+                    <Text style={{color:style.red_500, fontWeight:"400", position: "relative", left:5, top:10}}>Term already exists in this deck</Text>
+                }
+
                 {/* Form to add a translation */}
                 <CustomInput label={ "Translation"} placeholder={"Type translation..." } value={formTransl} onChangeText={setFormTransl} 
                              maxLength={150} customStyle={{marginTop: 25}} multiline={true} customFormStyle={{height: 80}}/>

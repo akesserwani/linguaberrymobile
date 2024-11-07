@@ -7,7 +7,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { CurrentLangContext } from '@/app/data/CurrentLangContext.tsx';
 
 //get data from the database
-import { getWords, getStarred, getBookmarkedStatus, toggleBookmark } from '../DataDecks';
+import { getDeckName, getWords, getStarred, getBookmarkedStatus, toggleBookmark } from '../DataDecks';
 
 //styles
 import * as style from '@/assets/styles/styles'
@@ -29,37 +29,51 @@ const UserDeck = ({route}) => {
     //current language
     const { currentLang } = useContext(CurrentLangContext);
 
-    const { deckName } = route.params;
+    const { deckId } = route.params;
     const navigation = useNavigation();
 
+
+    //FUNCTIONALITY TO REACTIVELY GET THE NAME OF A DECK based on ID 
+    //function to fetch the name of the deck based off of the ID - useful if deck name is edited
+    const [deckName, setDeckName] = useState(getDeckName(currentLang, deckId));
+    //function to update the deck name
+    const updateDeckName = () =>{
+        setDeckName(getDeckName(currentLang, deckId));
+    }
+    // Initialize user data from the database and update it when component mounts
+    useEffect(() => {
+        updateDeckName();
+    }, []); 
+    
+
+    //Navigation bar data
     useLayoutEffect(() => {
         navigation.setOptions({
             // Set custom text for the back button          
             headerBackTitle: 'All',
             headerRight: () => (
-                <HeaderRight currentLang={currentLang} deckName={deckName}/>
+                <HeaderRight currentLang={currentLang} deckId={deckId} deckName={deckName} refreshDeck={updateDeckName} refreshWords={fetchWords} />
               ),
           
         });
       }, [navigation]);
-    
 
     //functionality to pull the words from the database in the respective deck
-
     //data for the words
     const [wordData, setWordData] = useState([]);
 
     //send it as a prop during CRUD functionalities 
-    const fetchDecks = () => {
-        const data = getWords(currentLang, deckName); 
+    //This function fetches all the words
+    const fetchWords = () => {
+        const data = getWords(currentLang, deckId); 
         setWordData(data);
-
     };
 
     // Initialize user data from the database and update it when component mounts
     useEffect(() => {
-        fetchDecks(); // Call `fetchDecks` when the component mounts
+        fetchWords(); // Call `fetchDecks` when the component mounts
     }, []); 
+    
     
 
     // State to track the active tab
@@ -89,7 +103,7 @@ const UserDeck = ({route}) => {
         //close the modal
         openWordModal(false);
 
-        fetchDecks(); // Refresh data when the modal closes
+        fetchWords(); // Refresh data when the modal closes
     };
 
     //WORD DATA MANAGEMENT FOR RENDERING
@@ -109,11 +123,11 @@ const UserDeck = ({route}) => {
 
 
     //Logic for rendering bookmarked logo
-    const [isBookmarked, setBookmarked] = useState(getBookmarkedStatus(currentLang, deckName));
+    const [isBookmarked, setBookmarked] = useState(getBookmarkedStatus(currentLang, deckId));
 
     useEffect(()=>{
         //set it to the reactive vairable
-        setBookmarked(getBookmarkedStatus(currentLang, deckName));
+        setBookmarked(getBookmarkedStatus(currentLang, deckId));
 
 
     },[wordData])
@@ -145,7 +159,7 @@ const UserDeck = ({route}) => {
                     <TouchableOpacity onPress={
                         ()=>{
                             //update the database
-                            toggleBookmark(currentLang, deckName);
+                            toggleBookmark(currentLang, deckId);
                             //toggle the variable so it shows in UI
                             setBookmarked(!isBookmarked);
                         }
@@ -218,7 +232,7 @@ const UserDeck = ({route}) => {
                             activeOpacity={0.7}
                             style={[
                                 styles.item, 
-                                getStarred(currentLang, deckName, item.term) === 1 && { borderWidth: 1, borderColor: '#facc15' }
+                                getStarred(currentLang, deckId, item.term) === 1 && { borderWidth: 1, borderColor: '#facc15' }
                             ]}>
 
                             <Text style={{ color: style.gray_400, fontSize: style.text_md }}> 
@@ -250,13 +264,13 @@ const UserDeck = ({route}) => {
 
             {/* Create Word Modal - Triggered by FAB  */}
             { createModal && 
-                <CreateWordModal onClose={()=> openCreateModal(false)} deckName={deckName} refresh={fetchDecks} scrollToBottom={scrollToBottom} />
+                <CreateWordModal onClose={()=> openCreateModal(false)} deckId={deckId} refresh={fetchWords} scrollToBottom={scrollToBottom} />
 
             }
 
             {/* Modal to show information about the selected word */}
             {  wordModal &&
-                <WordModal onClose={()=> handleModalClose()} wordData={selectedWord}  deckName={deckName}  />
+                <WordModal onClose={()=> handleModalClose()} wordData={selectedWord} deckId={deckId} deckName={deckName}  />
 
             }
 
@@ -305,7 +319,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         gap: 10,
         zIndex: -1,
-        marginTop:20
+        paddingTop: 20
 
     },
     item: {

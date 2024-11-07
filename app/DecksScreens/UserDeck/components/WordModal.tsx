@@ -13,10 +13,10 @@ import * as style from '@/assets/styles/styles'
 import Icon from '@expo/vector-icons/FontAwesome6'
 
 //import function to toggle the starred value
-import { toggleStar, getStarred, updateWord, deleteWord } from '../../DataDecks';
+import { toggleStar, getStarred, updateWord, deleteWord, wordExistsInDeck } from '../../DataDecks';
 
 
-const WordModal = ({onClose, deckName, wordData}) => {
+const WordModal = ({onClose, deckId, wordData, deckName}) => {
 
 
     //get the current language
@@ -35,33 +35,43 @@ const WordModal = ({onClose, deckName, wordData}) => {
 
 
     //function to get the value of starred and thus which star to render
-    const [starred, setStarred] = useState(getStarred(currentLang, deckName, wordData.term));
+    const [starred, setStarred] = useState(getStarred(currentLang, deckId, wordData.term));
 
     //funcitonality to toggle the star once a change has been made
     const toggleStarredFunc = () =>{
 
         //send the functionalities to the database
-        toggleStar(currentLang, deckName, wordData.term);
+        toggleStar(currentLang, deckId, wordData.term);
 
         //set the starred variable to rerender the UI
-        setStarred(getStarred(currentLang, deckName, wordData.term));
+        setStarred(getStarred(currentLang, deckId, wordData.term));
 
     }
+
+    //check to see if term already exists in deck
+    const [termExist, setTermExist] = useState(false);
 
     //update word
     //function to update the word
     const updateWordFunc = () =>{
 
-        //call function to the database 
-        updateWord(currentLang, deckName, wordData.term, formWord, formTransl, formEty);
+        if (formWord !== wordData.term && wordExistsInDeck(currentLang, deckId, formWord)){
+            //set warning to true therefore rendering it
+            setTermExist(true);
+        } else{
 
-        toggleEdit(false);
+            //call function to the database 
+            const etymologyValue = formEty === "" ? "none" : formEty;
 
-        //refresh the data in word data
-        wordData.term = formWord;
-        wordData.translation = formTransl;
-        wordData.etymology = formEty;
+            updateWord(currentLang, deckId, wordData.term, formWord, formTransl, etymologyValue);
 
+            toggleEdit(false);
+
+            //refresh the data in word data
+            wordData.term = formWord;
+            wordData.translation = formTransl;
+            wordData.etymology = etymologyValue;
+        }
     }
 
     //delete word
@@ -76,7 +86,7 @@ const WordModal = ({onClose, deckName, wordData}) => {
                 { text: 'No',  onPress: () => console.log('Delete canceled'), style: 'cancel', },
                 { text: 'Yes', onPress: () => {
                         // If "Yes" is pressed, delete the word
-                        deleteWord(currentLang, deckName, wordData.term);
+                        deleteWord(currentLang, deckId, wordData.term);
                         //closeModal
                         onClose();
                     }
@@ -132,9 +142,15 @@ const WordModal = ({onClose, deckName, wordData}) => {
                  { wordData.term }
                 </Text>
                 ) : (
-                    //if it is toggled, show the edit form
+                    <>
+                    {/* if it is toggled, show the edit form */}
                     <CustomInput showLabel={false} placeholder={"Type word..." } value={formWord} onChangeText={setFormWord} 
                     maxLength={100} customStyle={{marginTop: 25}} multiline={true} customFormStyle={{height: 80}}/>
+                    {/* term already exists in deck */}
+                    { termExist && 
+                        <Text style={{color:style.red_500, fontWeight:"400", position: "relative", left:5, top:10}}>Term already exists in this deck</Text>
+                    }
+                    </>
                 )
             }
 

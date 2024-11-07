@@ -78,7 +78,7 @@ function openDatabase() {
           starred INTEGER NOT NULL,
           deck_id INTEGER,
           language_id INTEGER,
-          FOREIGN KEY(deck_id) REFERENCES deck(id),
+          FOREIGN KEY(deck_id) REFERENCES deck(id) ON DELETE CASCADE,
           FOREIGN KEY(language_id) REFERENCES user_languages(id)
         );`
       );
@@ -128,18 +128,18 @@ function openDatabase() {
   
 function pushInitialData(db) {
   // Insert initial data into the general table
-  db.runSync(
-    `INSERT OR IGNORE INTO general (id, current_language) VALUES (1, 'French');`
-  );
+  // db.runSync(
+  //   `INSERT OR IGNORE INTO general (id, current_language) VALUES (1, 'French');`
+  // );
 
-  // Insert initial data into the user_languages table
-  db.runSync(
-    `INSERT OR IGNORE INTO user_languages (language) VALUES ('French');`
-  );
+  // // Insert initial data into the user_languages table
+  // db.runSync(
+  //   `INSERT OR IGNORE INTO user_languages (language) VALUES ('French');`
+  // );
 
-  db.runSync(
-    `INSERT OR IGNORE INTO user_languages (language) VALUES ('Spanish');`
-  );
+  // db.runSync(
+  //   `INSERT OR IGNORE INTO user_languages (language) VALUES ('Spanish');`
+  // );
 
   // Add more initial data here as needed...
 }
