@@ -132,11 +132,11 @@ export const getWords = (currentLang, deckId) => {
 
 
 //CREATE WORD
-export const createNewWord = (currentLang, deckId, term, translation, etymology) => {
+export const createNewWord = (  term, translation, etymology, tag, deckId, currentLang) => {
 
   db.withTransactionSync(() => {
-    db.runSync(`INSERT INTO word (term, translation, etymology, starred, deck_id, language_id) VALUES (?, ?, ?, ?, ?, ?);`, 
-      [term, translation, etymology, false, deckId, currentLang]);
+    db.runSync(`INSERT INTO word (term, translation, etymology, tag, starred, deck_id, language_id) VALUES (?, ?, ?, ?, ?, ?, ?);`, 
+      [term, translation, etymology, tag, false, deckId, currentLang]);
   });
 
 }
@@ -292,3 +292,106 @@ export const toggleBookmark = (currentLang, deckId) =>{
     });
 
 }
+
+
+//TAG CRUD
+//GET ALL THE TAGS
+export const getAllTagsInDeck = (deck_id, language_id) => {
+  let tags = [];
+
+  db.withTransactionSync(() => {
+    const results = db.getAllSync(
+      `SELECT id, name FROM tag WHERE deck_id = ? AND language_id = ?;`,
+      [deck_id, language_id]
+    );
+
+    // Map the results to an array of tag objects
+    tags = results.map(row => ({
+      id: row.id,
+      name: row.name
+    }));
+  });
+
+  return tags;
+};
+
+
+
+//CHECK IF TAG ALREADY EXISTS IN THE DECK
+export const tagExistsInDeck = (name, deck_id, language_id) => {
+  let exists = false;
+
+  db.withTransactionSync(() => {
+    const result = db.getFirstSync(
+      `SELECT 1 FROM tag WHERE name = ? AND deck_id = ? AND language_id = ?;`,
+      [name, deck_id, language_id]
+    );
+
+    // If a result is found, set exists to true
+    if (result) {
+      exists = true;
+    }
+  });
+
+  return exists;
+};
+
+//CREATE A TAG
+export const createTag = (name, deck_id, language_id) => {
+    db.withTransactionSync(() => {
+      db.runSync(
+        `INSERT INTO tag (name, deck_id, language_id)
+         VALUES (?, ?, ?);`,
+        [name, deck_id, language_id]
+      );
+    });
+};
+
+
+
+//DELETE A TAG
+// Function to delete a tag by name, deck_id, and language_id
+export const deleteTagByName = (name, deck_id, language_id) => {
+    db.withTransactionSync(() => {
+      db.runSync(
+        `DELETE FROM tag WHERE name = ? AND deck_id = ? AND language_id = ?;`,
+        [name, deck_id, language_id]
+      );
+    });
+};
+
+
+//GET TAG OF A WORD
+// Function to get the tag of a word by term, deck_id, and language_id
+export const getTagOfWord = (term, deck_id, language_id) => {
+  let tag = null;
+
+  db.withTransactionSync(() => {
+    const result = db.getFirstSync(
+      `SELECT tag FROM word WHERE term = ? AND deck_id = ? AND language_id = ?;`,
+      [term, deck_id, language_id]
+    );
+
+    // If the result is found, assign the tag
+    if (result) {
+      tag = result.tag;
+    }
+  });
+
+  return tag;
+};
+
+
+//UPDATE TAG OF WORD
+export const updateWordTag = (term, newTag, deck_id, language_id) => {
+  db.withTransactionSync(() => {
+    db.runSync(
+      `UPDATE word
+       SET tag = ?
+       WHERE term = ? AND deck_id = ? AND language_id = ?;`,
+      [newTag, term, deck_id, language_id]
+    );
+  });
+};
+
+//GET ALL THE WORDS IN A DECK THAT HAVE A CERTAIN TAG

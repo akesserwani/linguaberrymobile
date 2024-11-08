@@ -8,6 +8,7 @@ import { Platform } from "react-native";
     // db.runSync(`DROP TABLE IF EXISTS user_languages;`);
     // db.runSync(`DROP TABLE IF EXISTS deck;`);
     // db.runSync(`DROP TABLE IF EXISTS word;`);
+    // db.runSync(`DROP TABLE IF EXISTS tag;`);
 
     //to add data and insert or replace
     // db.runSync(
@@ -75,6 +76,7 @@ function openDatabase() {
           term TEXT NOT NULL,
           translation TEXT NOT NULL,
           etymology TEXT NOT NULL,
+          tag TEXT,
           starred INTEGER NOT NULL,
           deck_id INTEGER,
           language_id INTEGER,
@@ -87,7 +89,6 @@ function openDatabase() {
         `CREATE TABLE IF NOT EXISTS tag (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           name TEXT NOT NULL,
-          words TEXT NOT NULL,
           deck_id INTEGER,
           language_id INTEGER,
           FOREIGN KEY(deck_id) REFERENCES deck(id),
@@ -127,6 +128,13 @@ function openDatabase() {
 }
   
 function pushInitialData(db) {
+    // db.runSync(`DROP TABLE IF EXISTS general;`);
+    // db.runSync(`DROP TABLE IF EXISTS user_languages;`);
+    // db.runSync(`DROP TABLE IF EXISTS deck;`);
+    // db.runSync(`DROP TABLE IF EXISTS word;`);
+    // db.runSync(`DROP TABLE IF EXISTS tag;`);
+
+
   // Insert initial data into the general table
   // db.runSync(
   //   `INSERT OR IGNORE INTO general (id, current_language) VALUES (1, 'French');`

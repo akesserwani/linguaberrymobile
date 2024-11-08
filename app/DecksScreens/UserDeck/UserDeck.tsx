@@ -19,7 +19,7 @@ import CustomFab from '@/app/components/CustomFab';
 import CustomModal from '@/app/components/CustomModal';
 
 //import relative components
-import TagDropdown from './components/TagDropdown';
+import TagDropdown from './tag_components/TagDropdown';
 import HeaderRight from './components/HeaderRight';
 import CreateWordModal from './components/CreateWordModal';
 import WordModal from './components/WordModal';
@@ -175,7 +175,7 @@ const UserDeck = ({route}) => {
                 </View>
 
                 {/* Tag dropdown */}
-                <TagDropdown />
+                <TagDropdown currentLang={currentLang} deck_id={deckId}/>
 
                 {/* Container with study and practice butons */}
                 <View style={{flexDirection:"row", justifyContent:"space-between"}}>

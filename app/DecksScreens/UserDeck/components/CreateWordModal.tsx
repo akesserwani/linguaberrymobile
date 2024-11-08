@@ -8,6 +8,8 @@ import CustomModal from "@/app/components/CustomModal";
 import CustomButton from "@/app/components/CustomButton";
 import CustomInput from "@/app/components/CustomInput";
 
+import TagSelection from "../tag_components/TagSelection";
+
 //database functionality 
 import { createNewWord, wordExistsInDeck } from "../../DataDecks";
 
@@ -39,6 +41,19 @@ const CreateWordModal = ({ onClose, refresh, scrollToBottom, deckId }) => {
     //check to see if term already exists in deck
     const [termExist, setTermExist] = useState(false);
 
+    // Callback to handle selected tag change
+    const [selectedTag, setSelectedTag] = useState(null); // State to store the selected tag
+
+    //this function will be set in TagSelection.tsx
+    const handleTagSelection = (tag) => {
+        if (tag === "Select a tag" || tag === "None"){
+            setSelectedTag("None");
+        } else {
+            setSelectedTag(tag);
+        }
+    };
+    
+
     //function to create a new word
     const createWord = () =>{
 
@@ -52,8 +67,8 @@ const CreateWordModal = ({ onClose, refresh, scrollToBottom, deckId }) => {
             //call the database function and pass the values
             const etymologyValue = formEty === "" ? "none" : formEty;
             
-            createNewWord(currentLang, deckId, formWord, formTransl, etymologyValue);
-            
+            createNewWord(formWord, formTransl, etymologyValue, selectedTag, deckId, currentLang );
+
             //function to refresh to deck
             refresh();
 
@@ -70,6 +85,10 @@ const CreateWordModal = ({ onClose, refresh, scrollToBottom, deckId }) => {
     return ( 
         <CustomModal title='New Word' onClose={onClose} overrideStyle={{width: dynamicWidth,  }}>
             <ScrollView>
+
+                {/* Dropdown to add a tag */}
+                <TagSelection currentLang={currentLang} deckId={deckId} onTagSelect={handleTagSelection}/>
+
                 {/* Form to add a word */}
                 <CustomInput label={ "Word"} placeholder={"Type word..." } value={formWord} onChangeText={setFormWord} 
                         maxLength={100} multiline={true} customFormStyle={{height: 80}}/>
@@ -88,6 +107,7 @@ const CreateWordModal = ({ onClose, refresh, scrollToBottom, deckId }) => {
                         Toggle Etymology
                     </Text>
                 </TouchableOpacity>
+
 
                 { etyShow &&
                     //Add etymology input, multiline form

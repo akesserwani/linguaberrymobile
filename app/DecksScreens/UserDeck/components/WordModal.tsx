@@ -8,6 +8,8 @@ import CustomModal from '@/app/components/CustomModal';
 import CustomInput from '@/app/components/CustomInput';
 import CustomAlert from '@/app/components/CustomAlert';
 
+import EditTagSelection from '../tag_components/EditTagSelection';
+
 //styles
 import * as style from '@/assets/styles/styles'
 import Icon from '@expo/vector-icons/FontAwesome6'
@@ -99,98 +101,106 @@ const WordModal = ({onClose, deckId, wordData, deckName}) => {
     
 
     return ( 
-        <CustomModal onClose={onClose} title={ deckName }>
-        {/* Top Panel with Edit Button and Star Button */}
-        <View style={{flexDirection:'row', justifyContent:"space-between", paddingBottom: 10}}>
-            { !editToggled ? (
-                    // {/* Edit Button - pressing it will toggle the forms and it will become the save button*/}
-                    <CustomButton onPress={()=>toggleEdit(!editToggled)} customStyle={{flexDirection:'row', gap:8}}>
-                        <Text style={{color:style.white}}>Edit</Text>
-                        <Icon name={"pencil"} size={12} color={style.white} />
-                    </CustomButton>
+        <CustomModal onClose={onClose} title={ deckName } >
+            <ScrollView style={{maxHeight:500}}>
+            {/* Top Panel with Edit Button and Star Button */}
+            <View style={{flexDirection:'row', justifyContent:"space-between", paddingBottom: 10}}>
 
-                ) : (
-                    // {/* Save Button */}
-                    <CustomButton onPress={updateWordFunc} customStyle={{flexDirection:'row', gap:8}}>
-                        <Text style={{color:style.white}}>Save</Text>
-                        <Icon name={"download"} size={12} color={style.white} />
-                    </CustomButton>
-                )
+                { !editToggled ? (
+                        // {/* Edit Button - pressing it will toggle the forms and it will become the save button*/}
+                        <CustomButton onPress={()=>toggleEdit(!editToggled)} customStyle={{flexDirection:'row', gap:8}}>
+                            <Text style={{color:style.white}}>Edit</Text>
+                            <Icon name={"pencil"} size={12} color={style.white} />
+                        </CustomButton>
+
+                    ) : (
+                        // {/* Save Button */}
+                        <CustomButton onPress={updateWordFunc} customStyle={{flexDirection:'row', gap:8}}>
+                            <Text style={{color:style.white}}>Save</Text>
+                            <Icon name={"download"} size={12} color={style.white} />
+                        </CustomButton>
+                    )
+                }
+
+
+                {/*Starred Button - this will toggle the starred button*/}
+                <TouchableOpacity onPress={ () => toggleStarredFunc() } 
+                    activeOpacity={0.7}>
+                    {/* Render the Star based on whether it is starred (1) or not starred (0) */}
+                    { starred == 0 ? (
+                        <Icon name={"star"} size={20} color={style.gray_500} style={{margin: 10}} />
+
+                    ) : (
+                        <Icon name={"star"} solid={true} size={20} color={'#facc15'} style={{margin: 10}} />
+                    )}
+                </TouchableOpacity>
+
+            </View>
+
+            {/* Tag Selection */}
+            {/* Do not render if user is in edit mode */}
+            { !editToggled && 
+                <EditTagSelection currentLang={currentLang} deckId={deckId} wordData={wordData}/>
             }
 
+            <View style={{flexDirection:'column', borderTopWidth: 1, borderTopColor: style.gray_200}}>
+                {/* Term */}
+                <Text style={{color:style.gray_500, fontSize: style.text_lg, fontWeight: '500', marginTop: 20}}>Term: </Text>
+                { !editToggled ? (
+                    //If edit is not toggled - show the text
+                    <Text style={{color:style.gray_500, fontSize: style.text_lg, fontWeight: '300', marginTop: 5}}> 
+                    { wordData.term }
+                    </Text>
+                    ) : (
+                        <>
+                        {/* if it is toggled, show the edit form */}
+                        <CustomInput showLabel={false} placeholder={"Type word..." } value={formWord} onChangeText={setFormWord} 
+                        maxLength={100} customStyle={{marginTop: 25}} multiline={true} customFormStyle={{height: 80}}/>
+                        {/* term already exists in deck */}
+                        { termExist && 
+                            <Text style={{color:style.red_500, fontWeight:"400", position: "relative", left:5, top:10}}>Term already exists in this deck</Text>
+                        }
+                        </>
+                    )
+                }
 
-            {/*Starred Button - this will toggle the starred button*/}
-            <TouchableOpacity onPress={ () => toggleStarredFunc() } 
-                activeOpacity={0.7}>
-                {/* Render the Star based on whether it is starred (1) or not starred (0) */}
-                { starred == 0 ? (
-                    <Icon name={"star"} size={20} color={style.gray_500} style={{margin: 10}} />
+                {/* Translation */}
+                <Text style={{color:style.gray_500, fontSize: style.text_lg, fontWeight: '500', marginTop: 20}}>Translation: </Text>
+                { !editToggled ? (
+                    //If edit is not toggled - show the text
+                    <Text style={{color:style.gray_500, fontSize: style.text_lg, fontWeight: '300', marginTop: 5}}> 
+                        { wordData.translation }
+                    </Text>
+                    ) : (
+                        //if it is toggled, show the edit form
+                        <CustomInput showLabel={false} placeholder={"Type translation..." } value={formTransl} onChangeText={setFormTransl} 
+                        maxLength={150} customStyle={{marginTop: 25}} multiline={true} customFormStyle={{height: 80}}/>
+                    )
+                }
+                {/* Etymology */}
+                <Text style={{color:style.gray_500, fontSize: style.text_lg, fontWeight: '500', marginTop: 20}}>Etymology: </Text>
+                { !editToggled ? (
+                    //If edit is not toggled - show the text
+                    <Text style={{color:style.gray_500, fontSize: style.text_lg, fontWeight: '300', marginTop: 5}}> 
+                        { wordData.etymology }
+                    </Text>
+                    ) : (
+                        //if it is toggled, show the edit form
+                        <CustomInput showLabel={false} placeholder={"Type Etymology..." } value={formEty} 
+                        onChangeText={setFormEty} maxLength={1000} multiline={true} customStyle={{marginTop:25}}
+                        customFormStyle={{height:100}} />
+                    )
+                }
 
-                ) : (
-                    <Icon name={"star"} solid={true} size={20} color={'#facc15'} style={{margin: 10}} />
-                )}
-            </TouchableOpacity>
+            </View>
 
-        </View>
-
-        <ScrollView style={{flexDirection:'column', borderTopWidth: 1, borderTopColor: style.gray_200}}>
-             {/* Term */}
-             <Text style={{color:style.gray_500, fontSize: style.text_lg, fontWeight: '500', marginTop: 20}}>Term: </Text>
-            { !editToggled ? (
-                //If edit is not toggled - show the text
-                <Text style={{color:style.gray_500, fontSize: style.text_lg, fontWeight: '300', marginTop: 5}}> 
-                 { wordData.term }
-                </Text>
-                ) : (
-                    <>
-                    {/* if it is toggled, show the edit form */}
-                    <CustomInput showLabel={false} placeholder={"Type word..." } value={formWord} onChangeText={setFormWord} 
-                    maxLength={100} customStyle={{marginTop: 25}} multiline={true} customFormStyle={{height: 80}}/>
-                    {/* term already exists in deck */}
-                    { termExist && 
-                        <Text style={{color:style.red_500, fontWeight:"400", position: "relative", left:5, top:10}}>Term already exists in this deck</Text>
-                    }
-                    </>
-                )
-            }
-
-             {/* Translation */}
-             <Text style={{color:style.gray_500, fontSize: style.text_lg, fontWeight: '500', marginTop: 20}}>Translation: </Text>
-             { !editToggled ? (
-                //If edit is not toggled - show the text
-                <Text style={{color:style.gray_500, fontSize: style.text_lg, fontWeight: '300', marginTop: 5}}> 
-                    { wordData.translation }
-                 </Text>
-                ) : (
-                    //if it is toggled, show the edit form
-                    <CustomInput showLabel={false} placeholder={"Type translation..." } value={formTransl} onChangeText={setFormTransl} 
-                    maxLength={150} customStyle={{marginTop: 25}} multiline={true} customFormStyle={{height: 80}}/>
-                )
-            }
-             {/* Etymology */}
-             <Text style={{color:style.gray_500, fontSize: style.text_lg, fontWeight: '500', marginTop: 20}}>Etymology: </Text>
-             { !editToggled ? (
-                //If edit is not toggled - show the text
-                <Text style={{color:style.gray_500, fontSize: style.text_lg, fontWeight: '300', marginTop: 5}}> 
-                    { wordData.etymology }
-                </Text>
-                ) : (
-                    //if it is toggled, show the edit form
-                    <CustomInput showLabel={false} placeholder={"Type Etymology..." } value={formEty} 
-                    onChangeText={setFormEty} maxLength={1000} multiline={true} customStyle={{marginTop:25}}
-                    customFormStyle={{height:100}} />
-                )
-            }
-
+            {/* DELETE BUTTON */}
+            <View style={{flexDirection:'column', alignItems:'center',justifyContent:'center', borderTopWidth: 1, borderTopColor: style.gray_200, marginTop:15}}>
+                <TouchableOpacity onPress={()=>deleteWordFunc()} style={{ marginTop:30 }} activeOpacity={0.7}>
+                            <Text style={{color:style.red_400, fontSize:style.text_md}}>Delete Word</Text>
+                </TouchableOpacity>
+            </View>
         </ScrollView>
-
-        {/* DELETE BUTTON */}
-        <View style={{flexDirection:'column', alignItems:'center',justifyContent:'center', borderTopWidth: 1, borderTopColor: style.gray_200, marginTop:15}}>
-            <TouchableOpacity onPress={()=>deleteWordFunc()} style={{ marginTop:30 }} activeOpacity={0.7}>
-                        <Text style={{color:style.red_400, fontSize:style.text_md}}>Delete</Text>
-            </TouchableOpacity>
-        </View>
-
     </CustomModal>
 
      );
