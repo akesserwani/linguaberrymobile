@@ -14,10 +14,9 @@ import { getAllDecks } from '../DataDecks';
 import CustomFab from '@/app/components/CustomFab';
 
 //Import Modal component to create a deck
-import CreateDeckModal from './Components/CreateDeckModal';
+import CreateDeckModal from './components/CreateDeckModal';
 
 import * as style from '@/assets/styles/styles'
-import Icon from '@expo/vector-icons/FontAwesome6'
 
 
 const DecksHome = ({ navigation }) => {
@@ -129,8 +128,7 @@ const DecksHome = ({ navigation }) => {
                             onPress={() => navigation.navigate("UserDeck", { deckName: deck.name, deckId: deck.id })}
                             key={index}
                             style={[styles.wordCard, { marginBottom: 10 }]}
-                            activeOpacity={0.7}
-                        > 
+                            activeOpacity={0.7}> 
                             <View style={{ flexDirection: 'row', gap: 15 }}> 
                                 {/* Index Number for the Card */}
                                 <Text style={{ color: style.gray_300, fontSize: style.text_md }}>

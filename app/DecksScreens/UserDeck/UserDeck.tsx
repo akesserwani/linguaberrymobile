@@ -111,15 +111,37 @@ const UserDeck = ({route}) => {
     //This is what sets words to render
     const [renderedWords, setRenderWords] = useState(wordData);
     //Checks the tab and renders based off of that
+
+    //create a functionality to get the value of a tag selected in the tag dropdown component
+    // Callback to handle selected tag change
+    const [selectedTag, setSelectedTag] = useState("None"); // State to store the selected tag
+
+    //this function will be set in TagSelection.tsx
+    const handleTagSelection = (tag) => {
+        setSelectedTag(tag)
+    };
+
+
+    //Finally, we render the words based on what is selected
     useEffect(()=>{
         if (activeTab == "All"){
-            //Set word data to just the starred words
-            setRenderWords(wordData);
+            //Allow to be filtered by tags only if activeTab is all 
+            if (selectedTag === "None" || selectedTag === null){
+                //render all the words
+                setRenderWords(wordData);
+            } else {
+                //If selected tag is not "None" filter word based on the selected tag
+                const filteredTags = wordData.filter(word => word.tag === selectedTag);
+
+                //then render that tag
+                setRenderWords(filteredTags);
+            }
+
         } else {
             //reset word decks to normal data
             setRenderWords(starredWords);
         }
-    },[activeTab, wordData, starredWords])
+    },[activeTab, wordData, starredWords, selectedTag])
 
 
     //Logic for rendering bookmarked logo
@@ -175,17 +197,27 @@ const UserDeck = ({route}) => {
                 </View>
 
                 {/* Tag dropdown */}
-                <TagDropdown currentLang={currentLang} deck_id={deckId}/>
+                <TagDropdown currentLang={currentLang} deck_id={deckId} onTagSelect={handleTagSelection}/>
 
                 {/* Container with study and practice butons */}
                 <View style={{flexDirection:"row", justifyContent:"space-between"}}>
-                    <CustomButton onPress={()=>{}} customStyle={{flexDirection:'row', gap:8}}>
-                        <Text style={{color:style.white, fontWeight:'500'}}>Study</Text>
+
+                    {/* Button to go to Study.tsx */}
+                    <CustomButton onPress={()=>{
+                            navigation.navigate('Study', {currentLang: currentLang, deckId: deckId });}} 
+                            customStyle={{flexDirection:'row', gap:8}}>
+                                
+                        <Text style={{color:style.white, fontWeight:'500'}}>
+                            Study
+                        </Text>
                         <Icon name={'book-open'} solid={true} width={15} color={style.white} />
                     </CustomButton>
 
+                    {/* Button to go to Practice.tsx */}
                     <CustomButton onPress={()=>{}} customStyle={{backgroundColor:style.blue_100, flexDirection:'row', gap:8}}>
-                        <Text style={{color:style.blue_500, fontWeight:'500'}}>Practice</Text>
+                        <Text style={{color:style.blue_500, fontWeight:'500'}}>
+                            Practice
+                        </Text>
                         <Icon name={'dumbbell'} solid={true} width={15} color={style.blue_400} />
                     </CustomButton>
 

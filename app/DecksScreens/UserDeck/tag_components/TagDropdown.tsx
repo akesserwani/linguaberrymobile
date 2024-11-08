@@ -13,9 +13,9 @@ import * as style from '@/assets/styles/styles'
 import { ScrollView } from "react-native-gesture-handler";
 
 //import data functions from DataDecks
-import { createTag, tagExistsInDeck, getAllTagsInDeck, deleteTagByName } from "../../DataDecks";
+import { createTag, tagExistsInDeck, getAllTagsInDeck, deleteTagByName, getWordsWithTag } from "../../DataDecks";
 
-const TagDropdown = ({currentLang, deck_id}) => {
+const TagDropdown = ({currentLang, deck_id, onTagSelect}) => {
 
 
     const [dropdownOpen, openDropdown] = useState(false);
@@ -51,7 +51,7 @@ const TagDropdown = ({currentLang, deck_id}) => {
     const createTagFunc = () =>{
 
         //check if input already exists in the database
-        if (tagExistsInDeck(createTagInput, deck_id, currentLang)){
+        if (tagExistsInDeck(createTagInput, deck_id, currentLang) || createTagInput === "None" || createTagInput === ""){
             //render the message
             setTagExists(true);
         } else{
@@ -61,6 +61,11 @@ const TagDropdown = ({currentLang, deck_id}) => {
             //close the creation modal
             openTagModal(false);
 
+            //reset the form
+            setTagInput("");
+
+            //set error to false
+            setTagExists(false);
         }
     }
 
@@ -86,13 +91,46 @@ const TagDropdown = ({currentLang, deck_id}) => {
     }
 
 
+    //render the selected tag based on what is selected
+    const [selectedTag, selectTag] = useState(null);
+
+    //functionality for the selected tag
+    //this function will send the value back UserDeck.tsx and allow words to be filtered based off of the selected tag
+    const selectTagFunc = (tag) => {
+        //function to select the tag
+        //call it in the callback function
+        if (onTagSelect) {
+            onTagSelect(tag); 
+        }
+
+        //close the dropdown
+        openDropdown(false);
+
+        //select tag so it renders in the UI
+        selectTag(tag);
+    }
+
+    //function to close the tag modal
+    const closeTagModal = () =>{
+        //close the modal
+        openTagModal(false);
+
+        //reset the form
+        setTagInput("");
+
+        //set error to false
+        setTagExists(false);
+    }
+
 
     return ( 
         <>
         {/* Tag Dropdown Button */}
         <CustomButton onPress={() => openDropdown(!dropdownOpen)} customStyle={styles.tagDropdown}>
             <View style={{flexDirection: 'row', gap: 7}}>           
-                <Text style={{color:style.gray_500}}>Tags</Text>
+                <Text style={{color:style.gray_500}}>
+                    {selectedTag === null ? "Filter by tag" : selectedTag}
+                </Text>
                 <Icon name={"tag"} size={15} color={style.gray_500} style={{marginTop: 2}}/>
             </View>
             <Icon name={dropdownOpen ? "caret-down" : "caret-up"} size={15} color={style.gray_500}/>
@@ -102,9 +140,20 @@ const TagDropdown = ({currentLang, deck_id}) => {
         {dropdownOpen && (
             <View style={styles.dropdownBox}>
                 <ScrollView>
+
+                    {/* If there are no tags - do not render */}
+                    {  tagData.length !== 0 && (
+                        // {/* Render show all button */}
+                        <TouchableOpacity onPress={()=>selectTagFunc(null)} activeOpacity={0.7} style={{padding:10, marginTop:10, flexDirection:'row', justifyContent:'space-between', alignItems:'center'}}>
+                            {/* Name of the Tag */}
+                            <Text style={{color:style.gray_400, fontSize:style.text_md, fontWeight:'400'}}> Show All </Text>
+                        </TouchableOpacity>
+                    )
+                    }
+
                     { tagData.map((tag, index) => (
                         // {/* Container with tags */}
-                        <TouchableOpacity key={tag.id} activeOpacity={0.7} style={{padding:10, marginTop:10, flexDirection:'row', justifyContent:'space-between', alignItems:'center'}}>
+                        <TouchableOpacity onPress={()=>selectTagFunc(tag.name)} key={tag.id} activeOpacity={0.7} style={{padding:10, marginTop:10, flexDirection:'row', justifyContent:'space-between', alignItems:'center'}}>
                             {/* Name of the Tag */}
                             <Text style={{color:style.gray_500, fontSize:style.text_md, fontWeight:'400'}}> { tag.name } </Text>
 
@@ -112,7 +161,7 @@ const TagDropdown = ({currentLang, deck_id}) => {
                             { !editVar ? (
                                 //Show number of words if editVar is false
                                 <Text style={{color:style.gray_500, fontSize:style.text_xs, fontWeight:'500' }}>
-                                    (10)
+                                    ({getWordsWithTag(tag.name, deck_id, currentLang).length})
                                 </Text>
 
                                 ):(
@@ -142,12 +191,16 @@ const TagDropdown = ({currentLang, deck_id}) => {
                         <Text style={{color:style.white}}>Add</Text>
                     </CustomButton>
 
-                    {/* Edit Button */}
+                    
+                {/* Edit Button */}
+                {  tagData.length !== 0 && (
+                    //Dont render edit button if there are no tags
                     <CustomButton onPress={()=>toggleEdit(!editVar)} customStyle={{backgroundColor:style.gray_200}}>
                         <Text style={{color:style.gray_500}}>
                             {editVar ? "Done" : "Edit"}
                         </Text>
                     </CustomButton>
+                )}
 
                 </View>
             </View>
@@ -155,7 +208,7 @@ const TagDropdown = ({currentLang, deck_id}) => {
 
          {/* Create Tag Modal */}
          { tagModal &&
-         <CustomModal onClose={()=>openTagModal(false)} title="New Tag" overrideStyle={null}>
+         <CustomModal onClose={closeTagModal} title="New Tag" overrideStyle={null}>
             <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={100}  >
             {/* Form to input tag name  */}
                 <CustomInput label={"Tag Name"} placeholder={"Type name here"} value={createTagInput} onChangeText={setTagInput}
@@ -199,7 +252,7 @@ const styles = StyleSheet.create({
 
         borderWidth: 1,
         borderColor: style.gray_200,
-        borderRadius: style.rounded_lg,
+        borderRadius: style.rounded_md,
         backgroundColor: style.white,
         shadowOpacity: 0.1,
         shadowOffset: { width: 0, height: 1 },

@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
 
         borderWidth: 1,
         borderColor: style.gray_200,
-        borderRadius: style.rounded_lg,
+        borderRadius: style.rounded_md,
         backgroundColor: style.white,
         shadowOpacity: 0.1,
         shadowOffset: { width: 0, height: 1 },

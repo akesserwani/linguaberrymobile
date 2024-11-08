@@ -122,6 +122,7 @@ export const getWords = (currentLang, deckId) => {
       translation: word.translation,
       etymology: word.etymology,
       starred: word.starred,
+      tag: word.tag,
     }));
     
   });
@@ -353,8 +354,15 @@ export const createTag = (name, deck_id, language_id) => {
 // Function to delete a tag by name, deck_id, and language_id
 export const deleteTagByName = (name, deck_id, language_id) => {
     db.withTransactionSync(() => {
+      //Delete the tag
       db.runSync(
         `DELETE FROM tag WHERE name = ? AND deck_id = ? AND language_id = ?;`,
+        [name, deck_id, language_id]
+      );
+
+      // Update the `tag` field in `word` table to "None" for words that had the deleted tag
+      db.runSync(
+        `UPDATE word SET tag = 'None' WHERE tag = ? AND deck_id = ? AND language_id = ?;`,
         [name, deck_id, language_id]
       );
     });
@@ -395,3 +403,26 @@ export const updateWordTag = (term, newTag, deck_id, language_id) => {
 };
 
 //GET ALL THE WORDS IN A DECK THAT HAVE A CERTAIN TAG
+export const getWordsWithTag = (tag, deck_id, language_id) => {
+  let words = [];
+
+  db.withTransactionSync(() => {
+    const results = db.getAllSync(
+      `SELECT * FROM word WHERE tag = ? AND deck_id = ? AND language_id = ?;`,
+      [tag, deck_id, language_id]
+    );
+
+    // Map results to an array of word objects
+    words = results.map(row => ({
+      id: row.id,
+      term: row.term,
+      translation: row.translation,
+      etymology: row.etymology,
+      tag: row.tag,
+      starred: row.starred,
+    }));
+  });
+
+  return words;
+};
+

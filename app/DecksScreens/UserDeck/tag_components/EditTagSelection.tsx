@@ -40,7 +40,7 @@ const EditTagSelection = ({currentLang, deckId, wordData }) => {
         const data = getTagOfWord(wordData.term, deckId, currentLang)
         
         if (data === null){
-            selectTag("None")
+            selectTag("None");
         } else{
             //set it equal to selected tag 
             selectTag(data);
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     },
     dropdownBox: {
         position: 'absolute', 
-        top: 110, 
+        top: 105, 
         left: 1,
         right: 0,
         padding: 15,
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
 
         borderWidth: 1,
         borderColor: style.gray_200,
-        borderRadius: style.rounded_lg,
+        borderRadius: style.rounded_md,
         backgroundColor: style.white,
         shadowOpacity: 0.1,
         shadowOffset: { width: 0, height: 1 },
