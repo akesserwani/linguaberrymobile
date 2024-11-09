@@ -5,13 +5,28 @@ import Icon from '@expo/vector-icons/FontAwesome6'
 import * as style from '@/assets/styles/styles'
 
 
-const HeaderRight = ({currentLang, deckId }) => {
+const HeaderRight = ({currentLang, deckId, mode, setMode, frontFirst, setFrontFirst }) => {
 
     const [buttonClicked, setClick] = useState(false);
 
-    //Modal open
-    const [modalActive, openModal] = useState(false);
-    
+    const [displayMode, setDisplayMode] = useState(mode);
+    const setModeFunc = () => {
+        setMode(prevMode => !prevMode); 
+        setDisplayMode(!displayMode);
+
+        //close the dropdown
+        setClick(false)
+    };
+
+    const [displayFirst, setDisplayFirst] = useState(frontFirst);
+    const setFrontFirstFunc = () =>{
+        setFrontFirst(prevMode => !prevMode); 
+        setDisplayFirst(!displayFirst);
+
+        //close the dropdown
+        setClick(false)
+    }
+
 
     return ( 
         <>
@@ -23,13 +38,17 @@ const HeaderRight = ({currentLang, deckId }) => {
             { buttonClicked && 
                 <View style={styles.dropdownBox}>
                     {/* Toggle Flashcard/Study Mode */}
-                    <TouchableOpacity onPress={()=>{}} activeOpacity={0.7}>
-                        <Text style={{color:style.gray_500}}>Flashcard Mode</Text>
+                    <TouchableOpacity onPress={setModeFunc} activeOpacity={0.7}>
+                        <Text style={{color:style.gray_500}}>
+                            { displayMode ? 'Study Mode' : 'Flashcard Mode' }
+                        </Text>
                     </TouchableOpacity>    
 
                     {/* Front First */}
-                    <TouchableOpacity onPress={()=>{}} activeOpacity={0.7}>
-                        <Text style={{color:style.gray_500}}>Front First</Text>
+                    <TouchableOpacity onPress={setFrontFirstFunc} activeOpacity={0.7}>
+                        <Text style={{color:style.gray_500}}>
+                            { displayFirst ? 'Back First' : 'Front First' }
+                        </Text>
                     </TouchableOpacity>           
 
                 </View>

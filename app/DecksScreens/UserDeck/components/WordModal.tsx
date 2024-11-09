@@ -128,7 +128,7 @@ const WordModal = ({onClose, deckId, wordData, deckName}) => {
                     activeOpacity={0.7}>
                     {/* Render the Star based on whether it is starred (1) or not starred (0) */}
                     { starred == 0 ? (
-                        <Icon name={"star"} size={20} color={style.gray_500} style={{margin: 10}} />
+                        <Icon name={"star"} solid={true}  size={20} color={style.gray_300} style={{margin: 10}} />
 
                     ) : (
                         <Icon name={"star"} solid={true} size={20} color={'#facc15'} style={{margin: 10}} />
