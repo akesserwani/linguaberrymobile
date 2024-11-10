@@ -5,7 +5,7 @@ import Icon from '@expo/vector-icons/FontAwesome6'
 import * as style from '@/assets/styles/styles'
 
 
-const HeaderRight = ({currentLang, deckId, mode, setMode, frontFirst, setFrontFirst }) => {
+const HeaderRight = ({currentLang, deckId, mode, setMode, frontFirst, setFrontFirst, randomOrder, setRandom }) => {
 
     const [buttonClicked, setClick] = useState(false);
 
@@ -28,6 +28,15 @@ const HeaderRight = ({currentLang, deckId, mode, setMode, frontFirst, setFrontFi
     }
 
 
+    const [randomOrderVar, setRandomOrderVar] = useState(randomOrder);
+    const setRandomOrderFunc = () =>{
+        setRandom(prevMode => !prevMode); 
+        setRandomOrderVar(!randomOrderVar);
+
+        //close the dropdown
+        setClick(false)
+    }
+
     return ( 
         <>
             <TouchableOpacity onPress={()=>setClick(!buttonClicked)} style={{marginRight:30, width:30, height: 40, alignItems:'center', justifyContent:'center'}} activeOpacity={0.7}>
@@ -48,6 +57,13 @@ const HeaderRight = ({currentLang, deckId, mode, setMode, frontFirst, setFrontFi
                     <TouchableOpacity onPress={setFrontFirstFunc} activeOpacity={0.7}>
                         <Text style={{color:style.gray_500}}>
                             { displayFirst ? 'Back First' : 'Front First' }
+                        </Text>
+                    </TouchableOpacity>           
+
+                    {/* Random order */}
+                    <TouchableOpacity onPress={setRandomOrderFunc} activeOpacity={0.7}>
+                        <Text style={{color:style.gray_500}}>
+                            { randomOrderVar ? 'In Order' : 'Shuffle' }
                         </Text>
                     </TouchableOpacity>           
 

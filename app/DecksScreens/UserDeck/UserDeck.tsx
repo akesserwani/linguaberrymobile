@@ -210,7 +210,7 @@ const UserDeck = ({route}) => {
                         <Text style={{color:style.white, fontWeight:'500'}}>
                             Study
                         </Text>
-                        <Icon name={'book-open'} solid={true} width={15} color={style.white} />
+                        <Icon name={'rectangle-list'} solid={true} width={15} color={style.white} />
                     </CustomButton>
 
                     {/* Button to go to Practice.tsx */}

@@ -35,6 +35,18 @@ const Study = () => {
     //FRONT FIRST OR BACK FIRST
     const [frontFirst, setFrontFirst] = useState(true);
 
+    //Random variables
+    const [randomOrder, setRandom] = useState(false);
+    //Fisher Yates Shuffle Algorithm
+    function shuffleArray(array) {
+        const shuffledArray = [...array]; // Copy the array to avoid mutating the original
+        for (let i = shuffledArray.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
+        }
+        return shuffledArray;
+    }
+    
 
     //Navigation bar data
     useLayoutEffect(() => {
@@ -42,14 +54,14 @@ const Study = () => {
             // Set custom text for the back button          
             headerBackTitle: 'Back',
             headerRight: () => (
-                <HeaderRight currentLang={currentLang} deckId={deckId} mode={mode} setMode={setMode} frontFirst={frontFirst} setFrontFirst={setFrontFirst}/>
+                <HeaderRight currentLang={currentLang} deckId={deckId} mode={mode} setMode={setMode} frontFirst={frontFirst} setFrontFirst={setFrontFirst} randomOrder={randomOrder} setRandom={setRandom}/>
             ),
         });
         }, [navigation]);
     
 
     //Reactive variable for selected tag that will be sent over to the TagSelection component
-    const [selectedTag, selectTag] = useState("");
+    const [selectedTag, selectTag] = useState("None");
     //toggle whether starred will be activated or not
     const [starred, setStarred] = useState(false);
 
@@ -69,15 +81,44 @@ const Study = () => {
     const fetchWords = () => {
         setLoading(true); // Start loading
         try {
-            const data = getWords(currentLang, deckId); // Await async fetch
+            let data = getWords(currentLang, deckId); 
+
+            //if random is true, randomize the order of the array
+            if (randomOrder){
+                data = shuffleArray(data);
+            } 
 
             //Logic based on which words to fetch
-            //Filters are starred and tags
-            
+            //If starred button is clicked - starred only render 
+            if (starred){
+                //filter data 
+                data = data.filter(word => word.starred === 1)
+                setWordData(data);
 
+                //if starred has no data
+                if (data.length === 0){
+                    setLoading(true);
+                }
 
+            } else {
+                //logic for tags here
+                //else render everything else
+                if (selectedTag === "None"){
+                    //render all the words
+                    setWordData(data);
 
-            setWordData(data);
+                } else {
+                    //render the words with the selected tag
+                    data = data.filter(word => word.tag === selectedTag)
+                    setWordData(data);
+                }
+            }
+
+            //reset current index
+            setCurrentIndex(0)
+
+            //set word data
+            setCurrentWordData(wordData[currentIndex]);
 
         } catch (error) {
             console.error("Error fetching words:", error);
@@ -89,14 +130,14 @@ const Study = () => {
     // Fetch words on component mount or if `currentLang` or `deckId` changes
     useEffect(() => {
         fetchWords();
-    }, [currentLang, deckId]);
+    }, [currentLang, deckId, starred, selectedTag, randomOrder, mode]);
 
     // Update `currentWordData` whenever `wordData` or `currentIndex` changes
     useEffect(() => {
         if (wordData.length > 0 && currentIndex < wordData.length) {
             setCurrentWordData(wordData[currentIndex]);
         }
-    }, [wordData, currentIndex]); // Depend on both `wordData` and `currentIndex`
+    }, [wordData, currentIndex, starred, selectedTag, randomOrder, mode]); 
 
     
 
@@ -104,12 +145,14 @@ const Study = () => {
         // Decrements the currentIndex by 1, or wraps it to the last index (maxIndex)
         // if currentIndex is currently at the first element (index 0).
         setCurrentIndex(prevIndex => (prevIndex === 0 ? maxIndex : prevIndex - 1));
+        
     };
     
     const nextCard = () => {
         // Increments the currentIndex by 1, or wraps it to the first index (0)
         // if currentIndex is currently at the last element (maxIndex).
         setCurrentIndex(prevIndex => (prevIndex === maxIndex ? 0 : prevIndex + 1));
+
     };
     
     //SCREEN WIDTH AND RESPONSIVE DESIGNS
@@ -145,10 +188,15 @@ const Study = () => {
                 {/*Card Component */}
                 {loading ? (
                     <Text>Loading...</Text>
-                ) : currentWordData ? (
-                    <Card wordData={currentWordData} currentLang={currentLang} deckId={deckId} frontFirst={frontFirst}/> // Pass `currentWordData` as a prop to `Card`
+                ) : wordData.length > 0 && currentWordData ? (
+                    <Card 
+                        wordData={currentWordData} 
+                        currentLang={currentLang} 
+                        deckId={deckId} 
+                        frontFirst={frontFirst} 
+                    />
                 ) : (
-                    <Text>No data available</Text>
+                    <Text style={{color:style.gray_500, fontSize:style.text_lg, fontWeight:'600'}}>No words available</Text>
                 )}
                 
             </View>
@@ -161,10 +209,16 @@ const Study = () => {
                             <Icon name={"caret-left"} solid={true} size={20} color={style.gray_500}/>         
                         </CustomButton>
 
-                        {/* Text for Flashcard Progress */}
-                        <Text style={{color:style.gray_500, fontSize:style.text_lg, fontWeight:'600', marginTop:10}}>
-                            { currentIndex + 1 } / {wordData.length}
-                        </Text>
+                        {/* Render 0/0 if there are no words  */}
+                        { wordData.length === 0 ? (
+                            <Text style={{color: style.gray_500, fontSize: style.text_lg, fontWeight: '600', marginTop: 10}}>
+                                0 / 0
+                            </Text>
+                        ) : (
+                            <Text style={{color: style.gray_500, fontSize: style.text_lg, fontWeight: '600', marginTop: 10}}>
+                                { currentIndex + 1 } / { wordData.length }
+                            </Text>
+                        )}
 
 
                         {/* Next Button */}

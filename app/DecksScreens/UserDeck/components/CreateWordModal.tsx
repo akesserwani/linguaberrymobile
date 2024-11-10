@@ -100,18 +100,18 @@ const CreateWordModal = ({ onClose, refresh, scrollToBottom, deckId }) => {
 
                 {/* Form to add a translation */}
                 <CustomInput label={ "Translation"} placeholder={"Type translation..." } value={formTransl} onChangeText={setFormTransl} 
-                             maxLength={150} customStyle={{marginTop: 25}} multiline={true} customFormStyle={{height: 80}}/>
+                             maxLength={100} customStyle={{marginTop: 25}} multiline={true} customFormStyle={{height: 80}}/>
 
                 <TouchableOpacity onPress={()=>toggleEty(!etyShow)} activeOpacity={0.6}>
                    <Text style={{color:style.blue_500, fontWeight:'500', fontSize:style.text_md, marginLeft: 5, marginTop:25}}>
-                        Toggle Etymology
+                        { etyShow ? "Close Notes" : "Add Notes"  }
                     </Text>
                 </TouchableOpacity>
 
 
                 { etyShow &&
                     //Add etymology input, multiline form
-                    <CustomInput showLabel={false} placeholder={"Type Etymology..." } value={formEty} 
+                    <CustomInput showLabel={false} placeholder={"Type notes..." } value={formEty} 
                                onChangeText={setFormEty} maxLength={1000} multiline={true} customStyle={{marginTop:25}}
                                customFormStyle={{height:100}} />
                     

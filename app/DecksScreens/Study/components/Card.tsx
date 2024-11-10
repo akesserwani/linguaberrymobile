@@ -3,7 +3,11 @@ import { View, Text, StyleSheet, Animated, TouchableOpacity } from 'react-native
 import * as style from '@/assets/styles/styles';
 import Icon from '@expo/vector-icons/FontAwesome6'
 
+//import custom modal
+import CustomModal from '@/app/components/CustomModal';
+
 import { toggleStar, getStarred } from '../../DataDecks';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const Card = ({wordData, currentLang, deckId, frontFirst}) => {
     const rotation = useRef(new Animated.Value(0)).current;
@@ -29,6 +33,9 @@ const Card = ({wordData, currentLang, deckId, frontFirst}) => {
     //starred functionalities 
     const [starred, setStarred] = useState(null);
 
+    //Toggle notes modal
+    const [modalOpen, toggleModal] = useState(false);
+
     useEffect(()=>{
         setStarred(getStarred(currentLang, deckId, wordData.term));
     })
@@ -44,6 +51,7 @@ const Card = ({wordData, currentLang, deckId, frontFirst}) => {
 
 
     return (
+        <>
         <TouchableOpacity onPress={flipCard} activeOpacity={0.7} style={{ width: '100%' }}>
             <View style={styles.cardContainer}>
                 {/* Flipping background card */}
@@ -53,25 +61,29 @@ const Card = ({wordData, currentLang, deckId, frontFirst}) => {
                 
                 {/* Stationary text overlay */}
                 <View style={styles.textContainer}>
-                    {/* Top Container with the Star Button on top right */}
-                    <View style={{flex:1, alignItems:'flex-end', padding:15}}>
+                    {/* Top Container with the Star Button on top right, notes button on left */}
+                    <View style={{flex:1, flexDirection:'row', justifyContent:'space-between', padding:15}}>
+                        {/* Notes Buton - toggle modal */}
+                        <TouchableOpacity onPress={()=>toggleModal(true)} activeOpacity={0.7}>
+                                <Icon name={"list"} solid={true} size={20} color={style.gray_300}/>     
+                        </TouchableOpacity>
+
+
                         {/* Star Button */}
                         <TouchableOpacity onPress={toggleStarred} activeOpacity={0.7}>
-
                             { starred ? (
                                 <Icon name={"star"} solid={true} size={20} color={"#facc15"}/>     
                             ) : (
                                 <Icon name={"star"} solid={true} size={20} color={style.gray_300}/>     
                             )                            
                             }
-
                         </TouchableOpacity>
                     </View>
 
                     {/* CARD TEXT HERE */}
                     {/* Bottom Container with full text */}
                     <View style={{flex:4, alignItems:'center', marginTop:20}}>
-                        <Text style={{fontSize:style.text_md, color:style.gray_600, fontWeight:'400'}}>
+                        <Text style={{fontSize:style.text_md, color:style.gray_600, fontWeight:'600'}}>
                             {/* Change value based on whether card and front first variable */}
                             { (!flipped && frontFirst) || (flipped && !frontFirst) ? (
                                 wordData.term
@@ -85,6 +97,35 @@ const Card = ({wordData, currentLang, deckId, frontFirst}) => {
                 </View>
             </View>
         </TouchableOpacity>
+
+
+        {/* Notes information modal */}
+        { modalOpen && 
+            <CustomModal title='Notes' onClose={()=>toggleModal(false)} >
+
+                <ScrollView style={{position:'relative', bottom:15}}>
+                    <Text style={{color:style.gray_600, fontSize: style.text_md, fontWeight: '600', marginTop: 20}}>Term: </Text>
+                    <Text style={{color:style.gray_500, fontSize: style.text_md, fontWeight: '500', marginTop: 20}}>
+                        { wordData.term }
+                    </Text>
+
+                    <Text style={{color:style.gray_600, fontSize: style.text_md, fontWeight: '600', marginTop: 20}}>Translation: </Text>
+                    <Text style={{color:style.gray_500, fontSize: style.text_md, fontWeight: '500', marginTop: 20}}>
+                        { wordData.translation }
+                    </Text>
+
+                    <Text style={{color:style.gray_600, fontSize: style.text_md, fontWeight: '600', marginTop: 20}}>Notes: </Text>
+                    <Text style={{color:style.gray_500, fontSize: style.text_md, fontWeight: '500', marginTop: 20}}>
+                        { wordData.etymology }
+
+                    </Text>
+                </ScrollView>
+
+            </CustomModal>
+        }
+        
+
+    </>
     );
 };
 

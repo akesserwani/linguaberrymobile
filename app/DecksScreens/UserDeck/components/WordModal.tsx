@@ -174,11 +174,11 @@ const WordModal = ({onClose, deckId, wordData, deckName}) => {
                     ) : (
                         //if it is toggled, show the edit form
                         <CustomInput showLabel={false} placeholder={"Type translation..." } value={formTransl} onChangeText={setFormTransl} 
-                        maxLength={150} customStyle={{marginTop: 25}} multiline={true} customFormStyle={{height: 80}}/>
+                        maxLength={100} customStyle={{marginTop: 25}} multiline={true} customFormStyle={{height: 80}}/>
                     )
                 }
                 {/* Etymology */}
-                <Text style={{color:style.gray_500, fontSize: style.text_lg, fontWeight: '500', marginTop: 20}}>Etymology: </Text>
+                <Text style={{color:style.gray_500, fontSize: style.text_lg, fontWeight: '500', marginTop: 20}}>Notes: </Text>
                 { !editToggled ? (
                     //If edit is not toggled - show the text
                     <Text style={{color:style.gray_500, fontSize: style.text_lg, fontWeight: '300', marginTop: 5}}> 
@@ -186,7 +186,7 @@ const WordModal = ({onClose, deckId, wordData, deckName}) => {
                     </Text>
                     ) : (
                         //if it is toggled, show the edit form
-                        <CustomInput showLabel={false} placeholder={"Type Etymology..." } value={formEty} 
+                        <CustomInput showLabel={false} placeholder={"Type notes..." } value={formEty} 
                         onChangeText={setFormEty} maxLength={1000} multiline={true} customStyle={{marginTop:25}}
                         customFormStyle={{height:100}} />
                     )

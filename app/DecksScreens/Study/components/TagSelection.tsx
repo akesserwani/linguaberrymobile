@@ -57,7 +57,7 @@ const TagSelection = ({currentLang, deckId, onTagSelect }) => {
         <CustomButton onPress={() => openDropdown(!dropdownOpen)} customStyle={styles.tagDropdown}>
             <View style={{flexDirection: 'row', gap: 7}}>  
                 <Icon name={"tag"} size={15} color={style.gray_500} style={{marginTop: 2}}/>         
-                <Text style={{color:style.gray_500, marginLeft:3, marginTop:1}}>
+                <Text style={{color:style.gray_500, marginLeft:3, marginTop:1, fontWeight:'400'}}>
                     { selectedTag }
                 </Text>
             </View>
@@ -81,7 +81,7 @@ const TagSelection = ({currentLang, deckId, onTagSelect }) => {
                         <TouchableOpacity onPress={()=>selectTagFunc(tag.name)}
                             key={tag.id} activeOpacity={0.7} style={{padding:10, marginTop:10, flexDirection:'row', justifyContent:'space-between', alignItems:'center'}}>
                             {/* Name of the Tag */}
-                            <Text style={{color:style.gray_500, fontSize:style.text_md, fontWeight:'400'}}>{ tag.name }</Text>
+                            <Text style={{color:style.gray_500, fontSize:style.text_md, fontWeight:'500'}}>{ tag.name }</Text>
 
                         </TouchableOpacity>
                     )) }
