@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
-import Icon from '@expo/vector-icons/FontAwesome6'
 import * as style from '@/assets/styles/styles'
 
 //custom components
@@ -13,7 +12,7 @@ import CustomAlert from '@/app/components/CustomAlert';
 //import data from data decks
 import { updateDeck, deleteDeck, deckNameExist, getWords, createBulkWords} from "../../DataDecks";
 //import object to csv function
-import { ObjectToCSV, CSVToObject } from "@/app/data/CSVConversion";
+import { ObjectToCSV, CSVToObject, validateCSVFormat } from "@/app/data/Functions";
 
 
 const EditDeckModal = ({onClose, currentLang, deckId, deckName, refreshDeck, refreshWords }) => {
@@ -27,6 +26,12 @@ const EditDeckModal = ({onClose, currentLang, deckId, deckName, refreshDeck, ref
 
     //reactive variable to render if deck name already exists
     const [nameExists, setNameExists] = useState(false);
+
+    //reactive variable to render error messages for word data
+    const [dataError, setDataError] = useState("");
+    useEffect(() => {
+        setDataError("");
+    }, [currentLang, deckId]);
 
     //Get the data to render it in the form
     const fetchData = () => {
@@ -50,20 +55,28 @@ const EditDeckModal = ({onClose, currentLang, deckId, deckName, refreshDeck, ref
 
         } else{
 
-            //update via the database
-            updateDeck(currentLang, deckId, inputName);
+            //If the Data input is valid
+            const validation = validateCSVFormat(inputData);
+            if (validation.valid) {
 
-            //send the inputData to the database
-            createBulkWords(CSVToObject(inputData), deckId, currentLang);
-            
-            //Call the function from - updateDeckName() in UserDeck.tsx 
-            refreshDeck();
+                //update the deck name via the database
+                updateDeck(currentLang, deckId, inputName);
 
-            //update deck words - fetchWords() in UserDeck.tsx
-            // refreshWords()
+                //send the inputData to the database
+                createBulkWords(CSVToObject(inputData), deckId, currentLang);
+                
+                //Call the function from - updateDeckName() in UserDeck.tsx 
+                refreshDeck();
 
-            //close the modal
-            onClose();
+                //update deck words - fetchWords() in UserDeck.tsx
+                refreshWords()
+
+                //close the modal
+                onClose();
+            } else{
+                setDataError(validation.error);
+            }
+
         }        
     }
     
@@ -106,11 +119,20 @@ const EditDeckModal = ({onClose, currentLang, deckId, deckName, refreshDeck, ref
                     <Text style={{color:style.red_500, fontWeight:"400", position: "relative", left:5, top:10}}>Deck name already exists</Text>
                 }
 
+            {/* Input for the deck data */}
+            <CustomInput label={ "Text Data (CSV)"} placeholder={"Enter data..." } value={inputData} onChangeText={setInputData} 
+                       multiline={true} maxLength={100000} customStyle={{marginTop:40}} customFormStyle={{height: 120}} />
+
+                {/* Print the errors of the CSV data input */}
+                <Text style={{color:style.red_500, fontWeight:"400", position: "relative", left:5, top:10}}>
+                    { dataError }
+                </Text>
 
             {/* Button to update the deck */}
             <CustomButton onPress={updateDeckFunc} customStyle={{marginTop: 40, height:45}}>
                     <Text style={{color:style.white, fontSize: style.text_md}}>Update Deck</Text>
             </CustomButton>
+
 
             {/* Button to delete the deck */}
             <View style={{flexDirection:'column', alignItems:'center',justifyContent:'center', marginTop: 10}}>

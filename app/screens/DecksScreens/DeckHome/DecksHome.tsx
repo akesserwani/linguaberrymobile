@@ -1,7 +1,6 @@
 
 import { useFocusEffect } from '@react-navigation/native';
-import { View, Text, TouchableOpacity, StyleSheet, useWindowDimensions } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import { View, Text, TouchableOpacity, StyleSheet, useWindowDimensions, FlatList } from 'react-native';
 import { useContext, useState, useEffect, useRef, useCallback } from 'react';
 
 //data for context
@@ -17,6 +16,8 @@ import CustomFab from '@/app/components/CustomFab';
 import CreateDeckModal from './components/CreateDeckModal';
 
 import * as style from '@/assets/styles/styles'
+
+import { limitLength } from '@/app/data/Functions';
 
 
 const DecksHome = ({ navigation }) => {
@@ -76,12 +77,14 @@ const DecksHome = ({ navigation }) => {
     const [newDeckModal, setnewDeckModal] = useState(false);
 
 
-    // Function to scroll to the bottom, send as prop for the CreateDeckModal
-    const scrollViewRef = useRef(null);
+    const flatListRef = useRef(null);
+    // Function to scroll to the bottom
     const scrollToBottom = () => {
-      scrollViewRef.current?.scrollToEnd({ animated: true });
-    };
-  
+        const totalHeight = 60 * renderedData.length + 150;
+        flatListRef.current?.scrollToOffset({ offset: totalHeight, animated: true });
+      };
+      
+    
     //responsive variable for container padding
     //if width is less than 600 then padding is 40, if between 600 and 1000 then padding is 100, 1k+, padding is 200
     //40 < 100 < 200
@@ -111,46 +114,48 @@ const DecksHome = ({ navigation }) => {
 
 
             {/* Container for Individual Decks rendered as cards  */}
-            <ScrollView ref={scrollViewRef} style={{ paddingTop: 30, flexDirection: 'column'  }} contentContainerStyle={{ paddingBottom: 200 }}  >
+            <View style={{ flexDirection: 'column', flex:1  }} >
 
                 {/* Display no decks text if deckData is empty, else render everything  */}
                 {renderedData.length === 0 ? (
-                    <Text style={{ color: style.gray_400, fontSize: style.text_md, textAlign: 'center', marginTop: 20 }}>
+                    <Text style={{ color: style.gray_400, fontSize: style.text_md, fontWeight:'600', textAlign: 'center', marginTop: 20 }}>
                         {activeTab === "All" ? "No decks" : "No Bookmarked decks"}
                     </Text>
 
                     ) : (
+                        <FlatList
+                            ref={flatListRef}
+                            data={renderedData}
+                            keyExtractor={(item, index) => item.id.toString()}
+                            contentContainerStyle={{ paddingBottom: 150, paddingTop:20 }} 
+                            renderItem={({ item, index }) => (
+                            //Individual Box being rendered
 
-                    // Mapping the deck data for each individual box
-                    renderedData.map((deck, index) => (
-                        // Individual Deck
-                        <TouchableOpacity 
-                            onPress={() => navigation.navigate("UserDeck", { deckName: deck.name, deckId: deck.id })}
-                            key={index}
-                            style={[styles.wordCard, { marginBottom: 10 }]}
-                            activeOpacity={0.7}> 
-                            <View style={{ flexDirection: 'row', gap: 15 }}> 
-                                {/* Index Number for the Card */}
-                                <Text style={{ color: style.gray_300, fontSize: style.text_md }}>
+                            <TouchableOpacity onPress={() => navigation.navigate("UserDeck", { deckName: item.name, deckId: item.id })}
+                                style={[styles.wordCard, { marginBottom: 10 }]} activeOpacity={0.7}>
+                                <View style={{ flexDirection: 'row', gap: 15 }}>
+                                    {/* Index Number for the Card */}
+                                    <Text style={{ color: style.gray_300, fontSize: style.text_md }}>
                                     {index + 1}
+                                    </Text>
+
+                                    {/* Title for Deck */}
+                                    <Text style={{ color: style.gray_500, fontWeight: '500', fontSize: style.text_md }}>
+                                        { limitLength(item.name, 15) } 
+                                    </Text>
+                                </View>
+
+                                {/* Word Count */}
+                                <Text style={{ color: style.gray_400, fontWeight: '400' }}>
+                                    {item.word_count} words
                                 </Text>
+                            </TouchableOpacity>
 
-                                {/* Title for Deck */}
-                                <Text style={{ color: style.gray_500, fontWeight: '500', fontSize: style.text_md }}>
-                                    {/* Render only the first 20 characters */}
-                                    {deck.name.length > 20 ? `${deck.name.slice(0, 20)}...` : deck.name}
-                                </Text>
-                            </View>
+                        )}/>
+                    )}
 
-                            {/* Word Count */}
-                            <Text style={{ color: style.gray_400, fontWeight: '400' }}>
-                                { deck.word_count } words
-                            </Text>
-                        </TouchableOpacity>
-                    ))
-                )}
+            </View>
 
-            </ScrollView>
 
             {/* Add Button - Absolute positioning from bottom */}
             <CustomFab onPress={() => setnewDeckModal(true)} />
@@ -185,9 +190,10 @@ const styles = StyleSheet.create({
     tabText: {
         fontSize: style.text_md,
         color: style.gray_400,
-        fontWeight: "500",
+        fontWeight: "600",
         paddingVertical: 10,
         flexDirection: 'row',
+
     },
 
     individualTab:{
@@ -200,6 +206,8 @@ const styles = StyleSheet.create({
     activeTab: {
         color: style.blue_500,
         borderBottomColor: style.blue_500,
+        fontWeight: "600",
+
     },
     contentContainer: {
         paddingHorizontal: 10,

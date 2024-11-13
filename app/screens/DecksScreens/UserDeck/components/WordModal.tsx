@@ -14,6 +14,9 @@ import EditTagSelection from '../tag_components/EditTagSelection';
 import * as style from '@/assets/styles/styles'
 import Icon from '@expo/vector-icons/FontAwesome6'
 
+//import function to shorten data
+import { limitLength } from '@/app/data/Functions';
+
 //import function to toggle the starred value
 import { toggleStar, getStarred, updateWord, deleteWord, wordExistsInDeck } from '../../DataDecks';
 
@@ -101,7 +104,7 @@ const WordModal = ({onClose, deckId, wordData, deckName}) => {
     
 
     return ( 
-        <CustomModal onClose={onClose} title={ deckName } >
+        <CustomModal onClose={onClose} title= {limitLength(wordData.term, 15)}>
             <ScrollView style={{maxHeight:500}}>
             {/* Top Panel with Edit Button and Star Button */}
             <View style={{flexDirection:'row', justifyContent:"space-between", paddingBottom: 10}}>

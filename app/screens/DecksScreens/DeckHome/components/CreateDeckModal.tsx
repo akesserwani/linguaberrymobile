@@ -1,5 +1,5 @@
 
-import { View, Text, TouchableOpacity, StyleSheet, useWindowDimensions } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, useWindowDimensions, KeyboardAvoidingView } from 'react-native';
 import { useContext, useState } from 'react';
 
 import CustomModal from '@/app/components/CustomModal';
@@ -61,21 +61,23 @@ const CreateDeckModal = ({onClose, refresh, scrollToBottom}) => {
 
 
     return ( 
+        
         <CustomModal title='New Deck' onClose={onClose} overrideStyle={{width: dynamicWidth, height: 330 }}>
 
-                {/* Input form here */}
-                <CustomInput label={ "Deck name"} placeholder={"Type deck name..." } value={formInput} onChangeText={setFormInput} maxLength={30}/>
 
-                {/* Deck name already exists */}
-                { nameExists && 
-                    <Text style={{color:style.red_500, fontWeight:"400", position: "relative", left:5, top:10}}>Deck name already exists</Text>
-                }
+            {/* Input form here */}
+            <CustomInput label={ "Deck name"} placeholder={"Type deck name..." } value={formInput} onChangeText={setFormInput} maxLength={30}/>
+
+            {/* Deck name already exists */}
+            { nameExists && 
+                <Text style={{color:style.red_500, fontWeight:"400", position: "relative", left:5, top:10}}>Deck name already exists</Text>
+            }
 
 
-                {/* Submit button */}
-                <CustomButton onPress={createDeck} customStyle={{marginTop: 40, height:45}}>
-                    <Text style={{color:style.white, fontSize: style.text_md}}>Create Deck</Text>
-                </CustomButton>
+            {/* Submit button */}
+            <CustomButton onPress={createDeck} customStyle={{marginTop: 40, height:45}}>
+                <Text style={{color:style.white, fontSize: style.text_md}}>Create Deck</Text>
+            </CustomButton>
 
 
         </CustomModal>

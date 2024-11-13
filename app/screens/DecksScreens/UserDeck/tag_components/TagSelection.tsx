@@ -4,9 +4,6 @@ import { useState, useEffect } from "react";
 
 {/* Custom Components */}
 import CustomButton from "@/app/components/CustomButton";
-import CustomModal from "@/app/components/CustomModal";
-import CustomInput from "@/app/components/CustomInput";
-import CustomAlert from "@/app/components/CustomAlert";
 
 import Icon from '@expo/vector-icons/FontAwesome6'
 import * as style from '@/assets/styles/styles'

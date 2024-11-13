@@ -1,5 +1,5 @@
 
-import { Modal, Text, View, StyleSheet, useWindowDimensions } from "react-native";
+import { Modal, Text, View, StyleSheet, useWindowDimensions, KeyboardAvoidingView } from "react-native";
 import * as style from '@/assets/styles/styles'
 
 //Import styles
@@ -25,30 +25,30 @@ const CustomModal = ({title="My Modal", onClose, children, overrideStyle ={} }) 
         <Modal transparent={true} >
             {/* Backdrop with black opacity */}
             <View style={styles.modalOverlay} >
-                {/* Main Content - White Div */}
-                <View style={[styles.modalContainer, { width: dynamicWidth }, overrideStyle ]}>
 
-                    {/* Top Bar with Title and exit button */}
-                    <View style ={styles.topBar}>
-                        {/* Modal Title */}
-                        <Text style={{ fontSize: style.text_lg, color: style.gray_600, margin: 5, fontWeight:"500" }}>
-                            { title }
-                        </Text>
-                        
-                        {/* Button to Close */}
-                        <CustomButton onPress={onClose} customStyle={{ borderRadius: 40, backgroundColor: style.gray_300, paddingVertical: 10, paddingHorizontal: 11}}>
-                            <Icon name={"xmark"} width={10} color={style.gray_500}/>
-                        </CustomButton>
+
+                    {/* Main Content - White Div */}
+                    <View style={[styles.modalContainer, { width: dynamicWidth }, overrideStyle ]}>
+                        {/* Top Bar with Title and exit button */}
+                        <View style ={styles.topBar}>
+                            {/* Modal Title */}
+                            <Text style={{ fontSize: style.text_lg, color: style.gray_600, margin: 5, fontWeight:"500" }}>
+                                { title }
+                            </Text>
+                            
+                            {/* Button to Close */}
+                            <CustomButton onPress={onClose} customStyle={{ borderRadius: 40, backgroundColor: style.gray_300, paddingVertical: 10, paddingHorizontal: 11}}>
+                                <Icon name={"xmark"} width={10} color={style.gray_500}/>
+                            </CustomButton>
+                        </View>
+
+
+                        {/* Main Content Below - Children Content Here */}
+                        <View style={{ paddingHorizontal: 40, paddingTop:30, alignSelf:"stretch" }}>
+                            { children }
+                        </View>
                     </View>
 
-
-                    {/* Main Content Below - Children Content Here */}
-                    <View style={{ paddingHorizontal: 40, paddingTop:30, alignSelf:"stretch" }}>
-                        { children }
-                    </View>
-
-
-                </View>
             </View>
         </Modal>
      );

@@ -1,5 +1,5 @@
 
-import { db } from "../data/Database";
+import { db } from "../../data/Database";
 
 
 
@@ -143,32 +143,31 @@ export const createNewWord = (  term, translation, etymology, tag, deckId, curre
 }
 
 // Function to insert multiple words into the database as objects, skipping duplicates
+// Function to insert multiple words into the database as objects, skipping duplicates
 export const createBulkWords = (words, deck_id, language_id) => {
   try {
     db.withTransactionSync(() => {
+      // Step 1: Delete all existing words in the specified deck and language
+      db.runSync(
+        `DELETE FROM word WHERE deck_id = ? AND language_id = ?;`,
+        [deck_id, language_id]
+      );
+
+      // Step 2: Insert the new words from the words array
       words.forEach(word => {
-        const { term, translation, etymology, starred } = word;
+        const { term, translation, etymology } = word;
 
-        // Check if the term already exists in the deck
-        const exists = db.getFirstSync(
-          `SELECT 1 FROM word WHERE term = ? AND deck_id = ? AND language_id = ?;`,
-          [term, deck_id, language_id]
+        console.log(`Inserting word: ${term}`);
+        db.runSync(
+          `INSERT INTO word (term, translation, etymology, tag, starred, deck_id, language_id)
+           VALUES (?, ?, ?, ?, ?, ?, ?);`,
+          [term, translation, etymology, "None", 0, deck_id, language_id]
         );
-
-        // If the term doesn't exist, insert it
-        if (!exists) {
-          db.runSync(
-            `INSERT INTO word (term, translation, etymology, starred, deck_id, language_id)
-             VALUES (?, ?, ?, ?, ?, ?);`,
-            [term, translation, etymology, starred, deck_id, language_id]
-          );
-        }
       });
     });
     return true;
 
   } catch (error) {
-    // Log the error and return a message indicating failure
     return false;
   }
 };

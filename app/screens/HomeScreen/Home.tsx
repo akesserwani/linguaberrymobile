@@ -34,9 +34,9 @@ const Home = () => {
                 {/* Top Horizontal Container with Bookmarks label and Drop Down (only if screen > 800)*/}
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between'  }}>
                     {/* Bookmarks label */}
-                    <View style={{flexDirection: "row", alignItems: "center", justifyContent: "center", gap:15}}>
-                      <Icon name={'bookmark'} solid={true} size={18} color={style.gray_500} />
-                      <Text style={{fontSize: style.text_lg, fontFamily: "Nunito_400Regular", color:style.gray_500}}>Bookmarks</Text>
+                    <View style={{flexDirection: "row", alignItems: "center", justifyContent: "center", gap:10}}>
+                      <Icon name={'bookmark'} solid={true} size={15} color={style.gray_500} />
+                      <Text style={{fontSize: style.text_lg, fontWeight: "600", color:style.gray_500}}>Bookmarks</Text>
                     </View>
                     {/* Dropdown if screen > 800 label */}
                     { windowWidth > 700 &&

@@ -5,14 +5,14 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Image } from 'react-native';
 
 //Import components 
-import Home from '../HomeScreen/Home'
+import Home from '../HomeScreen/Home';
 import DecksStack from '../DecksScreens/DecksStack';
 import ReaderStack from '../ReaderScreens/ReaderStack';
 import ExplorerHome from '../ExplorerScreen/ExplorerHome';
 
 
 //import styles
-import * as style from "../../assets/styles/styles"
+import * as style from "@/assets/styles/styles"
 import Icon from '@expo/vector-icons/FontAwesome6'
 
 const Tab = createBottomTabNavigator();
@@ -55,7 +55,7 @@ const MobileNav = () => {
                     options={{
                         //Import LinguaBerry Logo 
                         headerLeft: ()=>(
-                            <Image source={require('../../assets/images/logo.png')} 
+                            <Image source={require('@/assets/images/logo.png')} 
                                     style={{ width:150, height:40 }}/>
                         ),
                         headerStyle: {
@@ -67,26 +67,30 @@ const MobileNav = () => {
                         tabBarIcon: ({color}) => <Icon name="house" size={20} color={color} />,
                         //have no header title
                         headerTitle: "",
+                        tabBarLabelStyle: { fontWeight: '500', fontSize:style.text_sm }
                     }}/>
 
         {/* Decks Screen   */}     
         <Tab.Screen name="Decks" component={ DecksStack } 
                     options={{
                         headerShown:false,
-                        tabBarIcon: ({color}) => <Icon name="list-ul" size={20} color={color} />
+                        tabBarIcon: ({color}) => <Icon name="list-ul" size={20} color={color} />,
+                        tabBarLabelStyle: { fontWeight: '500', fontSize:style.text_sm }
                     }} />
 
         {/* Reader Router   */}     
         <Tab.Screen name="Reader" component={ ReaderStack } options={{
                         headerShown:false,
-                        tabBarIcon: ({color}) => <Icon name="book" size={20} color={color} />
+                        tabBarIcon: ({color}) => <Icon name="book" size={20} color={color} />,
+                        tabBarLabelStyle: { fontWeight: '500', fontSize:style.text_sm }
                     }} />
 
         {/* Explorer Router   */}     
         <Tab.Screen name="Explorer" component={ ExplorerHome } 
                     options={{
                         headerShown:false,
-                        tabBarIcon: ({color}) => <Icon name="book-atlas" size={20} color={color} />
+                        tabBarIcon: ({color}) => <Icon name="book-atlas" size={20} color={color} />,
+                        tabBarLabelStyle: { fontWeight: '500', fontSize:style.text_sm }
                     }} />
         </Tab.Navigator>
      );

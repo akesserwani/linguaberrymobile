@@ -40,7 +40,7 @@ const BookmarksList = () => {
             {/* Individual Bookmarked box */}
             {items.map((item, index) => (
                 <View key={index} style={[styles.item, index === items.length - 1 && styles.lastItem]}>
-                    <Text style={{ color: style.gray_500, fontSize: style.text_md, marginLeft: 10}}>{item}</Text>
+                    <Text style={{ color: style.gray_500, fontSize: style.text_md, marginLeft: 10, fontWeight:'400'}}>{item}</Text>
 
                     {/* Buttons show if activeTab == "Decks" */}
                     {activeTab == "Decks" ? (
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     tabText: {
         fontSize: style.text_md,
         color: style.gray_400,
-        fontWeight: "500",
+        fontWeight: "600",
         paddingVertical: 10,
 
     },
@@ -93,6 +93,7 @@ const styles = StyleSheet.create({
     activeTab: {
         color: style.blue_500,
         borderBottomColor: style.blue_500,
+        fontWeight: "600",
     },
     contentContainer: {
         flexDirection: 'column',

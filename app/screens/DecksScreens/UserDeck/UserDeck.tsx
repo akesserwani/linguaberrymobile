@@ -1,5 +1,5 @@
 
-import { View, Text, StyleSheet, useWindowDimensions, TouchableOpacity, ScrollView} from 'react-native';
+import { View, Text, StyleSheet, useWindowDimensions, TouchableOpacity, FlatList} from 'react-native';
 import { useContext, useLayoutEffect, useState, useEffect, useRef } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
@@ -16,13 +16,14 @@ import Icon from '@expo/vector-icons/FontAwesome6'
 //custom components
 import CustomButton from '@/app/components/CustomButton';
 import CustomFab from '@/app/components/CustomFab';
-import CustomModal from '@/app/components/CustomModal';
 
 //import relative components
 import TagDropdown from './tag_components/TagDropdown';
 import HeaderRight from './components/HeaderRight';
 import CreateWordModal from './components/CreateWordModal';
 import WordModal from './components/WordModal';
+
+import { limitLength } from '@/app/data/Functions';
 
 const UserDeck = ({route}) => {
 
@@ -163,11 +164,13 @@ const UserDeck = ({route}) => {
     const responsiveHorizontalPadding = width < 600 ? 40 : width < 1000 ? 100 : 200;
 
     // Function to scroll to the bottom, send as prop for the CreateDeckModal
-    const scrollViewRef = useRef(null);
+    const flatListRef = useRef(null);
+    // Function to scroll to the bottom of the FlatList
     const scrollToBottom = () => {
-        scrollViewRef.current?.scrollToEnd({ animated: true });
-    };
-    
+        const totalHeight = 60 * renderedWords.length + 150;
+        flatListRef.current?.scrollToOffset({ offset: totalHeight, animated: true });
+      };
+          
     return ( 
         <View style={[styles.mainContainer, { paddingHorizontal: responsiveHorizontalPadding }]}>
             {/* Top Container with title, buttons, and tag dropdown */}
@@ -175,7 +178,11 @@ const UserDeck = ({route}) => {
                 {/* Deck Name and top container with bookmark icon*/}
                 <View style={{flexDirection:'row', justifyContent:'space-between', padding:5}}>
                     {/* Deck name */}
-                    <Text style={{color:style.gray_500, fontWeight:'500', fontSize: style.text_lg}}>{ deckName }</Text>
+                    <View style={{width:'90%', marginTop:2}}>
+                        <Text style={{color:style.gray_500, fontWeight:'500', fontSize: style.text_md}}>
+                        { deckName}
+                        </Text>
+                    </View>
 
                     {/* Bookmark Button */}
                     <TouchableOpacity onPress={
@@ -207,7 +214,7 @@ const UserDeck = ({route}) => {
                             navigation.navigate('Study', {currentLang: currentLang, deckId: deckId });}} 
                             customStyle={{flexDirection:'row', gap:8}}>
                                 
-                        <Text style={{color:style.white, fontWeight:'500'}}>
+                        <Text style={{color:style.white, fontWeight:'600'}}>
                             Study
                         </Text>
                         <Icon name={'rectangle-list'} solid={true} width={15} color={style.white} />
@@ -215,7 +222,7 @@ const UserDeck = ({route}) => {
 
                     {/* Button to go to Practice.tsx */}
                     <CustomButton onPress={()=>{}} customStyle={{backgroundColor:style.blue_100, flexDirection:'row', gap:8}}>
-                        <Text style={{color:style.blue_500, fontWeight:'500'}}>
+                        <Text style={{color:style.blue_500, fontWeight:'600'}}>
                             Practice
                         </Text>
                         <Icon name={'dumbbell'} solid={true} width={15} color={style.blue_400} />
@@ -245,49 +252,52 @@ const UserDeck = ({route}) => {
             </View>
 
             {/* Content Area */}
-            <ScrollView ref={scrollViewRef} style={styles.contentContainer} contentContainerStyle={{ paddingBottom: 200 }}>
+            <View style={styles.contentContainer}>
 
                 {/* Check if there are no words in renderedWords */}
                 {renderedWords.length === 0 ? (
-                    <Text style={{ color: style.gray_400, fontSize: style.text_md, textAlign: 'center', marginTop: 20 }}>
+                    <Text style={{ color: style.gray_400, fontSize: style.text_md, fontWeight:'600', textAlign: 'center', marginTop: 20 }}>
                         No words
                     </Text>
                 ) : (
                     /* Render words if available */
-                    renderedWords.map((item, index) => (
-                        <TouchableOpacity 
-                            onPress={() => {
-                                setSelectedWord(item); // Set the selected word data
-                                openWordModal(true);   // Open the modal
-                            }} 
-                            key={index} 
-                            activeOpacity={0.7}
-                            style={[
-                                styles.item, 
-                                getStarred(currentLang, deckId, item.term) === 1 && { borderWidth: 1, borderColor: '#facc15' }
-                            ]}>
+                    <FlatList ref={flatListRef}
+                        data={renderedWords}
+                        keyExtractor={(item, index) => index.toString()} 
+                        contentContainerStyle={{ paddingBottom: 150, paddingTop:20 }} 
+                        renderItem={({ item, index }) => (
+                            <TouchableOpacity onPress={() => {
+                                setSelectedWord(item); 
+                                openWordModal(true);   
+                                }} activeOpacity={0.7}
+                                style={[
+                                    styles.item, 
+                                    getStarred(currentLang, deckId, item.term) === 1 && { borderWidth: 1, borderColor: '#facc15' }
+                                ]}>
 
-                            <Text style={{ color: style.gray_400, fontSize: style.text_md }}> 
-                                { index + 1 } 
-                            </Text> 
-
-                            {/* Container for Term */}
-                            <View style={{ width: '40%', height: 60, justifyContent: 'center' }}>
-                                <Text style={{ color: style.gray_500, fontSize: style.text_md, padding: 1 }}> 
-                                    {item.term} 
-                                </Text>
-                            </View>
-
-                            {/* Container for Translation */}
-                            <View style={{ width: '40%', height: 60, justifyContent: 'center' }}>
                                 <Text style={{ color: style.gray_400, fontSize: style.text_md }}> 
-                                    {item.translation} 
-                                </Text>
-                            </View>
-                        </TouchableOpacity>
-                    ))
+                                    {index + 1}
+                                </Text> 
+
+                                {/* Container for Term */}
+                                <View style={{ width: '40%', height: 60, justifyContent: 'center' }}>
+                                    <Text style={{ color: style.gray_500, fontSize: style.text_md, padding: 1 }}> 
+                                    { limitLength(item.term, 15) } 
+                                    </Text>
+                                </View>
+
+                                {/* Container for Translation */}
+                                <View style={{ width: '40%', height: 60, justifyContent: 'center' }}>
+                                    <Text style={{ color: style.gray_400, fontSize: style.text_md }}> 
+                                    { limitLength(item.translation, 15) } 
+                                    </Text>
+                                </View>
+
+                            </TouchableOpacity>
+                        )}/>
                 )}
-                </ScrollView>
+
+            </View>
 
             {/*COMPONENTS */}
 
@@ -327,8 +337,9 @@ const styles = StyleSheet.create({
     tabText: {
         fontSize: style.text_md,
         color: style.gray_400,
-        fontWeight: "500",
+        fontWeight: "600",
         paddingVertical: 10,
+        
 
     },
 
@@ -346,12 +357,14 @@ const styles = StyleSheet.create({
     activeTab: {
         color: style.blue_500,
         borderBottomColor: style.blue_500,
+        fontWeight: "600",
+
     },
     contentContainer: {
         flexDirection: 'column',
+        flex: 1,
         gap: 10,
         zIndex: -1,
-        paddingTop: 20
 
     },
     item: {

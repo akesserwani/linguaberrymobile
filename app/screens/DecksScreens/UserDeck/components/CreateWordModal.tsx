@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-import { TouchableOpacity, View, Text, useWindowDimensions, TextInput, StyleSheet, ScrollView } from "react-native";
+import { TouchableOpacity, Text, useWindowDimensions, KeyboardAvoidingView, ScrollView, Platform } from "react-native";
 import Icon from '@expo/vector-icons/FontAwesome6'
 import * as style from '@/assets/styles/styles'
 
@@ -84,46 +84,48 @@ const CreateWordModal = ({ onClose, refresh, scrollToBottom, deckId }) => {
     
     return ( 
         <CustomModal title='New Word' onClose={onClose} overrideStyle={{width: dynamicWidth,  }}>
-            <ScrollView>
 
-                {/* Dropdown to add a tag */}
-                <TagSelection currentLang={currentLang} deckId={deckId} onTagSelect={handleTagSelection}/>
+            <KeyboardAvoidingView behavior={'padding'} keyboardVerticalOffset={50} >
+                <ScrollView>
 
-                {/* Form to add a word */}
-                <CustomInput label={ "Word"} placeholder={"Type word..." } value={formWord} onChangeText={setFormWord} 
-                        maxLength={100} multiline={true} customFormStyle={{height: 80}}/>
-                
-                {/* term already exists in deck */}
-                { termExist && 
-                    <Text style={{color:style.red_500, fontWeight:"400", position: "relative", left:5, top:10}}>Term already exists in this deck</Text>
-                }
+                    {/* Dropdown to add a tag */}
+                    <TagSelection currentLang={currentLang} deckId={deckId} onTagSelect={handleTagSelection}/>
 
-                {/* Form to add a translation */}
-                <CustomInput label={ "Translation"} placeholder={"Type translation..." } value={formTransl} onChangeText={setFormTransl} 
-                             maxLength={100} customStyle={{marginTop: 25}} multiline={true} customFormStyle={{height: 80}}/>
-
-                <TouchableOpacity onPress={()=>toggleEty(!etyShow)} activeOpacity={0.6}>
-                   <Text style={{color:style.blue_500, fontWeight:'500', fontSize:style.text_md, marginLeft: 5, marginTop:25}}>
-                        { etyShow ? "Close Notes" : "Add Notes"  }
-                    </Text>
-                </TouchableOpacity>
-
-
-                { etyShow &&
-                    //Add etymology input, multiline form
-                    <CustomInput showLabel={false} placeholder={"Type notes..." } value={formEty} 
-                               onChangeText={setFormEty} maxLength={1000} multiline={true} customStyle={{marginTop:25}}
-                               customFormStyle={{height:100}} />
+                    {/* Form to add a word */}
+                    <CustomInput label={ "Word"} placeholder={"Type word..." } value={formWord} onChangeText={setFormWord} 
+                            maxLength={100} multiline={true} customFormStyle={{height: 80}}/>
                     
-                }
+                    {/* term already exists in deck */}
+                    { termExist && 
+                        <Text style={{color:style.red_500, fontWeight:"400", position: "relative", left:5, top:10}}>Term already exists in this deck</Text>
+                    }
+
+                    {/* Form to add a translation */}
+                    <CustomInput label={ "Translation"} placeholder={"Type translation..." } value={formTransl} onChangeText={setFormTransl} 
+                                maxLength={100} customStyle={{marginTop: 25}} multiline={true} customFormStyle={{height: 80}}/>
+
+                    <TouchableOpacity onPress={()=>toggleEty(!etyShow)} activeOpacity={0.6}>
+                    <Text style={{color:style.blue_500, fontWeight:'500', fontSize:style.text_md, marginLeft: 5, marginTop:25}}>
+                            { etyShow ? "Close Notes" : "Add Notes"  }
+                        </Text>
+                    </TouchableOpacity>
 
 
-                {/* Submit button */}
-                <CustomButton onPress={createWord} customStyle={{marginTop: 40, height:45}}>
-                    <Text style={{color:style.white, fontSize: style.text_md}}>Add Word</Text>
-                </CustomButton>
-            </ScrollView>
+                    { etyShow &&
+                        //Add etymology input, multiline form
+                        <CustomInput showLabel={false} placeholder={"Type notes..." } value={formEty} 
+                                onChangeText={setFormEty} maxLength={1000} multiline={true} customStyle={{marginTop:25}}
+                                customFormStyle={{height:100}} />
+                        
+                    }
 
+                    {/* Submit button */}
+                    <CustomButton onPress={createWord} customStyle={{marginTop: 40, height:45}}>
+                        <Text style={{color:style.white, fontSize: style.text_md}}>Add Word</Text>
+                    </CustomButton>
+                </ScrollView>
+
+            </KeyboardAvoidingView>
 
         </CustomModal>
 
