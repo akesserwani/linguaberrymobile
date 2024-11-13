@@ -143,7 +143,6 @@ export const createNewWord = (  term, translation, etymology, tag, deckId, curre
 }
 
 // Function to insert multiple words into the database as objects, skipping duplicates
-// Function to insert multiple words into the database as objects, skipping duplicates
 export const createBulkWords = (words, deck_id, language_id) => {
   try {
     db.withTransactionSync(() => {
@@ -157,7 +156,6 @@ export const createBulkWords = (words, deck_id, language_id) => {
       words.forEach(word => {
         const { term, translation, etymology } = word;
 
-        console.log(`Inserting word: ${term}`);
         db.runSync(
           `INSERT INTO word (term, translation, etymology, tag, starred, deck_id, language_id)
            VALUES (?, ?, ?, ?, ?, ?, ?);`,

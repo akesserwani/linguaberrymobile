@@ -68,8 +68,8 @@ export const CSVToObject = (data) => {
 export const validateCSVFormat = (csvData) => {
     const rows = csvData.trim().split('\n');
 
-    if (rows.length < 2) {
-        return { valid: false, error: "CSV file must contain headers and at least one row of data." };
+    if (rows.length < 1) {
+        return { valid: false, error: "CSV file must contain headers." };
     }
 
     // Validate headers

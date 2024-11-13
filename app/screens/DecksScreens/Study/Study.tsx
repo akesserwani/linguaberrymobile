@@ -154,6 +154,9 @@ const Study = () => {
         setCurrentIndex(prevIndex => (prevIndex === maxIndex ? 0 : prevIndex + 1));
 
     };
+
+
+
     
     //SCREEN WIDTH AND RESPONSIVE DESIGNS
     // Get screen width dynamically
