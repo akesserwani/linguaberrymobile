@@ -118,7 +118,7 @@ const DecksHome = ({ navigation }) => {
 
                 {/* Display no decks text if deckData is empty, else render everything  */}
                 {renderedData.length === 0 ? (
-                    <Text style={{ color: style.gray_400, fontSize: style.text_md, fontWeight:'600', textAlign: 'center', marginTop: 20 }}>
+                    <Text style={{ color: style.gray_400, fontSize: style.text_md, fontWeight:'600', textAlign: 'center', marginTop: 80 }}>
                         {activeTab === "All" ? "No decks" : "No Bookmarked decks"}
                     </Text>
 

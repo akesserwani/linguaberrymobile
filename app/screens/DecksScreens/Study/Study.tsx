@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, useWindowDimensions, TouchableOpacity, ScrollView} from 'react-native';
 import { useContext, useLayoutEffect, useState, useEffect, useRef } from 'react';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute, useIsFocused } from '@react-navigation/native';
 
 //styles
 import * as style from '@/assets/styles/styles'
@@ -8,8 +8,6 @@ import Icon from '@expo/vector-icons/FontAwesome6'
 
 //custom components
 import CustomButton from '@/app/components/CustomButton';
-import CustomFab from '@/app/components/CustomFab';
-import CustomModal from '@/app/components/CustomModal';
 
 //import components
 import HeaderRight from './components/HeaderRight';
@@ -59,11 +57,27 @@ const Study = () => {
         });
         }, [navigation]);
     
+        //Functionality to hide the tabBar when it is on the page
+        const isFocused = useIsFocused();
+        useEffect(() => {
+            if (isFocused) {
+                // Hide the tab bar when this screen is focused
+                navigation.getParent()?.setOptions({
+                    tabBarStyle: { display: 'none' },
+                });
+            } else {
+                // Show the tab bar again when leaving this screen
+                navigation.getParent()?.setOptions({
+                    tabBarStyle: { 
+                        ...style.baseTabBarStyle, // Spread base styles here
+                        display: 'flex',
+                    },
+                });
+            }
+        }, [isFocused, navigation]);
 
     //Reactive variable for selected tag that will be sent over to the TagSelection component
     const [selectedTag, selectTag] = useState("None");
-    //toggle whether starred will be activated or not
-    const [starred, setStarred] = useState(false);
 
     //Pull the flashcard data from the database based on the deckID and current lang
     const [wordData, setWordData] = useState([]);
@@ -89,8 +103,8 @@ const Study = () => {
             } 
 
             //Logic based on which words to fetch
-            //If starred button is clicked - starred only render 
-            if (starred){
+            //If starred tag is selected - starred only render 
+            if (selectedTag === "Starred"){
                 //filter data 
                 data = data.filter(word => word.starred === 1)
                 setWordData(data);
@@ -107,7 +121,8 @@ const Study = () => {
                     //render all the words
                     setWordData(data);
 
-                } else {
+                } 
+                else {
                     //render the words with the selected tag
                     data = data.filter(word => word.tag === selectedTag)
                     setWordData(data);
@@ -130,32 +145,48 @@ const Study = () => {
     // Fetch words on component mount or if `currentLang` or `deckId` changes
     useEffect(() => {
         fetchWords();
-    }, [currentLang, deckId, starred, selectedTag, randomOrder, mode]);
+    }, [currentLang, deckId, selectedTag, randomOrder, mode]);
 
     // Update `currentWordData` whenever `wordData` or `currentIndex` changes
     useEffect(() => {
         if (wordData.length > 0 && currentIndex < wordData.length) {
             setCurrentWordData(wordData[currentIndex]);
         }
-    }, [wordData, currentIndex, starred, selectedTag, randomOrder, mode]); 
+    }, [wordData, currentIndex, selectedTag, randomOrder, mode]); 
 
     
 
     const prevCard = () => {
         // Decrements the currentIndex by 1, or wraps it to the last index (maxIndex)
         // if currentIndex is currently at the first element (index 0).
-        setCurrentIndex(prevIndex => (prevIndex === 0 ? maxIndex : prevIndex - 1));
+        setCurrentIndex(prevIndex => (prevIndex - 1 + (maxIndex + 1)) % (maxIndex + 1));
+
+        //If current tag is starred - refresh the word data 
+        if (selectedTag === "Starred"){
+            setWordData(prevData => prevData.filter(word => word.starred === 1));
+        }
         
     };
     
     const nextCard = () => {
         // Increments the currentIndex by 1, or wraps it to the first index (0)
         // if currentIndex is currently at the last element (maxIndex).
-        setCurrentIndex(prevIndex => (prevIndex === maxIndex ? 0 : prevIndex + 1));
+        setCurrentIndex(prevIndex => (prevIndex + 1) % (maxIndex + 1));
+
+        //If current tag is starred - refresh the word data 
+        if (selectedTag === "Starred"){
+            setWordData(prevData => prevData.filter(word => word.starred === 1));
+        }
 
     };
 
 
+    //create a variable called starred word count that gets the number of starred words
+    const [starredWordCount, setStarredWordCount] = useState(0);
+    useEffect(()=>{
+        const starWordCountCalculate = wordData.filter(word => word.starred === 1).length;
+        setStarredWordCount(starWordCountCalculate);
+    }, [wordData])
 
     
     //SCREEN WIDTH AND RESPONSIVE DESIGNS
@@ -168,21 +199,11 @@ const Study = () => {
         <>
         {/* Main Container */}
         <View style={[styles.mainContainer, { paddingHorizontal: responsiveHorizontalPadding }]}>
-            {/* Top Container with Tags and starred button*/}
+            {/* Top Container with Tags */}
             <View style={{flexDirection:'row', justifyContent:'space-between', borderBottomWidth: style.border_md, borderBottomColor:style.gray_200, paddingBottom: 20, zIndex:1}}>
                 {/* Tags selection Dropdown  */}
-                <TagSelection currentLang={currentLang} deckId={deckId} onTagSelect={selectTag}/>                
-
-                {/* Starred Button */}
-                <CustomButton customStyle={{backgroundColor: style.white, borderWidth:style.border_sm, borderColor:style.gray_200, aspectRatio: 1, borderRadius:8}} 
-                    onPress={()=>setStarred(!starred)}>
-                    { starred ? (
-                        <Icon name={"star"} solid={true} width={15} color={"#facc15"}/>         
-                    ) : (
-                        <Icon name={"star"} solid={true} width={15} color={style.gray_300}/>         
-                    )
-                    }
-                </CustomButton>
+                <TagSelection currentLang={currentLang} deckId={deckId} onTagSelect={selectTag} starredWordCount={starredWordCount}
+                />                
             </View>
 
             {/* Card Container */}
@@ -193,6 +214,7 @@ const Study = () => {
                     <Text>Loading...</Text>
                 ) : wordData.length > 0 && currentWordData ? (
                     <Card 
+                        setWordData={setWordData}
                         wordData={currentWordData} 
                         currentLang={currentLang} 
                         deckId={deckId} 
@@ -256,6 +278,9 @@ const Study = () => {
 
 
         </View>
+
+        {/* Render a white div on the bottom */}
+        <View style={{height:'5%', backgroundColor:style.white, borderTopWidth:style.border_sm, borderTopColor: style.gray_300}}></View>
         </>
      );
 }

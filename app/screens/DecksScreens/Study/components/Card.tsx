@@ -9,7 +9,7 @@ import CustomModal from '@/app/components/CustomModal';
 import { toggleStar, getStarred } from '../../DataDecks';
 import { ScrollView } from 'react-native-gesture-handler';
 
-const Card = ({wordData, currentLang, deckId, frontFirst}) => {
+const Card = ({wordData, setWordData, currentLang, deckId, frontFirst}) => {
     const rotation = useRef(new Animated.Value(0)).current;
     const [flipped, setFlipped] = useState(false);
 
@@ -44,6 +44,15 @@ const Card = ({wordData, currentLang, deckId, frontFirst}) => {
     const toggleStarred = () =>{
         //toggle the variable in the database
         toggleStar(currentLang, deckId, wordData.term);
+        
+        //edit the word data to toggle the starred word in wordData  
+        setWordData(prevWordData =>
+            prevWordData.map(word =>
+                word.term === wordData.term
+                    ? { ...word, starred: word.starred === 1 ? 0 : 1 } // Toggle starred value
+                    : word // Leave other words unchanged
+            )
+        );    
 
         //toggle the reactive variable
         setStarred(!starred);

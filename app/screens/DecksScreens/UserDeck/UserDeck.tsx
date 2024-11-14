@@ -221,7 +221,9 @@ const UserDeck = ({route}) => {
                     </CustomButton>
 
                     {/* Button to go to Practice.tsx */}
-                    <CustomButton onPress={()=>{}} customStyle={{backgroundColor:style.blue_100, flexDirection:'row', gap:8}}>
+                    <CustomButton onPress={()=>{
+                            navigation.navigate('Practice', {currentLang: currentLang, deckId: deckId });}} 
+                    customStyle={{backgroundColor:style.blue_100, flexDirection:'row', gap:8}}>
                         <Text style={{color:style.blue_500, fontWeight:'600'}}>
                             Practice
                         </Text>
@@ -256,7 +258,7 @@ const UserDeck = ({route}) => {
 
                 {/* Check if there are no words in renderedWords */}
                 {renderedWords.length === 0 ? (
-                    <Text style={{ color: style.gray_400, fontSize: style.text_md, fontWeight:'600', textAlign: 'center', marginTop: 20 }}>
+                    <Text style={{ color: style.gray_400, fontSize: style.text_md, fontWeight:'600', textAlign: 'center', marginTop: 80 }}>
                         No words
                     </Text>
                 ) : (

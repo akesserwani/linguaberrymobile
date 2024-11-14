@@ -10,11 +10,10 @@ import * as style from '@/assets/styles/styles'
 import { ScrollView } from "react-native-gesture-handler";
 
 //import database functions
-import { getAllTagsInDeck } from "../../DataDecks";
+import { getAllTagsInDeck, getWordsWithTag} from "../../DataDecks";
 
 
-
-const TagSelection = ({currentLang, deckId, onTagSelect }) => {
+const TagSelection = ({currentLang, deckId, onTagSelect, starredWordCount }) => {
 
     const [dropdownOpen, openDropdown] = useState(false);
 
@@ -70,18 +69,41 @@ const TagSelection = ({currentLang, deckId, onTagSelect }) => {
             <View style={styles.dropdownBox}>
                 <ScrollView>
 
-                    {/* Generic select a tag dropdown */}
-                    <TouchableOpacity onPress={()=>selectTagFunc("None")} activeOpacity={0.7} style={{padding:10, marginTop:10, flexDirection:'row', justifyContent:'space-between', alignItems:'center'}}>
+                    {/* Dropdown option if user wants to select None */}
+                    <TouchableOpacity onPress={()=>selectTagFunc("None")} activeOpacity={0.7} style={{padding:10, flexDirection:'row', justifyContent:'space-between', alignItems:'center'}}>
                             {/* Name of the Tag */}
                             <Text style={{color:style.gray_400, fontSize:style.text_md, fontWeight:'400'}}>None</Text>
+                    </TouchableOpacity>
+
+                    {/* Dropdown option if user wants to select Starred */}
+                    <TouchableOpacity onPress={()=>selectTagFunc("Starred")} activeOpacity={0.7} style={{padding:10, marginTop:5, flexDirection:'row', justifyContent:'space-between', alignItems:'center'}}>
+                            
+                            {/* Name of the Tag */}
+                            <View style={{flexDirection:'row', gap:5}}>
+                                <Text style={{color:style.gray_500, fontSize:style.text_md, fontWeight:'500'}}>Starred</Text>
+                                {/* Starred Icon */}
+                                <Icon name={"star"} solid={true} size={10} color={style.gray_500} style={{marginTop:4, marginLeft:2}}/>         
+                            </View>
+
+                            {/* Count of starred words */}
+                            <Text style={{color:style.gray_400, fontSize:style.text_sm, fontWeight:'500'}}>
+                                { starredWordCount }
+                            </Text>
+
                     </TouchableOpacity>
 
                     { tagData.map((tag, index) => (
                         // {/* Container with tags */}
                         <TouchableOpacity onPress={()=>selectTagFunc(tag.name)}
                             key={tag.id} activeOpacity={0.7} style={{padding:10, marginTop:10, flexDirection:'row', justifyContent:'space-between', alignItems:'center'}}>
+
                             {/* Name of the Tag */}
                             <Text style={{color:style.gray_500, fontSize:style.text_md, fontWeight:'500'}}>{ tag.name }</Text>
+
+                            {/* Tag Count */}
+                            <Text style={{color:style.gray_400, fontSize:style.text_sm, fontWeight:'500'}}>
+                                { getWordsWithTag(tag.name, deckId, currentLang).length }
+                            </Text>
 
                         </TouchableOpacity>
                     )) }
@@ -103,6 +125,8 @@ const styles = StyleSheet.create({
         backgroundColor:style.white, 
         borderWidth: style.border_sm, 
         borderColor: style.gray_200,
+        width: 165,
+        maxWidth:165
 
     },
     dropdownBox: {

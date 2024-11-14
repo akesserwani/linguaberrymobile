@@ -18,6 +18,7 @@ import Icon from '@expo/vector-icons/FontAwesome6'
 const Tab = createBottomTabNavigator();
 
 
+
 const MobileNav = () => {
 
     return ( 
@@ -25,21 +26,8 @@ const MobileNav = () => {
     <Tab.Navigator screenOptions={{
         tabBarLabelPosition: "below-icon",
         //overall style of the the tab bar
-        tabBarStyle:{
-            height: 75,
-            padding: 5,
-            paddingLeft: 10,
-            paddingRight: 10,
-            borderTopWidth: style.border_md,
-            borderTopColor: style.gray_200,
-        },
-        //individual tab bar text
-        tabBarLabelStyle: { 
-            fontFamily: 'Nunito_400Regular',
-            fontSize: 15,
-            marginTop: 10,
-            }, 
-            //indiviual item style
+        tabBarStyle:style.baseTabBarStyle,
+        //indiviual item style
         tabBarItemStyle: {
             justifyContent: 'center',  
             alignItems: 'center',        
