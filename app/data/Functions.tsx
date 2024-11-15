@@ -1,5 +1,16 @@
 
 
+//Fisher Yates Shuffle Algorithm
+export const shuffleArray = (array) => {
+    const shuffledArray = [...array]; // Copy the array to avoid mutating the original
+    for (let i = shuffledArray.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
+    }
+    return shuffledArray;
+}
+
+
 //FUNCTION TO SHORTEN WORD BASED ON SPECIFIED NUMBER OF CHARACTERS
 export const limitLength = (word, max_char)=>{
     if (word.length > max_char){

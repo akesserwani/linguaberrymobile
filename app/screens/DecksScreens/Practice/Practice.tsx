@@ -1,13 +1,10 @@
-import { View, Text, StyleSheet, useWindowDimensions, TouchableOpacity, ScrollView} from 'react-native';
-import { useContext, useLayoutEffect, useState, useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, useWindowDimensions, TouchableOpacity} from 'react-native';
+import { useContext, useLayoutEffect, useState, useEffect } from 'react';
 import { useNavigation, useRoute, useIsFocused } from '@react-navigation/native';
 
-//data for context
-import { CurrentLangContext } from '@/app/data/CurrentLangContext.tsx';
 
 //styles
 import * as style from '@/assets/styles/styles'
-import Icon from '@expo/vector-icons/FontAwesome6'
 
 //custom components
 import CustomButton from '@/app/components/CustomButton';
@@ -17,13 +14,20 @@ import CustomInput from '@/app/components/CustomInput';
 import TagSelection from '../Study/components/TagSelection';
 //import HeaderRight
 import HeaderRight from './components/HeaderRight';
+//import the completion modal
+import CompleteModal from './components/CompleteModal';
+
+//get words from the database
+import { getWords } from '../DataDecks';
+
+import { shuffleArray } from '@/app/data/Functions';
 
 const Practice = () => {
 
     const route = useRoute();
     const navigation = useNavigation();
 
-    const { currentLang, deckId } = route.params; 
+    const { currentLang, deckId, deckName } = route.params; 
 
 
     //Reactive variable for selected tag that will be sent over to the TagSelection component
@@ -37,7 +41,8 @@ const Practice = () => {
     
     //FRONT FIRST OR BACK FIRST
     const [frontFirst, setFrontFirst] = useState(true);
-    //Random variables
+
+    //Random Variable
     const [randomOrder, setRandom] = useState(false);
 
     //Navigation bar data
@@ -46,8 +51,7 @@ const Practice = () => {
             // Set custom text for the back button          
             headerBackTitle: 'Back',
             headerRight: () => (
-                <HeaderRight currentLang={currentLang} deckId={deckId} frontFirst={frontFirst} setFrontFirst={setFrontFirst} 
-                             randomOrder={randomOrder} setRandom={setRandom} />
+                <HeaderRight frontFirst={frontFirst} setFrontFirst={setFrontFirst} randomOrder={randomOrder} setRandom={setRandom}  />
             ),
             
         });
@@ -71,15 +75,171 @@ const Practice = () => {
                 });
             }
         }, [isFocused, navigation]);
-            
-    
 
+
+
+    //Load the data here
+
+    //current index 
+    const maxIndex = wordData.length - 1;
+
+    //current word data
+    //this is the data that is sent to the Card component based on the index
+    const [currentWordData, setCurrentWordData] = useState("None");
+    
+    // Async function to fetch words
+    const [loading, setLoading] = useState(true);
+    const fetchWords = () => {
+        setLoading(true); // Start loading
+        try {
+            let data = getWords(currentLang, deckId); 
+
+            //Shuffle the order
+            if (randomOrder){
+                data = shuffleArray(data);
+            } 
+
+            //Logic based on which words to fetch
+            //If starred tag is selected - starred only render 
+            if (selectedTag === "Starred"){
+                //filter data 
+                data = data.filter(word => word.starred === 1)
+                setWordData(data);
+
+                //if starred has no data
+                if (data.length === 0){
+                    setLoading(true);
+                }
+
+            } else {
+                //logic for tags here
+                //else render everything else
+                if (selectedTag === "None"){
+                    //render all the words
+                    setWordData(data);
+                } 
+                else {
+                    //render the words with the selected tag
+                    data = data.filter(word => word.tag === selectedTag)
+                    setWordData(data);
+                }
+            }
+
+            //reset current index
+            setCurrentIndex(0)
+
+        } catch (error) {
+            console.error("Error fetching words:", error);
+        } finally {
+            setLoading(false); // End loading
+        }
+    };
+    
+    
+    // Effect to update `currentWordData` when `wordData` or `currentIndex` changes
+    useEffect(() => {
+        if (wordData.length > 0) {
+            setCurrentWordData(wordData[currentIndex]);
+        }
+    }, [wordData, currentIndex]);
+
+    // Fetch words on component mount or if `currentLang` or `deckId` changes
+    useEffect(() => {
+        fetchWords();
+    }, [currentLang, deckId, selectedTag, frontFirst, randomOrder]);
+    
     
     //define a variable for the input text
     const [userInput, setUserInput] = useState("");
+    //Allow form to be editable 
+    const [isEditable, setIsEditable] = useState(true);
+
+    //variable to toggle the check button container
+    const [buttonContainer, toggleButtonContainer] = useState(true);
+
+    //variable to toggle the incorrect banner
+    const [incorrectBanner, toggleIncorrectBanner] = useState(false);
+
+    //variable to toggle the correct banner
+    const [correctBanner, toggleCorrectBanner] = useState(false);
+
+    //variable to toggle the modal when the practice is complete
+    const [completeModal, toggleCompleteModal] = useState(false);
+
+    //generate next question
+    const generateNext = () =>{
+        //reset the form data
+        setUserInput("");
+
+        //allow users to edit it again
+        setIsEditable(true);
+
+        //set the banners to false
+        toggleCorrectBanner(false);
+        toggleIncorrectBanner(false);
+
+        //set the button container to true
+        toggleButtonContainer(true);
+
+        //Check to see if the object is empty, then render the exit modal
+        if (wordData.length < 2){
+            //toggle end modal
+            toggleCompleteModal(true);
+        }  
+    }
+
+    const answerCorrect = () =>{
+        //If it is true then remove it from the wordData object
+        setWordData(prevWordData => prevWordData.filter(word => word.term !== currentWordData.term));
+
+        //Generate Next
+        generateNext();
+    }
+
+    const answerIncorrect = () =>{
+
+        //Push it to the end of wordData
+        setWordData((prevWordData) => {
+            // Filter Push it to the end of the array
+            const filteredData = prevWordData.filter(word => word.term !== currentWordData.term);
+            // Add the current term to the end of the array
+            return [...filteredData, currentWordData];
+            });
+        
+        //Generate Next
+        generateNext();
+    }
+
+    //Check button
+    const checkButton = () =>{
+
+        // Determine the correct answer based on `frontFirst`
+        const correctAnswer = frontFirst ? currentWordData.translation : currentWordData.term;
+
+        //Hide the button container for both
+        toggleButtonContainer(false);
+
+        //Dont allow users to edit the form input
+        setIsEditable(false);
 
 
+        // Compare `userInput` to the `correctAnswer`
+        if (userInput.trim() === correctAnswer.trim()) {
+            //Render the correct banner
+            toggleCorrectBanner(true);
+        } else {
+            //Else render the incorrect card
+            toggleIncorrectBanner(true);
+        }
+    }
 
+    //create a variable called starred word count that gets the number of starred words
+    const [starredWordCount, setStarredWordCount] = useState(0);
+    useEffect(()=>{
+        const starWordCountCalculate = wordData.filter(word => word.starred === 1).length;
+        setStarredWordCount(starWordCountCalculate);
+    }, [wordData])
+    
     //SCREEN WIDTH AND RESPONSIVE DESIGNS
     // Get screen width dynamically
     const { width } = useWindowDimensions();
@@ -93,49 +253,136 @@ const Practice = () => {
             {/* Top Container with Tags */}
             <View style={{flexDirection:'row', justifyContent:'space-between', borderBottomWidth: style.border_md, borderBottomColor:style.gray_200, paddingBottom: 20, zIndex:1}}>
                 {/* Tags selection Dropdown  */}
-                <TagSelection currentLang={currentLang} deckId={deckId} onTagSelect={selectTag}/>      
+                <TagSelection currentLang={currentLang} deckId={deckId} onTagSelect={selectTag} starredWordCount={starredWordCount}/>      
 
                 {/* Current Index - Progress Count */}
-                <Text style={{color:style.gray_500, fontSize:style.text_md, fontWeight:'700', margin:10}}>10 / 20</Text>          
+                <Text style={{color:style.gray_500, fontSize:style.text_md, fontWeight:'700', margin:10}}>
+                    { wordData.length } left
+                </Text>          
             </View>
 
             {/* Middle Container - Text and Input */}
-            <View style={{flexDirection:'column', gap:30, paddingTop:30, paddingBottom:50}}>
+            <View style={{flexDirection:'column', justifyContent:'center', gap:30, paddingTop:50, paddingBottom:50}}>
 
                 {/* Title to translate */}
                 <Text style={{color:style.gray_700, fontSize:style.text_lg, fontWeight:'500', marginLeft:2}}>
-                    Translate to English:
+                    Translate to { !frontFirst ? 'English' : currentLang }:
                 </Text>          
 
                 {/* Text to Translate - from the data */}
-                <Text style={{color:style.gray_600, fontSize:style.text_md, fontWeight:'400', marginLeft:5}}>Blah Blah Blah</Text>          
+                <Text style={{color:style.gray_600, fontSize:style.text_md, fontWeight:'400', marginLeft:5}}>
+                    {loading ? (
+                            "Loading..."
+                        ) : (
+                            //Check if frontFirst is true
+                            frontFirst ? (
+                                currentWordData.term// Show `term` if `frontFirst` is true
+                            ) : (
+                                currentWordData.translation// Show `translation` if `frontFirst` is false
+                            )
+                        )}
+                </Text>          
 
 
                 {/* Input Form */}
                 <CustomInput showLabel={false} placeholder={"Begin translating here..."} value={userInput} onChangeText={setUserInput}
                     maxLength={100} multiline={true} 
                     customStyle={{alignSelf:'stretch'}}
-                    customFormStyle={{color:style.gray_600, backgroundColor:style.slate_100, borderColor:style.gray_300, height:200}}/>
-
-            </View>
-
-            {/* Bottom Container with Buttons - outside of the main container*/}
-            <View style={{flex: 1, flexDirection:'row', justifyContent: 'space-between', alignItems:'center', alignContent:'center', paddingHorizontal:5, borderWidth:1}}>
-
-
-                {/* Skip Text Button  */}
-                <TouchableOpacity activeOpacity={0.7}>
-                    <Text style={{color:style.blue_500, fontWeight:'500', fontSize:style.text_md}}>Skip</Text>
-                </TouchableOpacity>
-
-                {/* Check Button */}
-                <CustomButton customStyle={{ borderRadius: style.rounded_md}} onPress={()=>{}}>
-                    <Text style={{color:style.white, fontWeight:'500', fontSize:style.text_md, padding:3}}>Check</Text>
-                </CustomButton>
+                    editable={isEditable}
+                    customFormStyle={{padding:20, color:style.gray_600, backgroundColor:style.slate_100, borderColor:style.gray_300, height:200}}/>
 
             </View>
 
         </View>
+
+
+        {/* Bottom Containers - depending on user input */}
+        { buttonContainer && 
+            // {/* Bottom Container with Buttons - outside of the main container*/}
+            <View style={{flex:1, backgroundColor:style.white, borderTopWidth:style.border_sm, borderTopColor:style.gray_300}}>
+                {/* Button Spacing */}
+                <View style={{paddingHorizontal: responsiveHorizontalPadding, flex: 1,
+                            flexDirection:'row', justifyContent:'space-between', alignItems:'center', alignContent:'center'}}>
+                    {/* Skip Text Button  */}
+                    <TouchableOpacity activeOpacity={0.7} onPress={checkButton}>
+                        <Text style={{color:style.blue_500, fontWeight:'500', fontSize:style.text_md}}>Skip</Text>
+                    </TouchableOpacity>
+
+                    {/* Check Button */}
+                    <CustomButton customStyle={{ borderRadius: style.rounded_md}} 
+                        onPress={()=>{
+                            //check to see if not empty then allow for button to be checked
+                            if (!userInput.trim()) {
+                                return;
+                            } else {
+                                checkButton();
+                            }
+                        }}>
+                        <Text style={{color:style.white, fontWeight:'500', fontSize:style.text_md, padding:3}}>Check</Text>
+                    </CustomButton>
+                </View>
+            </View>
+        }
+
+        {/* Incorrect Banner */}
+        { incorrectBanner && 
+            <View style={{flex:1, backgroundColor:style.red_100}}>
+                <View style={{paddingHorizontal: responsiveHorizontalPadding, flex: 1,
+                            flexDirection:'row', justifyContent:'space-between', alignItems:'center', alignContent:'center'}}>
+
+                    {/* Text */}
+                    <View style={{flexDirection:'column', gap:8}}>
+                        {/* Incorrect Label */}
+                        <Text style={{color:style.red_500, fontWeight:'700', fontSize:style.text_lg}}>Incorrect</Text>
+                        {/* Text with Correct */}
+                        <View style={{flexDirection:'row', gap:2, width:'80%', flexWrap:'wrap'}}>
+                            <Text style={{color:style.red_500, fontWeight:'600', fontSize:style.text_sm}}>Correct Answer: </Text>
+                            {/* Correction */}
+                            <Text style={{color:style.red_500, fontWeight:'400', fontSize:style.text_sm}}>
+                                { 
+                                    //Check if frontFirst is true
+                                    frontFirst ? (
+                                        currentWordData.translation.trim() // Show `term` if `frontFirst` is true
+                                    ) : (
+                                        currentWordData.term.trim() // Show `translation` if `frontFirst` is false
+                                    )
+                                 }
+                            </Text>
+                        </View>
+                    </View>
+
+                    {/* Continue Button */}
+
+                    <CustomButton customStyle={{backgroundColor:style.red_500}} onPress={answerIncorrect}>
+                        <Text style={{color:style.white, fontWeight:'700'}}>Continue</Text>
+                    </CustomButton>
+                </View>
+            </View>
+        }
+
+        {/* Correct Banner */}
+        { correctBanner && 
+            <View style={{flex:1, backgroundColor:style.emerald_200}}>
+            <View style={{paddingHorizontal: responsiveHorizontalPadding, flex: 1,
+                        flexDirection:'row', justifyContent:'space-between', alignItems:'center', alignContent:'center'}}>
+
+                    {/* Correct Label */}
+                    <Text style={{color:style.emerald_500, fontWeight:'700', fontSize:style.text_lg}}>Correct!</Text>
+
+                    {/* Continue Button */}
+                    <CustomButton customStyle={{backgroundColor:style.emerald_500}} onPress={answerCorrect}>
+                        <Text style={{color:style.white, fontWeight:'700'}}>Continue</Text>
+                    </CustomButton>
+                </View>
+            </View>
+        }
+
+
+        {/* End Modal */}
+        {/* Render this modal at the end */}
+        { completeModal &&
+            <CompleteModal deckName={deckName} deckId={deckId} onClose={()=>toggleCompleteModal(false)}/>
+        }
 
 
         </>
@@ -144,10 +391,10 @@ const Practice = () => {
  
 const styles = StyleSheet.create({
     mainContainer: {
-        flex: 1,
+        flex: 5,
         backgroundColor: style.slate_100,
         paddingTop: 30,
-    }
+    },
 });
 
 export default Practice;

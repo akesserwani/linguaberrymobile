@@ -5,7 +5,7 @@ import Icon from '@expo/vector-icons/FontAwesome6'
 import * as style from '@/assets/styles/styles'
 
 
-const HeaderRight = ({currentLang, deckId, frontFirst, setFrontFirst, randomOrder, setRandom }) => {
+const HeaderRight = ({frontFirst, setFrontFirst, randomOrder, setRandom }) => {
 
     const [buttonClicked, setClick] = useState(false);
 

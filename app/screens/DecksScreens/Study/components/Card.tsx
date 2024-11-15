@@ -141,7 +141,7 @@ const Card = ({wordData, setWordData, currentLang, deckId, frontFirst}) => {
 const styles = StyleSheet.create({
     cardContainer: {
         width: '100%', // Full width of parent
-        aspectRatio: 1.5, // Optional: controls height relative to width
+        aspectRatio: 1.4, // Optional: controls height relative to width
         alignItems: 'center',
         justifyContent: 'center',
     },

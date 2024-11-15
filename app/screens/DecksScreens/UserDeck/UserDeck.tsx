@@ -222,7 +222,7 @@ const UserDeck = ({route}) => {
 
                     {/* Button to go to Practice.tsx */}
                     <CustomButton onPress={()=>{
-                            navigation.navigate('Practice', {currentLang: currentLang, deckId: deckId });}} 
+                            navigation.navigate('Practice', {currentLang: currentLang, deckId: deckId, deckName:deckName });}} 
                     customStyle={{backgroundColor:style.blue_100, flexDirection:'row', gap:8}}>
                         <Text style={{color:style.blue_500, fontWeight:'600'}}>
                             Practice

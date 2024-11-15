@@ -17,6 +17,9 @@ import Card from './components/Card';
 //database functionality
 import { getWords } from '../DataDecks';
 
+//import function to shuffle
+import { shuffleArray } from '@/app/data/Functions';
+
 const Study = () => {
 
     const route = useRoute();
@@ -35,15 +38,6 @@ const Study = () => {
 
     //Random variables
     const [randomOrder, setRandom] = useState(false);
-    //Fisher Yates Shuffle Algorithm
-    function shuffleArray(array) {
-        const shuffledArray = [...array]; // Copy the array to avoid mutating the original
-        for (let i = shuffledArray.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
-        }
-        return shuffledArray;
-    }
     
 
     //Navigation bar data
@@ -207,7 +201,7 @@ const Study = () => {
             </View>
 
             {/* Card Container */}
-            <View style={{flex:2, alignItems:'center', justifyContent:'center', zIndex:0}}>
+            <View style={{flex:5, alignItems:'center', justifyContent:'center', zIndex:0}}>
 
                 {/*Card Component */}
                 {loading ? (
@@ -255,21 +249,21 @@ const Study = () => {
             ) : (
                 // {/* Button Container for Study Mode */}
                 <View style={{flex:1, flexDirection:'row', justifyContent: 'space-between', alignItems:'flex-start'}}>
-                        {/* Hard Button */}
-                        <CustomButton customStyle={{backgroundColor:style.red_400}} onPress={()=>{}}>
-                            <Text style={{fontSize:style.text_lg, color:style.white, fontWeight:"500"}}>Hard</Text>
-                        </CustomButton>
+                    {/* Hard Button */}
+                    <CustomButton customStyle={{backgroundColor:style.red_400}} onPress={()=>{}}>
+                        <Text style={{fontSize:style.text_lg, color:style.white, fontWeight:"500"}}>Hard</Text>
+                    </CustomButton>
 
-                        {/* Medium Button */}
-                        <CustomButton customStyle={{backgroundColor:"#2dd4bf"}} onPress={()=>{}}>
-                            <Text style={{fontSize:style.text_lg, color:style.white, fontWeight:"500"}}>Medium</Text>
-                        </CustomButton>
+                    {/* Medium Button */}
+                    <CustomButton customStyle={{backgroundColor:"#2dd4bf"}} onPress={()=>{}}>
+                        <Text style={{fontSize:style.text_lg, color:style.white, fontWeight:"500"}}>Medium</Text>
+                    </CustomButton>
 
 
-                        {/* Easy Button */}
-                        <CustomButton customStyle={null} onPress={()=>{}}>
-                            <Text style={{fontSize:style.text_lg, color:style.white, fontWeight:"500"}}>Easy</Text>
-                        </CustomButton>
+                    {/* Easy Button */}
+                    <CustomButton customStyle={null} onPress={()=>{}}>
+                        <Text style={{fontSize:style.text_lg, color:style.white, fontWeight:"500"}}>Easy</Text>
+                    </CustomButton>
                 </View>
             )
             }
@@ -279,8 +273,6 @@ const Study = () => {
 
         </View>
 
-        {/* Render a white div on the bottom */}
-        <View style={{height:'5%', backgroundColor:style.white, borderTopWidth:style.border_sm, borderTopColor: style.gray_300}}></View>
         </>
      );
 }
