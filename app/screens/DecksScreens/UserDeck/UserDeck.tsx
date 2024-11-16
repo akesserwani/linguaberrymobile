@@ -16,6 +16,7 @@ import Icon from '@expo/vector-icons/FontAwesome6'
 //custom components
 import CustomButton from '@/app/components/CustomButton';
 import CustomFab from '@/app/components/CustomFab';
+import CustomAlert from '@/app/components/CustomAlert';
 
 //import relative components
 import TagDropdown from './tag_components/TagDropdown';
@@ -211,7 +212,16 @@ const UserDeck = ({route}) => {
 
                     {/* Button to go to Study.tsx */}
                     <CustomButton onPress={()=>{
-                            navigation.navigate('Study', {currentLang: currentLang, deckId: deckId });}} 
+                                //Do not allow redirect if renderedWords.length < 2 
+                                if (wordData.length < 2){
+                                    //Render alert
+                                    CustomAlert(`Not enough words.`, 'Add more words to study.');
+                                    return;
+                                }{
+                                    //Else allow it to renavigate
+                                    navigation.navigate('Study', {currentLang: currentLang, deckId: deckId });
+                                }
+                            ;}} 
                             customStyle={{flexDirection:'row', gap:8}}>
                                 
                         <Text style={{color:style.white, fontWeight:'600'}}>
@@ -222,7 +232,16 @@ const UserDeck = ({route}) => {
 
                     {/* Button to go to Practice.tsx */}
                     <CustomButton onPress={()=>{
-                            navigation.navigate('Practice', {currentLang: currentLang, deckId: deckId, deckName:deckName });}} 
+                            //Do not allow redirect if renderedWords.length < 2 
+                            if (wordData.length < 2){
+                                //Render alert
+                                CustomAlert(`Not enough words.`, 'Add more words to practice.');
+                                return;
+                            }{
+                                //Else allow it to renavigate
+                                navigation.navigate('Practice', {currentLang: currentLang, deckId: deckId, deckName:deckName });
+                            }
+                        ;}} 
                     customStyle={{backgroundColor:style.blue_100, flexDirection:'row', gap:8}}>
                         <Text style={{color:style.blue_500, fontWeight:'600'}}>
                             Practice

@@ -1,4 +1,4 @@
-package com.linguaberrymobile
+package com.app.linguaberry
 
 import android.app.Application
 import android.content.res.Configuration

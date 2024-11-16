@@ -1,4 +1,4 @@
-package com.linguaberrymobile
+package com.app.linguaberry
 
 import android.os.Build
 import android.os.Bundle

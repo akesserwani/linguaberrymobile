@@ -15,6 +15,7 @@
 		96905EF65AED1B983A6B3ABC /* libPods-linguaberrymobile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 58EEBF8E8E6FB1BC6CAF49B5 /* libPods-linguaberrymobile.a */; };
 		B18059E884C0ABDD17F3DC3D /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
+		FDCCD15E77BE4C79979684C2 /* noop-file.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7937FF781CF454897C994EE /* noop-file.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,8 @@
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED7FC83D5F15211B16D8CEF7 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = linguaberrymobile/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-linguaberrymobile/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		E7937FF781CF454897C994EE /* noop-file.swift */ = {isa = PBXFileReference; name = "noop-file.swift"; path = "linguaberrymobile/noop-file.swift"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.swift; explicitFileType = undefined; includeInIndex = 0; };
+		FB7589FE9BBA490696750668 /* linguaberrymobile-Bridging-Header.h */ = {isa = PBXFileReference; name = "linguaberrymobile-Bridging-Header.h"; path = "linguaberrymobile/linguaberrymobile-Bridging-Header.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +60,8 @@
 				13B07FB71A68108700A75B9A /* main.m */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
 				ED7FC83D5F15211B16D8CEF7 /* PrivacyInfo.xcprivacy */,
+				E7937FF781CF454897C994EE /* noop-file.swift */,
+				FB7589FE9BBA490696750668 /* linguaberrymobile-Bridging-Header.h */,
 			);
 			name = linguaberrymobile;
 			sourceTree = "<group>";
@@ -199,6 +204,7 @@
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
 				58F05FB6EAEE8C2C5E10435E /* PrivacyInfo.xcprivacy in Resources */,
+				948FAC3CC9C74575B543C375 /* linguaberrymobile-Bridging-Header.h in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -321,6 +327,7 @@
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				B18059E884C0ABDD17F3DC3D /* ExpoModulesProvider.swift in Sources */,
+				FDCCD15E77BE4C79979684C2 /* noop-file.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -353,11 +360,14 @@
 					"-lc++",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
-				PRODUCT_BUNDLE_IDENTIFIER = org.name.linguaberrymobile;
-				PRODUCT_NAME = linguaberrymobile;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.app.linguaberry";
+				PRODUCT_NAME = "linguaberrymobile";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				SWIFT_OBJC_BRIDGING_HEADER = linguaberrymobile/linguaberrymobile-Bridging-Header.h;
+				CODE_SIGN_ENTITLEMENTS = linguaberrymobile/linguaberrymobile.entitlements;
 			};
 			name = Debug;
 		};
@@ -382,10 +392,13 @@
 					"-lc++",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
-				PRODUCT_BUNDLE_IDENTIFIER = org.name.linguaberrymobile;
-				PRODUCT_NAME = linguaberrymobile;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.app.linguaberry";
+				PRODUCT_NAME = "linguaberrymobile";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				SWIFT_OBJC_BRIDGING_HEADER = linguaberrymobile/linguaberrymobile-Bridging-Header.h;
+				CODE_SIGN_ENTITLEMENTS = linguaberrymobile/linguaberrymobile.entitlements;
 			};
 			name = Release;
 		};

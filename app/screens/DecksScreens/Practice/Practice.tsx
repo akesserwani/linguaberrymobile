@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, useWindowDimensions, TouchableOpacity} from 're
 import { useContext, useLayoutEffect, useState, useEffect } from 'react';
 import { useNavigation, useRoute, useIsFocused } from '@react-navigation/native';
 
+import { Audio } from 'expo-av'
 
 //styles
 import * as style from '@/assets/styles/styles'
@@ -86,7 +87,10 @@ const Practice = () => {
     //current word data
     //this is the data that is sent to the Card component based on the index
     const [currentWordData, setCurrentWordData] = useState("None");
-    
+
+    //Set variable to make sure data has been loaded
+    const [isMounted, setIsMounted] = useState(false);
+
     // Async function to fetch words
     const [loading, setLoading] = useState(true);
     const fetchWords = () => {
@@ -128,6 +132,9 @@ const Practice = () => {
             //reset current index
             setCurrentIndex(0)
 
+            //set isMounted to true once the data has been loaded
+            setIsMounted(true);
+
         } catch (error) {
             console.error("Error fetching words:", error);
         } finally {
@@ -148,7 +155,8 @@ const Practice = () => {
         fetchWords();
     }, [currentLang, deckId, selectedTag, frontFirst, randomOrder]);
     
-    
+
+
     //define a variable for the input text
     const [userInput, setUserInput] = useState("");
     //Allow form to be editable 
@@ -181,12 +189,17 @@ const Practice = () => {
         //set the button container to true
         toggleButtonContainer(true);
 
-        //Check to see if the object is empty, then render the exit modal
-        if (wordData.length < 2){
+    }
+
+    //Render the finish modal if the data has been loaded (isMounted = true)
+    //Then if the data is less than 1
+    useEffect(() => {
+        if (isMounted && wordData.length < 1) {
             //toggle end modal
             toggleCompleteModal(true);
         }  
-    }
+    }, [wordData]);
+    
 
     const answerCorrect = () =>{
         //If it is true then remove it from the wordData object
@@ -194,6 +207,7 @@ const Practice = () => {
 
         //Generate Next
         generateNext();
+
     }
 
     const answerIncorrect = () =>{
@@ -204,14 +218,15 @@ const Practice = () => {
             const filteredData = prevWordData.filter(word => word.term !== currentWordData.term);
             // Add the current term to the end of the array
             return [...filteredData, currentWordData];
-            });
+        });
         
         //Generate Next
         generateNext();
+
     }
 
-    //Check button
-    const checkButton = () =>{
+
+    const checkButton = async () =>{
 
         // Determine the correct answer based on `frontFirst`
         const correctAnswer = frontFirst ? currentWordData.translation : currentWordData.term;
@@ -222,12 +237,19 @@ const Practice = () => {
         //Dont allow users to edit the form input
         setIsEditable(false);
 
-
         // Compare `userInput` to the `correctAnswer`
         if (userInput.trim() === correctAnswer.trim()) {
+
+            // Play the correct sound
+            await playCorrectSound();
+
             //Render the correct banner
             toggleCorrectBanner(true);
+
         } else {
+            //play incorrect sound
+            await playIncorrectSound();
+
             //Else render the incorrect card
             toggleIncorrectBanner(true);
         }
@@ -239,7 +261,58 @@ const Practice = () => {
         const starWordCountCalculate = wordData.filter(word => word.starred === 1).length;
         setStarredWordCount(starWordCountCalculate);
     }, [wordData])
+
     
+    //AUDIO FUNCTIONALITY 
+    const [correctSound, setCorrectSound] = useState(null);
+    const [incorrectSound, setIncorrectSound] = useState(null);
+
+    const playCorrectSound = async () => {
+        if (correctSound) {
+            await correctSound.replayAsync();
+        }
+    };
+
+    const playIncorrectSound = async () => {
+        if (incorrectSound) {
+            await incorrectSound.replayAsync();
+        }
+    };
+
+    // Load sounds once on mount, and unload sounds on cleanup
+    useEffect(() => {
+        const loadSounds = async () => {
+            try {
+                // Load the correct sound
+                const { sound: loadedCorrectSound } = await Audio.Sound.createAsync(
+                    require('@/assets/audio/correct.mp3')
+                );
+                setCorrectSound(loadedCorrectSound);
+
+                // Load the incorrect sound
+                const { sound: loadedIncorrectSound } = await Audio.Sound.createAsync(
+                    require('@/assets/audio/incorrect.mp3')
+                );
+                setIncorrectSound(loadedIncorrectSound);
+            } catch (error) {
+                console.error('Error loading sounds', error);
+            }
+        };
+
+        loadSounds();
+
+        // Cleanup sounds on unmount
+        return () => {
+            if (correctSound) {
+                correctSound.unloadAsync();
+            }
+            if (incorrectSound) {
+                incorrectSound.unloadAsync();
+            }
+        };
+    }, []);
+    
+
     //SCREEN WIDTH AND RESPONSIVE DESIGNS
     // Get screen width dynamically
     const { width } = useWindowDimensions();
@@ -261,40 +334,50 @@ const Practice = () => {
                 </Text>          
             </View>
 
-            {/* Middle Container - Text and Input */}
-            <View style={{flexDirection:'column', justifyContent:'center', gap:30, paddingTop:50, paddingBottom:50}}>
 
-                {/* Title to translate */}
-                <Text style={{color:style.gray_700, fontSize:style.text_lg, fontWeight:'500', marginLeft:2}}>
-                    Translate to { !frontFirst ? 'English' : currentLang }:
-                </Text>          
+                {/* Middle Container - Text and Input */}
+                {/* Render data only if wordData.length > 1 */}
+                { wordData.length > 0 ? (
 
-                {/* Text to Translate - from the data */}
-                <Text style={{color:style.gray_600, fontSize:style.text_md, fontWeight:'400', marginLeft:5}}>
-                    {loading ? (
-                            "Loading..."
-                        ) : (
-                            //Check if frontFirst is true
-                            frontFirst ? (
-                                currentWordData.term// Show `term` if `frontFirst` is true
-                            ) : (
-                                currentWordData.translation// Show `translation` if `frontFirst` is false
-                            )
-                        )}
-                </Text>          
+                    <View style={{flexDirection:'column', justifyContent:'center', gap:30, paddingTop:50, paddingBottom:50}}>
+
+                        {/* Title to translate */}
+                        <Text style={{color:style.gray_700, fontSize:style.text_lg, fontWeight:'500', marginLeft:2}}>
+                            Translate to { !frontFirst ? 'English' : currentLang }:
+                        </Text>          
+
+                        {/* Text to Translate - from the data */}
+                        <Text style={{color:style.gray_600, fontSize:style.text_md, fontWeight:'400', marginLeft:5}}>
+                            {loading ? (
+                                    "Loading..."
+                                ) : (
+                                    //Check if frontFirst is true
+                                    frontFirst ? (
+                                        currentWordData.term// Show `term` if `frontFirst` is true
+                                    ) : (
+                                        currentWordData.translation// Show `translation` if `frontFirst` is false
+                                    )
+                                )}
+                        </Text>          
 
 
-                {/* Input Form */}
-                <CustomInput showLabel={false} placeholder={"Begin translating here..."} value={userInput} onChangeText={setUserInput}
-                    maxLength={100} multiline={true} 
-                    customStyle={{alignSelf:'stretch'}}
-                    editable={isEditable}
-                    customFormStyle={{padding:20, color:style.gray_600, backgroundColor:style.slate_100, borderColor:style.gray_300, height:200}}/>
+                        {/* Input Form */}
+                        <CustomInput showLabel={false} placeholder={"Begin translating here..."} value={userInput} onChangeText={setUserInput}
+                            maxLength={100} multiline={true} 
+                            customStyle={{alignSelf:'stretch'}}
+                            editable={isEditable}
+                            customFormStyle={{padding:20, color:style.gray_600, backgroundColor:style.slate_100, borderColor:style.gray_300, height:200}}/>
+                    </View>
 
-            </View>
+                ) : (
+                    <View style={{marginTop:60, justifyContent:'center', alignItems:'center'}}>
+                        <Text style={{color:style.gray_500, fontSize:style.text_lg, fontWeight:'500'}}>
+                            Not Enough Words
+                        </Text>
+                    </View>
+                )}
 
         </View>
-
 
         {/* Bottom Containers - depending on user input */}
         { buttonContainer && 
@@ -376,6 +459,8 @@ const Practice = () => {
                 </View>
             </View>
         }
+
+
 
 
         {/* End Modal */}
