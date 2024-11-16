@@ -149,7 +149,7 @@ function pushInitialData(db) {
   //   `INSERT OR IGNORE INTO user_languages (language) VALUES ('Spanish');`
   // );
 
-  // Add more initial data here as needed...
+//   // Add more initial data here as needed...
 }
 
 //export the database constant

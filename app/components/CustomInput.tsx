@@ -45,8 +45,9 @@ const styles = StyleSheet.create({
 
         height: 60,
         fontSize: style.text_md,
-        padding: 10,
-        color: style.gray_400
+        padding: 12,
+        color: style.gray_400,
+        textAlignVertical: "top"
     },
     
 });
