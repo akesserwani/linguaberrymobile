@@ -67,7 +67,12 @@ const CreateWordModal = ({ onClose, refresh, scrollToBottom, deckId }) => {
             //call the database function and pass the values
             const etymologyValue = formEty === "" ? "none" : formEty;
             
-            createNewWord(formWord, formTransl, etymologyValue, selectedTag, deckId, currentLang );
+            //convert all commas in a string into a semicolon
+            let cleanFormWord = formWord.replace(/,/g, ';');
+            let cleanFormTransl = formTransl.replace(/,/g, ';');
+            let cleanFormEty = etymologyValue.replace(/,/g, ';');
+
+            createNewWord(cleanFormWord, cleanFormTransl, cleanFormEty, selectedTag, deckId, currentLang );
 
             //function to refresh to deck
             refresh();

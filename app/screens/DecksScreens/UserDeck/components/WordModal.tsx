@@ -68,14 +68,19 @@ const WordModal = ({onClose, deckId, wordData, deckName}) => {
             //call function to the database 
             const etymologyValue = formEty === "" ? "none" : formEty;
 
-            updateWord(currentLang, deckId, wordData.term, formWord, formTransl, etymologyValue);
+            //convert all commas in a string into a semicolon
+            let cleanFormWord = formWord.replace(/,/g, ';');
+            let cleanFormTransl = formTransl.replace(/,/g, ';');
+            let cleanFormEty = etymologyValue.replace(/,/g, ';');
+
+            updateWord(currentLang, deckId, wordData.term, cleanFormWord, cleanFormTransl, cleanFormEty);
 
             toggleEdit(false);
 
             //refresh the data in word data
-            wordData.term = formWord;
-            wordData.translation = formTransl;
-            wordData.etymology = etymologyValue;
+            wordData.term = cleanFormWord;
+            wordData.translation = cleanFormTransl;
+            wordData.etymology = cleanFormEty;
         }
     }
 

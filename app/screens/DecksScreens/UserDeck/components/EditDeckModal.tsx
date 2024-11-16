@@ -127,6 +127,12 @@ const EditDeckModal = ({onClose, currentLang, deckId, deckName, refreshDeck, ref
                 <Text style={{color:style.red_500, fontWeight:"400", position: "relative", left:5, top:10}}>
                     { dataError }
                 </Text>
+            
+            {/* User warning to use semicolon instead of commas*/}
+            <Text style={{color:style.gray_400, fontWeight:"500", margin:5, marginTop:20}}>
+                **Note: use semicolons instead of commas in the term, translation, and etymology data
+            </Text>
+
 
             {/* Button to update the deck */}
             <CustomButton onPress={updateDeckFunc} customStyle={{marginTop: 40, height:45}}>

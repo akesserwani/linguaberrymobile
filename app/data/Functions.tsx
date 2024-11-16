@@ -20,6 +20,7 @@ export const limitLength = (word, max_char)=>{
     }   
 }
 
+
 //CSV FUNCTIONS
 // CSV FUNCTIONS
 export const ObjectToCSV = (data) => {
