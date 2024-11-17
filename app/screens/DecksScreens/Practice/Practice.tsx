@@ -409,7 +409,7 @@ const Practice = () => {
 
         {/* Incorrect Banner */}
         { incorrectBanner && 
-            <View style={{flex:1, backgroundColor:style.red_100}}>
+            <View style={{flex:1, backgroundColor:style.red_100, padding:20}}>
                 <View style={{paddingHorizontal: responsiveHorizontalPadding, flex: 1,
                             flexDirection:'row', justifyContent:'space-between', alignItems:'center', alignContent:'center'}}>
 
@@ -419,9 +419,9 @@ const Practice = () => {
                         <Text style={{color:style.red_500, fontWeight:'700', fontSize:style.text_lg}}>Incorrect</Text>
                         {/* Text with Correct */}
                         <View style={{flexDirection:'row', gap:2, width:'80%', flexWrap:'wrap'}}>
-                            <Text style={{color:style.red_500, fontWeight:'600', fontSize:style.text_sm}}>Correct Answer: </Text>
+                            <Text style={{color:style.red_500, fontWeight:'700', fontSize:style.text_sm}}>Correct Answer: </Text>
                             {/* Correction */}
-                            <Text style={{color:style.red_500, fontWeight:'400', fontSize:style.text_sm}}>
+                            <Text style={{color:style.red_500, fontWeight:'500', fontSize:style.text_sm}}>
                                 { 
                                     //Check if frontFirst is true
                                     frontFirst ? (

@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-import { TouchableOpacity, Text, useWindowDimensions, KeyboardAvoidingView, ScrollView, Platform } from "react-native";
+import { TouchableOpacity, Text, useWindowDimensions, KeyboardAvoidingView, ScrollView, Platform, View } from "react-native";
 import Icon from '@expo/vector-icons/FontAwesome6'
 import * as style from '@/assets/styles/styles'
 
@@ -85,6 +85,15 @@ const CreateWordModal = ({ onClose, refresh, scrollToBottom, deckId }) => {
         }
  
     }
+
+    //Switch term/translation functionality
+    const switchData = () =>{
+        //set formWord to the form translation
+        setFormWord(formTransl);
+
+        //set formTranslation to the formWord
+        setFormTransl(formWord);
+    }
     
     
     return ( 
@@ -97,22 +106,30 @@ const CreateWordModal = ({ onClose, refresh, scrollToBottom, deckId }) => {
                     <TagSelection currentLang={currentLang} deckId={deckId} onTagSelect={handleTagSelection}/>
 
                     {/* Form to add a word */}
-                    <CustomInput label={ "Word"} placeholder={"Type word..." } value={formWord} onChangeText={setFormWord} 
-                            maxLength={100} multiline={true} customFormStyle={{height: 80}}/>
+                    <CustomInput label={ "Term"} placeholder={"Type term..." } value={formWord} onChangeText={setFormWord} 
+                            maxLength={100} multiline={true} customFormStyle={{height: 80}} customStyle={{marginBottom:10}}/>
                     
                     {/* term already exists in deck */}
                     { termExist && 
                         <Text style={{color:style.red_500, fontWeight:"400", position: "relative", left:5, top:10}}>Term already exists in this deck</Text>
                     }
 
+                    {/* Button to switch term and translation*/}
+                    <View style={{padding:5, flexDirection:'row', justifyContent:'flex-end'}}>
+                        <TouchableOpacity onPress={switchData} activeOpacity={0.7}>
+                            <Icon name={"arrows-up-down"} size={20} color={style.gray_500}/>
+                        </TouchableOpacity>
+                    </View>
+
+
                     {/* Form to add a translation */}
                     <CustomInput label={ "Translation"} placeholder={"Type translation..." } value={formTransl} onChangeText={setFormTransl} 
-                                maxLength={100} customStyle={{marginTop: 25}} multiline={true} customFormStyle={{height: 80}}/>
+                                maxLength={100}  multiline={true} customFormStyle={{height: 80}}/>
 
                     <TouchableOpacity onPress={()=>toggleEty(!etyShow)} activeOpacity={0.6}>
-                    <Text style={{color:style.blue_500, fontWeight:'500', fontSize:style.text_md, marginLeft: 5, marginTop:25}}>
-                            { etyShow ? "Close Notes" : "Add Notes"  }
-                        </Text>
+                        <Text style={{color:style.blue_500, fontWeight:'500', fontSize:style.text_md, marginLeft: 5, marginTop:25}}>
+                                { etyShow ? "Close Notes" : "Add Notes"  }
+                            </Text>
                     </TouchableOpacity>
 
 

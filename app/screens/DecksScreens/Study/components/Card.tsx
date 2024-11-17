@@ -91,7 +91,7 @@ const Card = ({wordData, setWordData, currentLang, deckId, frontFirst}) => {
 
                     {/* CARD TEXT HERE */}
                     {/* Bottom Container with full text */}
-                    <View style={{flex:4, alignItems:'center', marginTop:20}}>
+                    <View style={{flex:4, alignItems:'center', marginTop:20, padding:20}}>
                         <Text style={{fontSize:style.text_md, color:style.gray_600, fontWeight:'600'}}>
                             {/* Change value based on whether card and front first variable */}
                             { (!flipped && frontFirst) || (flipped && !frontFirst) ? (

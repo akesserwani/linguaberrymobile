@@ -130,7 +130,7 @@ const EditDeckModal = ({onClose, currentLang, deckId, deckName, refreshDeck, ref
             
             {/* User warning to use semicolon instead of commas*/}
             <Text style={{color:style.gray_400, fontWeight:"500", margin:5, marginTop:20}}>
-                **Note: use semicolons instead of commas in the term, translation, and etymology data
+                Note: Use semicolons instead of commas in the term, translation, and etymology data
             </Text>
 
 
@@ -142,7 +142,7 @@ const EditDeckModal = ({onClose, currentLang, deckId, deckName, refreshDeck, ref
 
             {/* Button to delete the deck */}
             <View style={{flexDirection:'column', alignItems:'center',justifyContent:'center', marginTop: 10}}>
-                <TouchableOpacity onPress={deleteDeckFunc} style={{ marginTop:30 }} activeOpacity={0.7}>
+                <TouchableOpacity onPress={deleteDeckFunc} style={{ marginTop:20 }} activeOpacity={0.7}>
                             <Text style={{color:style.red_400, fontSize:style.text_md}}>Delete Deck</Text>
                 </TouchableOpacity>
             </View>

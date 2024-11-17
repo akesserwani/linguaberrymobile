@@ -110,6 +110,20 @@ export const validateCSVFormat = (csvData) => {
             return { valid: false, error: `Row ${i} has empty or whitespace-only values in required columns 'term' or 'translation'.` };
         }
 
+        // Check character limits for term and translation
+        if (term.length > 100) {
+            return { valid: false, error: `Row ${i}: 'term' exceeds the maximum length of 100 characters.` };
+        }
+        if (translation.length > 100) {
+            return { valid: false, error: `Row ${i}: 'translation' exceeds the maximum length of 100 characters.` };
+        }
+
+        // Check character limit for etymology
+        if (etymology.length > 1000) {
+            return { valid: false, error: `Row ${i}: 'etymology' exceeds the maximum length of 1000 characters.` };
+        }
+        
+
         // Check for duplicates in the term column
         if (terms.has(term.toLowerCase())) {
             return { valid: false, error: `Duplicate term '${term}' found in row ${i}. Each term must be unique.` };
