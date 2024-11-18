@@ -6,54 +6,49 @@ import { useContext, useState, useEffect, useRef, useCallback } from 'react';
 //data for context
 import { CurrentLangContext } from '@/app/data/CurrentLangContext.tsx';
 
-//import database functions to fetch data
-import { getAllDecks } from '../DataDecks'; 
-
 //styles and custom components
 import CustomFab from '@/app/components/CustomFab';
 
-//Import Modal component to create a deck
-import CreateDeckModal from './components/CreateDeckModal';
+//import the entry creation modal 
+import CreateEntryModal from './components/CreateEntryModal';
 
 import * as style from '@/assets/styles/styles'
 
-import { limitLength } from '@/app/data/Functions';
+//import data from reader data file
+import { getEntriesByLanguage } from '../DataReader';
+
+//import miscellanous functions
+import { formatDate, limitLength } from '@/app/data/Functions';
 
 
-const DecksHome = ({ navigation }) => {
-
+const ReaderHome = ({ navigation }) => {
 
     //current language
-    const { currentLang, setCurrentLang } = useContext(CurrentLangContext);
-
-    // Get screen width dynamically
-    const { width } = useWindowDimensions();
+    const { currentLang } = useContext(CurrentLangContext);
 
     // State to track the active tab
     const [activeTab, setActiveTab] = useState('All');
 
     // Word data from object
-    const [deckData, setDeckData] = useState([]);
+    const [entryData, setEntryData] = useState([]);
     // bookmarked deck data
-    const [bookmarkedDeckData, setBookmarkedDeckData] = useState([]);
+    const [bookmarkedEntryData, setBookmarkedEntryData] = useState([]);
 
     //rendered data
     //this is the data that is rendered in the dropdown
     const [ renderedData, setRenderedData ] = useState([])
 
-
-    // Function to fetch decks
-    const fetchDecks = () => {
+    // Function to fetch entries
+    const fetchData = () => {
         //Initialize all the data
-        //call the function to get all decks
-        const data = getAllDecks(currentLang); 
-
-        //set all the deck data
-        setDeckData(data);    
+        //call the function to get all entries
+        const data = getEntriesByLanguage(currentLang);
+        //set all the entry data
+        setEntryData(data);    
 
         //set bookmarked deck data
-        const bookmarkedData = data.filter(deck => deck.bookmarked === 1);
-        setBookmarkedDeckData(bookmarkedData);  
+        const bookmarkedData = data.filter(entry => entry.bookmarked === 1);
+        setBookmarkedEntryData(bookmarkedData);  
 
         //get the current tab then set to the rendered data
         if (activeTab === "All"){
@@ -61,36 +56,36 @@ const DecksHome = ({ navigation }) => {
         } else if (activeTab === "Bookmarks"){
             setRenderedData(bookmarkedData);
         }
+            
     };
 
 
     // Fetch data every time the component is focused
     useFocusEffect(
         useCallback(() => {
-            fetchDecks(); // Fetch decks whenever the screen is focused
+            fetchData(); // Fetch decks whenever the screen is focused
         }, [currentLang, activeTab]) // Add any dependencies if needed
     );
-      
+    
 
-    //LOGIC TO CREATE NEW DECK
-    //variable to toggle the modal
-    const [newDeckModal, setnewDeckModal] = useState(false);
+    //Reactive variable to toggle the entry creation modal
+    const [newEntryModal, setnewEnryModal] = useState(false);
 
-
-    const flatListRef = useRef(null);
     // Function to scroll to the bottom
+    const flatListRef = useRef(null);
     const scrollToBottom = () => {
         const totalHeight = 60 * renderedData.length + 150;
         flatListRef.current?.scrollToOffset({ offset: totalHeight, animated: true });
       };
-      
-    
+
     //responsive variable for container padding
     //if width is less than 600 then padding is 40, if between 600 and 1000 then padding is 100, 1k+, padding is 200
     //40 < 100 < 200
+    // Get screen width dynamically
+    const { width } = useWindowDimensions();
     const responsiveHorizontalPadding = width < 600 ? 40 : width < 1000 ? 100 : 200;
 
-    return ( 
+    return (
         <>
         <View style={[styles.mainContainer, { paddingHorizontal: responsiveHorizontalPadding }]}>
             {/* Top Container with Tabs - All and Bookmarks */}
@@ -99,7 +94,7 @@ const DecksHome = ({ navigation }) => {
                     <Text style={[styles.tabText, activeTab === 'All' && styles.activeTab]} >
                         All
                         {/* Count of All */}
-                        <Text style={{fontSize: style.text_xs }}>{'\u00A0'} ({deckData.length})</Text>
+                        <Text style={{fontSize: style.text_xs }}>{'\u00A0'} ({entryData.length})</Text>
                     </Text>
                 </TouchableOpacity>
 
@@ -107,7 +102,7 @@ const DecksHome = ({ navigation }) => {
                     <Text style={[styles.tabText, activeTab === 'Bookmarks' && styles.activeTab]} >
                         Bookmarks
                         {/* Count of Bookmarks */}
-                        <Text style={{fontSize: style.text_xs }}>{'\u00A0'} ({ bookmarkedDeckData.length })</Text>
+                        <Text style={{fontSize: style.text_xs }}>{'\u00A0'} ({ bookmarkedEntryData.length })</Text>
                     </Text>
                 </TouchableOpacity>
             </View>
@@ -116,64 +111,61 @@ const DecksHome = ({ navigation }) => {
             {/* Container for Individual Decks rendered as cards  */}
             <View style={{ flexDirection: 'column', flex:1  }} >
 
-                {/* Display no decks text if deckData is empty, else render everything  */}
+                {/* Display no decks text if entryData is empty, else render everything  */}
                 {renderedData.length === 0 ? (
                     <Text style={{ color: style.gray_400, fontSize: style.text_md, fontWeight:'600', textAlign: 'center', marginTop: 80 }}>
-                        {activeTab === "All" ? "No decks" : "No Bookmarked decks"}
+                        {activeTab === "All" ? "No entries" : "No Bookmarked entries"}
                     </Text>
 
                     ) : (
                         <FlatList
-                            ref={flatListRef}
-                            data={renderedData}
-                            keyExtractor={(item, index) => item.id.toString()}
-                            contentContainerStyle={{ paddingBottom: 150, paddingTop:20 }} 
-                            renderItem={({ item, index }) => (
-                            //Individual Box being rendered
+                        ref={flatListRef}
+                        data={renderedData}
+                        keyExtractor={(item, index) => item.id.toString()}
+                        contentContainerStyle={{ paddingBottom: 150, paddingTop:20 }} 
+                        renderItem={({ item, index }) => (
+                        //Individual Box being rendered
 
-                            <TouchableOpacity onPress={() => navigation.navigate("UserDeck", { deckName: item.name, deckId: item.id })}
-                                style={[styles.wordCard, { marginBottom: 10 }]} activeOpacity={0.7}>
-                                <View style={{ flexDirection: 'row', gap: 15 }}>
-                                    {/* Index Number for the Card */}
-                                    <Text style={{ color: style.gray_300, fontSize: style.text_md }}>
-                                    {index + 1}
-                                    </Text>
-
-                                    {/* Title for Deck */}
-                                    <Text style={{ color: style.gray_500, fontWeight: '500', fontSize: style.text_md }}>
-                                        { limitLength(item.name, 20) } 
-                                    </Text>
-                                </View>
-
-                                {/* Word Count */}
-                                <Text style={{ color: style.gray_400, fontWeight: '400' }}>
-                                    {item.word_count} words
+                        <TouchableOpacity onPress={() => navigation.navigate("ReaderViewer", { entryTitle: item.title, entryId: item.id })}
+                            style={[styles.itemCard, { marginBottom: 10 }]} activeOpacity={0.7}>
+                            <View style={{ flexDirection: 'row', gap: 15 }}>
+                                {/* Index Number for the Card */}
+                                <Text style={{ color: style.gray_300, fontSize: style.text_md }}>
+                                {index + 1}
                                 </Text>
-                            </TouchableOpacity>
 
+                                {/* Title for Deck */}
+                                <Text style={{ color: style.gray_500, fontWeight: '500', fontSize: style.text_md }}>
+                                    { limitLength(item.title, 20) } 
+                                </Text>
+                            </View>
+
+                            {/* Word Count */}
+                            <Text style={{ color: style.gray_400, fontWeight: '400' }}>
+                                { formatDate(item.created_at) } 
+                            </Text>
+                        </TouchableOpacity>
                         )}/>
+
                     )}
 
             </View>
 
 
             {/* Add Button - Absolute positioning from bottom */}
-            <CustomFab onPress={() => setnewDeckModal(true)} />
+            <CustomFab onPress={() => setnewEnryModal(true)} />
         </View>    
 
 
-
         {/* Modal to create a new deck */}
-        { newDeckModal &&
-            <CreateDeckModal onClose={() => setnewDeckModal(false)} refresh={fetchDecks} scrollToBottom={scrollToBottom} />
+        { newEntryModal &&
+            <CreateEntryModal onClose={() => setnewEnryModal(false)} refresh={fetchData} scrollToBottom={scrollToBottom}/>
         }
 
         </>
-    );
+      );
 }
  
-
-
 const styles = StyleSheet.create({
     mainContainer: {
         flex: 1,
@@ -223,8 +215,7 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         justifyContent: 'space-between',
     },
-
-    wordCard: {
+    itemCard: {
         backgroundColor: style.white, 
         height: 60, 
         borderRadius: style.rounded_md, 
@@ -239,5 +230,4 @@ const styles = StyleSheet.create({
 
 });
 
-
-export default DecksHome;
+export default ReaderHome;

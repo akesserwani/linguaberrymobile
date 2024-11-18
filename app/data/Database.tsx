@@ -8,7 +8,6 @@ import { Platform } from "react-native";
     // db.runSync(`DROP TABLE IF EXISTS user_languages;`);
     // db.runSync(`DROP TABLE IF EXISTS deck;`);
     // db.runSync(`DROP TABLE IF EXISTS word;`);
-    // db.runSync(`DROP TABLE IF EXISTS tag;`);
 
     //to add data and insert or replace
     // db.runSync(
@@ -97,13 +96,14 @@ function openDatabase() {
       );
 
       db.runSync(
-        `CREATE TABLE IF NOT EXISTS reader (
+        `CREATE TABLE IF NOT EXISTS entry (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           title TEXT NOT NULL,
-          interactive BOOLEAN,
           contents TEXT NOT NULL,
-          reader_data TEXT NOT NULL,
+          word_data TEXT,
+          sentence_data TEXT,
           bookmarked BOOLEAN,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,  
           language_id INTEGER,
           FOREIGN KEY(language_id) REFERENCES user_languages(id)
         );`
@@ -133,6 +133,7 @@ function pushInitialData(db) {
     // db.runSync(`DROP TABLE IF EXISTS deck;`);
     // db.runSync(`DROP TABLE IF EXISTS word;`);
     // db.runSync(`DROP TABLE IF EXISTS tag;`);
+    // db.runSync(`DROP TABLE IF EXISTS entry;`);
 
 
   // Insert initial data into the general table
