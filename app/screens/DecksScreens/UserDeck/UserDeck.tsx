@@ -242,7 +242,7 @@ const UserDeck = ({route}) => {
                                 navigation.navigate('Practice', {currentLang: currentLang, deckId: deckId, deckName:deckName });
                             }
                         ;}} 
-                    customStyle={{backgroundColor:style.blue_100, flexDirection:'row', gap:8}}>
+                    customStyle={{backgroundColor:style.blue_200, flexDirection:'row', gap:8}}>
                         <Text style={{color:style.blue_500, fontWeight:'600'}}>
                             Practice
                         </Text>

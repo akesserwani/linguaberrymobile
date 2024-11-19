@@ -51,7 +51,7 @@ const BookmarksList = () => {
                                 <Icon name={'rectangle-list'} solid={true} width={15} color={style.white} />
                             </CustomButton>
                             {/* Button to redirect to practice the deck */}
-                            <CustomButton onPress={()=>{}} customStyle={{height: 40, width: 40, backgroundColor: style.blue_100}}>
+                            <CustomButton onPress={()=>{}} customStyle={{height: 40, width: 40, backgroundColor: style.blue_200}}>
                                 <Icon name={'dumbbell'} solid={true} width={15} color={style.blue_400} />
                             </CustomButton>
                         </View>
