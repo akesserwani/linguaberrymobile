@@ -7,10 +7,16 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import CustomAlert from "@/app/components/CustomAlert";
 
 import { deleteEntry } from "../../DataReader";
+import EditDataModal from "./EditDataModal";
+import ViewDataModal from "./ViewDataModal";
 
 const HeaderRight = ({currentLang, entryId}) => {
 
     const [buttonClicked, setClick] = useState(false);
+
+    //triggers for the modals
+    const [viewDataModal, setViewDataModal] = useState(false);
+    const [editDataModal, setEditDataModal] = useState(false);
 
     return (
         <>
@@ -21,17 +27,32 @@ const HeaderRight = ({currentLang, entryId}) => {
             { buttonClicked && 
                 <View style={styles.dropdownBox}>
                     {/* View Data Modal */}
-                    <TouchableOpacity onPress={()=>{}} activeOpacity={0.7}>
+                    <TouchableOpacity onPress={()=>{
+                        setClick(false);
+                        setViewDataModal(true);
+                    }} activeOpacity={0.7}>
                         <Text style={{color:style.gray_500}}>View Data</Text>
                     </TouchableOpacity>   
 
                     {/* Edit Data Modal */}
-                    <TouchableOpacity onPress={()=>{}} activeOpacity={0.7}>
+                    <TouchableOpacity onPress={()=>{
+                        setClick(false);
+                        setEditDataModal(true);
+                    }} activeOpacity={0.7}>
                         <Text style={{color:style.gray_500}}>Edit Data</Text>
                     </TouchableOpacity>                    
                 
                 </View>
             }
+
+        {/* Call Each of the Modals */}
+        { viewDataModal &&
+            <ViewDataModal onClose={()=> setViewDataModal(false)}/>
+        }
+
+        {   editDataModal &&
+            <EditDataModal onClose={()=> setEditDataModal(false)}/>
+        }
 
         </>
       );
