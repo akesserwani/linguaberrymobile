@@ -47,11 +47,11 @@ const HeaderRight = ({currentLang, entryId}) => {
 
         {/* Call Each of the Modals */}
         { viewDataModal &&
-            <ViewDataModal onClose={()=> setViewDataModal(false)}/>
+            <ViewDataModal onClose={()=> setViewDataModal(false)} entryId={entryId}/>
         }
 
         {   editDataModal &&
-            <EditDataModal onClose={()=> setEditDataModal(false)}/>
+            <EditDataModal onClose={()=> setEditDataModal(false)} entryId={entryId}/>
         }
 
         </>

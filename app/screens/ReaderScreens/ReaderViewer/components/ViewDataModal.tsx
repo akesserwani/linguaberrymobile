@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { TouchableOpacity, View, Text, StyleSheet, ScrollView, FlatList } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 
@@ -10,8 +10,14 @@ import CustomInput from "@/app/components/CustomInput";
 import CustomButton from "@/app/components/CustomButton";
 import AddWordToDeck from "@/app/components/AddWordToDeck";
 
+//data for context
+import { CurrentLangContext } from '@/app/data/CurrentLangContext.tsx';
 
-const ViewDataModal = ({onClose}) => {
+
+const ViewDataModal = ({onClose, entryId}) => {
+
+    //current language
+    const { currentLang } = useContext(CurrentLangContext);
 
     // State to track the active tab
     const [activeTab, setActiveTab] = useState('Words');

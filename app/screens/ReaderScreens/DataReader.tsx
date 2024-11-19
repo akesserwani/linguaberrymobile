@@ -121,8 +121,26 @@ export const getBookmarkedStatus = (currentLang, entryId) => {
           [newStatus, currentLang, entryId]
         );
       });
-  
   }
   
+export const getWordData = (entryId, currentLang) => {
+    let wordData = null;
 
-  
+    db.withTransactionSync(() => {
+        wordData = db.getFirstSync(
+            `SELECT word_data FROM entry WHERE id = ? AND language_id = ?`,
+            entryId, currentLang
+        );
+    });
+
+    return wordData ? wordData.word_data : null; 
+};
+
+export const updateWordData = (newWordData, entryId, currentLang) => {
+    db.withTransactionSync(() => {
+        db.runSync(
+            `UPDATE entry SET word_data = ? WHERE id = ? AND language_id = ?`,
+            newWordData, entryId, currentLang
+        );
+    });
+};
