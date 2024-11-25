@@ -101,7 +101,7 @@ function openDatabase() {
           title TEXT NOT NULL,
           contents TEXT NOT NULL,
           word_data TEXT,
-          sentence_data TEXT,
+          translation_data TEXT,
           bookmarked BOOLEAN,
           created_at DATETIME DEFAULT CURRENT_TIMESTAMP,  
           language_id INTEGER,

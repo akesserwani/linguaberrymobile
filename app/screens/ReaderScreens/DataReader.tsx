@@ -6,7 +6,7 @@ import { db } from "@/app/data/Database";
 export const newEntry = (title, current_language) =>{
     db.withTransactionSync(() => {
         db.runSync(
-            `INSERT INTO entry (title, contents, word_data, sentence_data, bookmarked, language_id) 
+            `INSERT INTO entry (title, contents, word_data, translation_data, bookmarked, language_id) 
                 VALUES (?, ?, ?, ?, ?, ?)`,
                 title, "", "", "", 0, current_language);
     });
@@ -127,20 +127,68 @@ export const getWordData = (entryId, currentLang) => {
     let wordData = null;
 
     db.withTransactionSync(() => {
-        wordData = db.getFirstSync(
+        const result = db.getFirstSync(
             `SELECT word_data FROM entry WHERE id = ? AND language_id = ?`,
             entryId, currentLang
         );
+        wordData = result?.word_data ? JSON.parse(result.word_data) : []; // Parse the JSON string, or return an empty array if null
     });
 
-    return wordData ? wordData.word_data : null; 
+    return wordData;
 };
 
 export const updateWordData = (newWordData, entryId, currentLang) => {
-    db.withTransactionSync(() => {
-        db.runSync(
-            `UPDATE entry SET word_data = ? WHERE id = ? AND language_id = ?`,
-            newWordData, entryId, currentLang
-        );
-    });
+    try {
+        db.withTransactionSync(() => {
+            db.runSync(
+                `UPDATE entry SET word_data = ? WHERE id = ? AND language_id = ?`,
+                JSON.stringify(newWordData), // Convert the data to a JSON string
+                entryId,
+                currentLang
+            );
+        });
+        console.log("Word data updated successfully!");
+    } catch (error) {
+        console.error("Error updating word data:", error.message);
+    }
+};
+
+//function to get translation data
+export const getTranslationData = (entryId, currentLang) => {
+    let translationData = "";
+
+    try {
+        db.withTransactionSync(() => {
+            const result = db.getFirstSync(
+                `SELECT translation_data FROM entry WHERE id = ? AND language_id = ?`,
+                entryId,
+                currentLang
+            );
+
+            // Ensure `translation_data` is a string, or fallback to an empty string
+            translationData = result?.translation_data || "";
+        });
+    } catch (error) {
+        console.error("Error fetching translation data:", error.message);
+        translationData = ""; // Fallback to default value
+    }
+
+    return translationData;
+};
+
+//function to get translation data
+export const updateTranslationData = (translationData, entryId, currentLang) => {
+    try {
+        db.withTransactionSync(() => {
+            db.runSync(
+                `UPDATE entry SET translation_data = ? WHERE id = ? AND language_id = ?`,
+                translationData, // Directly store the string
+                entryId,
+                currentLang
+            );
+        });
+        console.log("Translation data updated successfully!");
+    } catch (error) {
+        console.error("Error updating translation data:", error.message);
+    }
 };
