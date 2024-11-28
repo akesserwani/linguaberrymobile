@@ -8,9 +8,9 @@ import CustomAlert from "@/app/components/CustomAlert";
 
 import { deleteEntry } from "../../DataReader";
 import EditDataModal from "./EditDataModal";
-import ViewDataModal from "./ViewDataModal";
+import ViewWordModal from "./ViewWordModal";
 
-const HeaderRight = ({currentLang, entryId}) => {
+const HeaderRight = ({currentLang, entryId, setRefresh}) => {
 
     const [buttonClicked, setClick] = useState(false);
 
@@ -31,7 +31,7 @@ const HeaderRight = ({currentLang, entryId}) => {
                         setClick(false);
                         setViewDataModal(true);
                     }} activeOpacity={0.7}>
-                        <Text style={{color:style.gray_500}}>View Data</Text>
+                        <Text style={{color:style.gray_500}}>View Words</Text>
                     </TouchableOpacity>   
 
                     {/* Edit Data Modal */}
@@ -47,11 +47,11 @@ const HeaderRight = ({currentLang, entryId}) => {
 
         {/* Call Each of the Modals */}
         { viewDataModal &&
-            <ViewDataModal onClose={()=> setViewDataModal(false)} entryId={entryId}/>
+            <ViewWordModal onClose={()=> setViewDataModal(false)} entryId={entryId}/>
         }
 
         {   editDataModal &&
-            <EditDataModal onClose={()=> setEditDataModal(false)} entryId={entryId}/>
+            <EditDataModal onClose={()=> setEditDataModal(false)} entryId={entryId} setRefresh={setRefresh}/>
         }
 
         </>

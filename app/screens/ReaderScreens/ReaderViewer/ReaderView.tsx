@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, useWindowDimensions, TouchableOpacity} from 'react-native';
 import { useContext, useLayoutEffect, useState, useEffect, useCallback } from 'react';
-import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
+import { useNavigation, useRoute, useFocusEffect, useIsFocused } from '@react-navigation/native';
 //data for context
 import { CurrentLangContext } from '@/app/data/CurrentLangContext.tsx';
 
@@ -19,6 +19,7 @@ import HeaderRight from './components/HeaderRight';
 //import misc functions
 import { limitLength, formatDate } from '@/app/data/Functions';
 import { ScrollView } from 'react-native-gesture-handler';
+import TooltipComponent from './components/TooltipComponent';
 
 const ReaderViewer = ({route}) => {
 
@@ -31,16 +32,36 @@ const ReaderViewer = ({route}) => {
 
     //Navigation bar data
     //To View/Edit Data
+    const [refresh, setRefresh] = useState(false);
     useLayoutEffect(() => {
         navigation.setOptions({
             // Set custom text for the back button          
             headerBackTitle: 'All',
             headerRight: () => (
-                <HeaderRight currentLang={currentLang} entryId={entryId} />
+                <HeaderRight currentLang={currentLang} entryId={entryId} setRefresh={setRefresh} />
             ),
             
         });
         }, [navigation]);
+
+    //Functionality to hide the tabBar when it is on the page
+    const isFocused = useIsFocused();
+    useEffect(() => {
+        if (isFocused) {
+            // Hide the tab bar when this screen is focused
+            navigation.getParent()?.setOptions({
+                tabBarStyle: { display: 'none' },
+            });
+        } else {
+            // Show the tab bar again when leaving this screen
+            navigation.getParent()?.setOptions({
+                tabBarStyle: { 
+                    ...style.baseTabBarStyle, // Spread base styles here
+                    display: 'flex',
+                },
+            });
+        }
+    }, [isFocused, navigation]);
 
     //reactive variable to get all the entry data
     const [entryData, setEntryData] = useState(null);
@@ -97,21 +118,21 @@ const ReaderViewer = ({route}) => {
             </View>
 
             {/* Container for title, date, and bookmarked status */}
-            <View style={{flexDirection:'row', justifyContent:'space-between'}}>
+            <View style={{flexDirection:'row', justifyContent:'space-between', marginTop:20}}>
 
                 {/* Container for title and created_at */}
                 <View style={{flexDirection:'column'}}>
                     {entryData ? (
                         <>
                         {/* Title Text */}
-                        <View style={{width:'90%'}}>
+                        <View>
                             <Text style={{color:style.gray_600, fontSize:style.text_lg, fontWeight:'600'}}>
                                 {entryData.title}
                             </Text>
                         </View>
                         
                         {/* Date */}
-                        <Text style={{color:style.gray_400, fontSize:style.text_sm, fontWeight:'400', marginTop:8}}>
+                        <Text style={{color:style.gray_400, fontSize:style.text_sm, fontWeight:'400', marginTop:19}}>
                             Created on {formatDate(entryData.created_at)}
                         </Text>
                         </>
@@ -139,9 +160,10 @@ const ReaderViewer = ({route}) => {
             </View>
 
             {/* Container for the main text with interactive functionalities */}
-            <ScrollView>
+            
+            <ScrollView style={{ flex:1}} contentContainerStyle={{marginTop:20}}>
                     {entryData ? (
-                        <Text style={{color:style.gray_500, fontSize:style.text_md, fontWeight:'500'}}>{ entryData.contents }</Text>
+                        <TooltipComponent entryId={ entryId } contents={entryData.contents} refresh={refresh} />
     
                     ) : (
                         <Text style={{color:style.gray_500, fontSize:style.text_md, fontWeight:'500'}}>Loading...</Text>
@@ -153,6 +175,7 @@ const ReaderViewer = ({route}) => {
             <CustomFab icon='pen' onPress={()=>navigation.navigate("ReaderEditor", { entryTitle: entryTitle, entryId: entryId })}/>
 
         </View>
+        
         </>
      );
 }
@@ -163,7 +186,6 @@ const styles = StyleSheet.create({
         backgroundColor: style.slate_100,
         paddingTop: 30,
         flexDirection:'column',
-        gap:30
     }
     
 });

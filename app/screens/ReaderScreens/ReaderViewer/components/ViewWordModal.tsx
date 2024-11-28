@@ -17,7 +17,7 @@ import { CurrentLangContext } from '@/app/data/CurrentLangContext.tsx';
 import { getWordData, getTranslationData } from "../../DataReader";
 
 
-const ViewDataModal = ({onClose, entryId}) => {
+const ViewWordModal = ({onClose, entryId}) => {
 
     //current language
     const { currentLang } = useContext(CurrentLangContext);
@@ -50,7 +50,7 @@ const ViewDataModal = ({onClose, entryId}) => {
             {/* Content Area */}
             <View style={styles.contentContainer}>
                 {/* Top bar with labels */}
-                <View style={{flexDirection:'row', borderBottomWidth: style.border_md, gap:20, borderColor: style.gray_200, padding:20, justifyContent:'center' }}>
+                <View style={{flexDirection:'row', borderBottomWidth: style.border_md, gap:20, borderColor: style.gray_200, padding:10, justifyContent:'center' }}>
                     <View style={{width: '40%', justifyContent: 'center'}}>
                         <Text style={{ color: style.gray_600, fontSize: style.text_md, fontWeight:'600' }}>Term</Text> 
                     </View>
@@ -59,38 +59,45 @@ const ViewDataModal = ({onClose, entryId}) => {
                     </View>
                 </View>
 
-                {/* Individual words in a flatlist */}
-                <FlatList
-                    data={wordData}
-                    keyExtractor={(item, index) => index.toString()} 
-                    renderItem={({ item, index }) => (
-                    <TouchableOpacity onPress={ 
-                        () =>{
-                            toggleAddWord(true);
-                            setWordtoAdd([ item.term, item.translation ]); 
-                        } 
-                    } activeOpacity={0.7} style={styles.item}>
+                {/* Check if there are no words in renderedWords */}
+                {wordData.length === 0 ? (
+                    <Text style={{ color: style.gray_400, fontSize: style.text_md, fontWeight:'600', textAlign: 'center', margin: 20 }}>
+                        No words
+                    </Text>
+                ) : (
+                    // Render words in a flatlist 
+                    <FlatList
+                        data={wordData}
+                        keyExtractor={(item, index) => index.toString()} 
+                        renderItem={({ item, index }) => (
+                        <TouchableOpacity onPress={ 
+                            () =>{
+                                toggleAddWord(true);
+                                setWordtoAdd([ item.term, item.translation ]); 
+                            } 
+                        } activeOpacity={0.7} style={styles.item}>
 
-                        <Text style={{ color: style.gray_400, fontSize: style.text_md }}> 
-                            {index + 1}
-                        </Text> 
-
-                        {/* Container for Term */}
-                        <View style={{ width: '40%', height: 60, justifyContent: 'center' }}>
-                            <Text style={{ color: style.gray_500, fontSize: style.text_md }}> 
-                                { item.term } 
-                            </Text>
-                        </View>
-
-                        {/* Container for Translation */}
-                        <View style={{ width: '40%', height: 60, justifyContent: 'center' }}>
                             <Text style={{ color: style.gray_400, fontSize: style.text_md }}> 
-                                { item.translation } 
-                            </Text>
-                        </View>
+                                {index + 1}
+                            </Text> 
 
-                    </TouchableOpacity>
-                )}/>
+                            {/* Container for Term */}
+                            <View style={{ width: '40%', height: 60, justifyContent: 'center' }}>
+                                <Text style={{ color: style.gray_500, fontSize: style.text_md }}> 
+                                    { item.term } 
+                                </Text>
+                            </View>
+
+                            {/* Container for Translation */}
+                            <View style={{ width: '40%', height: 60, justifyContent: 'center' }}>
+                                <Text style={{ color: style.gray_400, fontSize: style.text_md }}> 
+                                    { item.translation } 
+                                </Text>
+                            </View>
+
+                        </TouchableOpacity>
+                    )}/>
+                )}
 
             </View>
 
@@ -123,4 +130,4 @@ const styles = StyleSheet.create({
 });
 
 
-export default ViewDataModal;
+export default ViewWordModal;

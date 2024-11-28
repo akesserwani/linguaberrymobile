@@ -1,7 +1,7 @@
 
 import { View, Text, StyleSheet, useWindowDimensions, TouchableOpacity, FlatList, TextInput} from 'react-native';
 import { useContext, useLayoutEffect, useState, useEffect, useRef } from 'react';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute, useIsFocused } from '@react-navigation/native';
 //data for context
 import { CurrentLangContext } from '@/app/data/CurrentLangContext.tsx';
 
@@ -35,6 +35,16 @@ const ReaderStory = ({route}) => {
         });
         }, [navigation]);
     
+    //Functionality to hide the tabBar when it is on the page
+    const isFocused = useIsFocused();
+    useEffect(() => {
+        if (isFocused) {
+            // Hide the tab bar when this screen is focused
+            navigation.getParent()?.setOptions({
+                tabBarStyle: { display: 'none' },
+            });
+        } 
+    }, [isFocused, navigation]);
 
     //reactive variable for titleForm
     //load it with the entryTitle that was passed via the navigator
@@ -87,7 +97,7 @@ const ReaderStory = ({route}) => {
                         maxLength={50}/>
 
             {/* Main body data here */}
-            <TextInput  style={{fontSize:style.text_md, color: style.gray_500, fontWeight:'500', width:'100%', flexWrap:'wrap', marginTop:30}}
+            <TextInput  style={{fontSize:style.text_lg, color: style.gray_500, fontWeight:'500', width:'100%', flexWrap:'wrap', marginTop:30, paddingBottom:100}}
                         placeholder= { "Start writing here..." }
                         value={ contentsForm } 
                         onChangeText={ handleContentsChange }

@@ -34,7 +34,7 @@ export const formatDate = (dbDate) => {
 // CSV FUNCTIONS
 export const ObjectToCSV = (data) => {
     // Define the headers we want to include
-    const headers = ['term', 'translation', 'etymology'];
+    const headers = ['term', 'translation', 'notes'];
     const headerRow = headers.join(',');
 
     // If data is empty or undefined, return just the header row
@@ -42,7 +42,7 @@ export const ObjectToCSV = (data) => {
         return headerRow;
     }
 
-    // Map each row to CSV format, including only term, translation, etymology
+    // Map each row to CSV format, including only term, translation, notes
     const rows = data.map(row => {
         return headers.map(header => {
             const value = row[header];
@@ -64,10 +64,10 @@ export const CSVToObject = (data) => {
     
     // Define the headers we want to extract
     const headers = rows[0].split(',').filter(header => 
-        ['term', 'translation', 'etymology'].includes(header)
+        ['term', 'translation', 'notes'].includes(header)
     );
 
-    // Map the remaining rows to objects, including only term, translation, etymology
+    // Map the remaining rows to objects, including only term, translation, notes
     const result = rows.slice(1).map(row => {
         const values = row.split(',');
 
@@ -75,7 +75,7 @@ export const CSVToObject = (data) => {
         const object = {};
         headers.forEach((header, index) => {
             const value = values[index] ? values[index].replace(/^"|"$/g, '').replace(/""/g, '"') : '';
-            object[header] = header === 'etymology' && !value ? 'none' : value; // Set "none" if etymology is empty
+            object[header] = header === 'notes' && !value ? 'none' : value; // Set "none" if notes is empty
         });
 
         return object;
@@ -95,7 +95,7 @@ export const validateCSVFormat = (csvData) => {
 
     // Validate headers
     const headers = rows[0].split(',').map(header => header.trim().toLowerCase());
-    const expectedHeaders = ['term', 'translation', 'etymology'];
+    const expectedHeaders = ['term', 'translation', 'notes'];
     if (JSON.stringify(headers) !== JSON.stringify(expectedHeaders)) {
         return { valid: false, error: `CSV headers must be: ${expectedHeaders.join(', ')}` };
     }
@@ -107,12 +107,12 @@ export const validateCSVFormat = (csvData) => {
     for (let i = 1; i < rows.length; i++) {
         const columns = rows[i].split(',').map(col => col.trim());
 
-        // Check for 2 or 3 columns, allowing etymology to be optional
+        // Check for 2 or 3 columns, allowing notes to be optional
         if (columns.length < 2 || columns.length > 3) {
             return { valid: false, error: `Row ${i} has an incorrect number of columns. Expected 2 or 3, found ${columns.length}.` };
         }
 
-        const [term, translation, etymology = "none"] = columns;
+        const [term, translation, notes = "none"] = columns;
 
         // Validate term and translation: check for empty or whitespace-only strings
         if (!term || term.trim() === "" || !translation || translation.trim() === "") {
@@ -127,9 +127,9 @@ export const validateCSVFormat = (csvData) => {
             return { valid: false, error: `Row ${i}: 'translation' exceeds the maximum length of 100 characters.` };
         }
 
-        // Check character limit for etymology
-        if (etymology.length > 1000) {
-            return { valid: false, error: `Row ${i}: 'etymology' exceeds the maximum length of 1000 characters.` };
+        // Check character limit for notes
+        if (notes.length > 1000) {
+            return { valid: false, error: `Row ${i}: 'notes' exceeds the maximum length of 1000 characters.` };
         }
         
 
@@ -139,7 +139,7 @@ export const validateCSVFormat = (csvData) => {
         }
         terms.add(term.toLowerCase());
 
-        // Optionally validate the etymology column for length or content if needed
+        // Optionally validate the notes column for length or content if needed
     }
 
     return { valid: true };

@@ -130,7 +130,7 @@ const EditDeckModal = ({onClose, currentLang, deckId, deckName, refreshDeck, ref
             
             {/* User warning to use semicolon instead of commas*/}
             <Text style={{color:style.gray_400, fontWeight:"500", margin:5, marginTop:20}}>
-                Note: Use semicolons instead of commas in the term, translation, and etymology data
+                Note: Use semicolons instead of commas in the term, translation, and notes
             </Text>
 
 

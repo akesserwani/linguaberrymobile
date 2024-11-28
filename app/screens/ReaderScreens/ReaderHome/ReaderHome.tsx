@@ -140,7 +140,7 @@ const ReaderHome = ({ navigation }) => {
                                 </Text>
                             </View>
 
-                            {/* Word Count */}
+                            {/* Created At */}
                             <Text style={{ color: style.gray_400, fontWeight: '400' }}>
                                 { formatDate(item.created_at) } 
                             </Text>

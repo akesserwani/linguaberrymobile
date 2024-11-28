@@ -3,9 +3,6 @@ import './gesture-handler'
 
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
-import { useEffect } from 'react';
-
-
 
 //import styles
 import {  useFonts, Nunito_400Regular, Nunito_300Light, Nunito_600SemiBold, Nunito_700Bold } from '@expo-google-fonts/nunito';

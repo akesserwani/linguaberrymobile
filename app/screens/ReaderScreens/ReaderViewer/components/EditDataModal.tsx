@@ -17,7 +17,7 @@ import { getWordData, updateWordData, getTranslationData, updateTranslationData 
 //data functions
 import { validateCSVFormat, CSVToObject, ObjectToCSV } from "@/app/data/Functions";
 
-const EditDataModal = ({onClose, entryId}) => {
+const EditDataModal = ({onClose, entryId, setRefresh}) => {
 
     //current language
     const { currentLang } = useContext(CurrentLangContext);
@@ -37,7 +37,6 @@ const EditDataModal = ({onClose, entryId}) => {
         //set the sentence data
         const translation_data = getTranslationData(entryId, currentLang);
         setTextTranslation(translation_data);
-
 
     },[entryId, currentLang])
 
@@ -59,6 +58,9 @@ const EditDataModal = ({onClose, entryId}) => {
             //function to push the translation into wordData 
             updateTranslationData(textTranslation, entryId, currentLang); 
 
+            //refresh the variable
+            setRefresh((prev) => !prev); 
+            
             //close the modal
             onClose();
 

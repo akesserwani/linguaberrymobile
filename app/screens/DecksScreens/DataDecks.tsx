@@ -154,12 +154,12 @@ export const createBulkWords = (words, deck_id, language_id) => {
 
       // Step 2: Insert the new words from the words array
       words.forEach(word => {
-        const { term, translation, etymology } = word;
+        const { term, translation, notes } = word;
 
         db.runSync(
           `INSERT INTO word (term, translation, etymology, tag, starred, deck_id, language_id)
            VALUES (?, ?, ?, ?, ?, ?, ?);`,
-          [term, translation, etymology, "None", 0, deck_id, language_id]
+          [term, translation, notes, "None", 0, deck_id, language_id]
         );
       });
     });
