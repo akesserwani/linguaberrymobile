@@ -96,11 +96,29 @@ const TooltipComponent = ({ entryId, contents, refresh }) => {
                 
                 {/* This is the bottom container that will render - takes up 25% screen height */}
                 <View style={styles.modalContent}>
-                    <ScrollView contentContainerStyle={{paddingBottom:20, marginTop:20}}>
+                    <ScrollView contentContainerStyle={{paddingBottom:80, marginTop:20}}>
                         {/* Modal Header */}
-                        <Text style={{fontSize: style.text_lg, color: style.gray_600, fontWeight:'600', marginTop:10}}>
-                            { cleanString(selectedWord) }
-                        </Text>
+                        <View style={{flexDirection:'row', justifyContent:'space-between'}}>
+                            {/* Title Text */}
+                            <View style={{width:'60%'}}>
+                                <Text style={{fontSize: style.text_lg, color: style.gray_600, fontWeight:'600', marginTop:10}}>
+                                    { cleanString(selectedWord) }
+                                </Text>
+                            </View>
+
+                            {/* Button container on far right */}
+                            <View style={{flexDirection:'row', gap: 20, padding:5, marginRight:20}}>
+                                {/* Button To Add Card to Deck */}
+                                <TouchableOpacity activeOpacity={0.7}>
+                                    <Icon name={'highlighter'} size={25} color={style.gray_400} />
+                                </TouchableOpacity>
+
+                                {/* Button to highlight word */}
+                                <TouchableOpacity activeOpacity={0.7}>
+                                    <Icon name={'plus'} size={25} color={style.gray_400} />
+                                </TouchableOpacity>
+                            </View>
+                        </View>
                         {/* Translation here */}
                         <Text style={{fontSize: style.text_lg, color: style.gray_600, marginTop:20}}>
                             { getTranslation(selectedWord) }
