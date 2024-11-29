@@ -12,6 +12,20 @@ export const baseTabBarStyle = {
 };
 
 
+//Base style for the footer
+export const baseFooterStyle = {
+    height:5, 
+    backgroundColor: "#FFFFFF", 
+    borderTopWidth: 1.5, 
+    borderTopColor: '#e5e7eb',
+}
+
+//base style for the header
+export const baseHeaderStyle = {
+    borderBottomWidth: 1,
+    borderBottomColor: '#e5e7eb',
+}
+
 //COLORS
 export const white = "#FFFFFF";
 export const blackOpaque = 'rgba(0, 0, 0, 0.8)'; 

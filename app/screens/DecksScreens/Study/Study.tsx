@@ -273,6 +273,9 @@ const Study = () => {
 
         </View>
 
+        {/* Bottom footer that adds top border */}
+        <View style={style.baseFooterStyle} />
+
         </>
      );
 }

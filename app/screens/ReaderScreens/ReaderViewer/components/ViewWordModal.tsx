@@ -38,7 +38,6 @@ const ViewWordModal = ({onClose, entryId}) => {
     },[])
 
 
-
     return ( 
         <CustomModal title="View Data" onClose={onClose} overrideStyle={{maxHeight:'80%'}}>
 
@@ -60,6 +59,7 @@ const ViewWordModal = ({onClose, entryId}) => {
                 </View>
 
                 {/* Check if there are no words in renderedWords */}
+
                 {wordData.length === 0 ? (
                     <Text style={{ color: style.gray_400, fontSize: style.text_md, fontWeight:'600', textAlign: 'center', margin: 20 }}>
                         No words
@@ -73,7 +73,7 @@ const ViewWordModal = ({onClose, entryId}) => {
                         <TouchableOpacity onPress={ 
                             () =>{
                                 toggleAddWord(true);
-                                setWordtoAdd([ item.term, item.translation ]); 
+                                setWordtoAdd([ item.term, item.translation, item.notes ]); 
                             } 
                         } activeOpacity={0.7} style={styles.item}>
 
@@ -97,8 +97,8 @@ const ViewWordModal = ({onClose, entryId}) => {
 
                         </TouchableOpacity>
                     )}/>
-                )}
 
+                )}
             </View>
 
         </CustomModal>
@@ -110,12 +110,11 @@ const styles = StyleSheet.create({
     contentContainer: {
         flexDirection: 'column',
         gap: 10,
-
+        maxHeight:'95%'
     },
     item: {
         backgroundColor: style.white, 
         height: 60, 
-        borderRadius: style.rounded_md, 
         borderColor: style.gray_200,
         borderBottomWidth: style.border_md,
 

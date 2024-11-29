@@ -43,7 +43,7 @@ const AddWordToDeck = ({onClose, wordToAdd}) => {
             CustomAlert("Need to select a deck!");
         } else {
             //createNewWord
-            createNewWord(wordToAdd[0], wordToAdd[1], "None", "None", selectedDeckId, currentLang)
+            createNewWord(wordToAdd[0], wordToAdd[1], wordToAdd[2],"None", selectedDeckId, currentLang)
             //close the modal
             onClose();
 
@@ -54,47 +54,73 @@ const AddWordToDeck = ({onClose, wordToAdd}) => {
 
     return ( 
         <CustomModal title="Add Word to Deck" onClose={onClose}>
+            <View style={{flexDirection:'column', gap:15}}>
+                {/* Tag Dropdown Button */}
+                <CustomButton onPress={() => openDropdown(!dropdownOpen)} customStyle={styles.tagDropdown}>
+                    <Text style={{color:style.gray_500, fontSize:style.text_md}}>
+                        { selectedDeck === "" ? "Add to Deck" : selectedDeck  }
+                    </Text>
+                    <Icon name={dropdownOpen ? "caret-down" : "caret-up"} size={15} color={style.gray_500}/>
+                </CustomButton>
 
-            {/* Tag Dropdown Button */}
-            <CustomButton onPress={() => openDropdown(!dropdownOpen)} customStyle={styles.tagDropdown}>
-                <Text style={{color:style.gray_500}}>
-                    { selectedDeck === "" ? "Add to Deck" : selectedDeck  }
-                </Text>
-                <Icon name={dropdownOpen ? "caret-down" : "caret-up"} size={15} color={style.gray_500}/>
-            </CustomButton>
+                {/* Dropdown box */}
+                { dropdownOpen && 
+                    <View style={styles.dropdownBox}>
+                        <FlatList
+                            data={deckData}
+                            keyExtractor={(item, index) => index.toString()} 
+                            renderItem={({ item, index }) => (
+                                <TouchableOpacity onPress={()=>{
+                                    setSelectedDeck(item.name);
+                                    setSelectedDeckId(item.id);
+                                    openDropdown(false);
+                                }
+                                } activeOpacity={0.7} style={{paddingVertical:10}}>
+                                    <Text style={{ color: style.gray_500, fontSize: style.text_md }}> 
+                                        {item.name}
+                                    </Text> 
+                                </TouchableOpacity>
+                            )}/>
 
-            {/* Dropdown box */}
-            { dropdownOpen && 
-                <View style={styles.dropdownBox}>
-                    <FlatList
-                        data={deckData}
-                        keyExtractor={(item, index) => index.toString()} 
-                        renderItem={({ item, index }) => (
-                            <TouchableOpacity onPress={()=>{
-                                setSelectedDeck(item.name);
-                                setSelectedDeckId(item.id);
-                                openDropdown(false);
-                            }
-                            } activeOpacity={0.7} style={{paddingVertical:10}}>
-                                <Text style={{ color: style.gray_500, fontSize: style.text_md }}> 
-                                    {item.name}
-                                </Text> 
-                            </TouchableOpacity>
-                        )}/>
+                    </View>
+                }
 
-                </View>
-            }
+                {/* Text Message that shows selected word */}   
+                <ScrollView style={{maxHeight: 300}} contentContainerStyle={{width:'90%', paddingBottom:50}}>
+                    {/* Selected Term */}
+                    <View style={{flexDirection:'row', gap:5}}>
+                        <Text style={{color: style.gray_600, fontWeight:'500', fontSize: style.text_lg}}>
+                            Term: 
+                        </Text>
+                        <Text style={{color: style.gray_500, fontWeight:'400', fontSize: style.text_lg}}>
+                            {wordToAdd[0]}
+                        </Text>
+                    </View>       
+                    {/* Selected Translation */}      
+                    <View style={{flexDirection:'row', marginTop:15, gap:5}}>
+                        <Text style={{color: style.gray_600, fontWeight:'500', fontSize: style.text_lg}}>
+                            Translation: 
+                        </Text>
+                        <Text style={{color: style.gray_500, fontWeight:'400', fontSize: style.text_lg}}>
+                            {wordToAdd[1]}
+                        </Text>
+                    </View>       
+                    {/* Notes */}      
+                    <View style={{flexDirection:'column', marginTop:15, gap:5}}>
+                        <Text style={{color: style.gray_600, fontWeight:'500', fontSize: style.text_lg}}>
+                            Notes: 
+                        </Text>
+                        <Text style={{color: style.gray_500, fontWeight:'400', fontSize: style.text_lg}}>
+                            {wordToAdd[2]}
+                        </Text>
+                    </View>       
+                </ScrollView>
 
-            {/* Text Message that shows selected word */}                
-            <Text style={{margin:5, marginBottom: 20, color: style.gray_600, fontWeight:'500', fontSize: style.text_md}}>
-                Word Selected: {wordToAdd[0]}
-            </Text>
-
-            {/* Button to add to deck */}
-            <CustomButton onPress={addWordToDeckFunc} customStyle={null}>
-                <Text style={{color:style.white, fontSize:style.text_sm, fontWeight:'500'}}>Add to Deck</Text>
-            </CustomButton>
-            
+                {/* Button to add to deck */}
+                <CustomButton onPress={addWordToDeckFunc} customStyle={null}>
+                    <Text style={{color:style.white, fontSize:style.text_md, fontWeight:'500'}}>Add to Deck</Text>
+                </CustomButton>
+            </View>
         </CustomModal>     
     );
 }
@@ -106,20 +132,18 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         backgroundColor:style.white, 
-        borderWidth: style.border_sm, 
+        borderWidth: style.border_md, 
         borderColor: style.gray_200
     },
 
     dropdownBox: {
         position: 'absolute', 
-        top: 80, 
-        left: 30,
-        right: 0,
+        top: 50, 
         padding: 15,
-        maxHeight:'80%',
 
         zIndex: 99,
-        width:300,
+        width:280,
+        maxHeight:'100%',
 
         borderWidth: 1,
         borderColor: style.gray_200,

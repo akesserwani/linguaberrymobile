@@ -82,7 +82,7 @@ const ReaderViewer = ({route}) => {
         };
         // Call the async function
         fetchEntryData();
-        }, [entryId, currentLang]) // Re-run effect if entryId or currentLang changes
+        }, [entryId, currentLang, refresh]) // Re-run effect if entryId or currentLang changes
     )
 
 
@@ -93,6 +93,9 @@ const ReaderViewer = ({route}) => {
         //set it to the reactive vairable
         setBookmarked(getBookmarkedStatus(currentLang, entryId));
     },[entryData])
+
+    //Reactive variable to show the english translation
+    const [showTranslation, setTranslation] = useState(false);
 
     
     //responsive variable for container padding
@@ -107,13 +110,10 @@ const ReaderViewer = ({route}) => {
             {/* Button Container for the Show English and Practice functionaities*/}
             <View style={{flexDirection:'row', gap:10, borderBottomWidth:style.border_sm, borderBottomColor:style.gray_300, paddingBottom:10}}>
                 {/* Show English Button */}
-                <CustomButton onPress={()=>{}} customStyle={null}>
-                    <Text style={{color:style.white, fontWeight:'500', fontSize:style.text_xs}}>Show English</Text>
-                </CustomButton>
-                
-                {/* Practice Button */}
-                <CustomButton onPress={()=>{}} customStyle={{backgroundColor:style.blue_200}}>
-                    <Text style={{color:style.blue_500, fontWeight:'500', fontSize:style.text_xs}}>Practice</Text>
+                <CustomButton onPress={()=>setTranslation(!showTranslation)} customStyle={null}>
+                    <Text style={{color:style.white, fontWeight:'500', fontSize:style.text_sm}}>
+                        {showTranslation ? 'Hide Translation' : 'Show Translation'}
+                    </Text>
                 </CustomButton>
             </View>
 
@@ -132,7 +132,7 @@ const ReaderViewer = ({route}) => {
                         </View>
                         
                         {/* Date */}
-                        <Text style={{color:style.gray_400, fontSize:style.text_sm, fontWeight:'400', marginTop:19}}>
+                        <Text style={{color:style.gray_400, fontSize:style.text_sm, fontWeight:'400', marginTop:10}}>
                             Created on {formatDate(entryData.created_at)}
                         </Text>
                         </>
@@ -160,13 +160,27 @@ const ReaderViewer = ({route}) => {
             </View>
 
             {/* Container for the main text with interactive functionalities */}
-            
             <ScrollView style={{ flex:1}} contentContainerStyle={{marginTop:20}}>
                     {entryData ? (
-                        <TooltipComponent entryId={ entryId } contents={entryData.contents} refresh={refresh} />
-    
+                        <>
+                            {/* Main Text here in the Target Language */}
+                            <TooltipComponent entryId={ entryId } contents={entryData.contents} refresh={refresh} />
+
+                            {/* Show the translation here */}
+                            { showTranslation && (
+                                <View style={{flexDirection:'column', gap:10, marginBottom:50}}>
+                                    <Text style={{color:style.gray_700, fontSize:style.text_lg, fontWeight:'600', fontStyle:'italic'}}>
+                                        Translation:
+                                    </Text>
+                                    <Text style={{color:style.gray_700, fontSize:style.text_lg, fontWeight:'400'}}>
+                                        { entryData.translation_data }
+                                    </Text>
+                                </View>    
+                            )}
+                        </>
                     ) : (
                         <Text style={{color:style.gray_500, fontSize:style.text_md, fontWeight:'500'}}>Loading...</Text>
+
                     )}
 
             </ScrollView>
@@ -175,7 +189,10 @@ const ReaderViewer = ({route}) => {
             <CustomFab icon='pen' onPress={()=>navigation.navigate("ReaderEditor", { entryTitle: entryTitle, entryId: entryId })}/>
 
         </View>
-        
+
+        {/* Bottom footer that adds top border */}
+        <View style={style.baseFooterStyle} />
+
         </>
      );
 }
@@ -186,8 +203,7 @@ const styles = StyleSheet.create({
         backgroundColor: style.slate_100,
         paddingTop: 30,
         flexDirection:'column',
-    }
-    
+    },    
 });
 
 export default ReaderViewer;

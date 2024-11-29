@@ -84,6 +84,7 @@ const ReaderStory = ({route}) => {
 
 
     return ( 
+        <>
         <View style={[styles.mainContainer, { paddingHorizontal: responsiveHorizontalPadding }]}>
 
             {/* title form - can be edited */}
@@ -109,6 +110,9 @@ const ReaderStory = ({route}) => {
 
         </View>
 
+        {/* Bottom footer that adds top border */}
+        <View style={style.baseFooterStyle} />
+        </>
      );
 }
 

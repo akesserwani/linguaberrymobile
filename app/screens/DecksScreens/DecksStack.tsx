@@ -11,7 +11,12 @@ const Stack = createStackNavigator();
 
 const DecksStack = () => {
     return ( 
-      <Stack.Navigator>
+      <Stack.Navigator
+            screenOptions={{
+                headerStyle: {
+                    ...style.baseHeaderStyle, 
+            }
+        }}>
           <Stack.Screen name="DecksHome" component={ DecksHome } 
                         options= {{
                             title: 'Decks',

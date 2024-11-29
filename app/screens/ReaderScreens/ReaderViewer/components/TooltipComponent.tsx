@@ -9,6 +9,8 @@ import { CurrentLangContext } from '@/app/data/CurrentLangContext.tsx';
 //database functions
 import { getWordData } from '../../DataReader';
 
+import AddWordToDeck from '@/app/components/AddWordToDeck';
+
 const TooltipComponent = ({ entryId, contents, refresh }) => {
 
     //current language
@@ -24,7 +26,7 @@ const TooltipComponent = ({ entryId, contents, refresh }) => {
 
     //function to clean the string
     const cleanString = (str) => {
-        return str.trim().replace(/[^\w\s]/g, ""); 
+        return str.trim().replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "");
     };
         
     const [visibleTooltip, setVisibleTooltip] = useState(null);
@@ -44,8 +46,8 @@ const TooltipComponent = ({ entryId, contents, refresh }) => {
             return "Translation not found"; 
         }
     
-        const foundItem = entryData.find(item => item.term === selectedWord);
-        return foundItem ? cleanString(foundItem.translation) : "Translation not found";
+        const foundItem = entryData.find(item => item.term === cleanString(selectedWord.toLowerCase()));
+        return foundItem ? cleanString(foundItem.translation.toLowerCase()) : "Translation not found";
     };
 
     // Get the notes for the selected word
@@ -54,15 +56,20 @@ const TooltipComponent = ({ entryId, contents, refresh }) => {
             return "none"; 
         }
     
-        const foundItem = entryData.find(item => item.term === selectedWord);
-        return foundItem ? cleanString(foundItem.notes) : "none";
+        const foundItem = entryData.find(item => item.term === cleanString(selectedWord.toLowerCase()));
+        return foundItem ? cleanString(foundItem.notes.toLowerCase()) : "none";
     };
         
+
+    //function to add term, translation, and notes to deck
+    //Create reactive variable to trigger whether we want to show AddWordToDeck Component or not
+    const [addToDeck, toggleAddWord] = useState(false);
     
     return (
         <>
+
             {/* Render the Text */}
-            <View style={{ flexWrap: 'wrap', flexDirection: 'row', marginBottom:200 }}>
+            <View style={{ flexWrap: 'wrap', flexDirection: 'row', marginBottom:50 }}>
                 {words.map((word, index) => (
                     <View key={index} style={styles.wordContainer}>
                         {/* Individual Word */}
@@ -81,6 +88,17 @@ const TooltipComponent = ({ entryId, contents, refresh }) => {
                 ))}
             </View>
 
+
+            {/* Trigger the add word to deck Modal */}
+            { addToDeck && 
+            <AddWordToDeck 
+                onClose={()=>toggleAddWord(false)} 
+                wordToAdd={
+                [ cleanString(selectedWord), 
+                    getTranslation(selectedWord), 
+                    getNotes(selectedWord) 
+                ]}/>
+            }
 
             {/* Bottom Popup for the Word Data */}
             <Modal transparent={true} visible={bottomPopup} onRequestClose={() => setPopup(false)} >
@@ -106,18 +124,17 @@ const TooltipComponent = ({ entryId, contents, refresh }) => {
                                 </Text>
                             </View>
 
-                            {/* Button container on far right */}
-                            <View style={{flexDirection:'row', gap: 20, padding:5, marginRight:20}}>
-                                {/* Button To Add Card to Deck */}
-                                <TouchableOpacity activeOpacity={0.7}>
-                                    <Icon name={'highlighter'} size={25} color={style.gray_400} />
-                                </TouchableOpacity>
+                            {/* Button to add word to deck - ON FAR RIGHT */}
+                            <TouchableOpacity style={{marginRight:20, marginTop: 5}} onPress={()=>{
+                                //toggle the modal
+                                toggleAddWord(true);
+                                //close the bottom popup to allow the modal to open
+                                setPopup(false);
+                            }
+                            } activeOpacity={0.7}>
+                                <Icon name={'plus'} size={28} color={style.gray_400} />
+                            </TouchableOpacity>
 
-                                {/* Button to highlight word */}
-                                <TouchableOpacity activeOpacity={0.7}>
-                                    <Icon name={'plus'} size={25} color={style.gray_400} />
-                                </TouchableOpacity>
-                            </View>
                         </View>
                         {/* Translation here */}
                         <Text style={{fontSize: style.text_lg, color: style.gray_600, marginTop:20}}>
@@ -136,6 +153,7 @@ const TooltipComponent = ({ entryId, contents, refresh }) => {
 
                 </View>
             </Modal>
+
         </>
     );
 };

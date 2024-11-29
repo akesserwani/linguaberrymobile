@@ -8,7 +8,7 @@ import { Image } from 'react-native';
 import Home from '../HomeScreen/Home';
 import DecksStack from '../DecksScreens/DecksStack';
 import ReaderStack from '../ReaderScreens/ReaderStack';
-import ExplorerHome from '../ExplorerScreen/ExplorerHome';
+import ExplorerStack from '../ExplorerScreen/ExplorerStack';
 
 
 //import styles
@@ -47,7 +47,9 @@ const MobileNav = () => {
                                     style={{ width:150, height:40 }}/>
                         ),
                         headerStyle: {
-                            height: 65
+                            height: 65,
+                            borderBottomWidth:1,
+                            borderBottomColor: style.gray_200
                         },
                         headerLeftContainerStyle: {
                             padding: 15,
@@ -63,7 +65,7 @@ const MobileNav = () => {
                     options={{
                         headerShown:false,
                         tabBarIcon: ({color}) => <Icon name="list-ul" size={20} color={color} />,
-                        tabBarLabelStyle: { fontWeight: '500', fontSize:style.text_sm }
+                        tabBarLabelStyle: { fontWeight: '500', fontSize:style.text_sm },
                     }} />
 
         {/* Reader Router   */}     
@@ -74,7 +76,7 @@ const MobileNav = () => {
                     }} />
 
         {/* Explorer Router   */}     
-        <Tab.Screen name="Explorer" component={ ExplorerHome } 
+        <Tab.Screen name="Explorer" component={ ExplorerStack } 
                     options={{
                         headerShown:false,
                         tabBarIcon: ({color}) => <Icon name="book-atlas" size={20} color={color} />,

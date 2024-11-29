@@ -382,7 +382,7 @@ const Practice = () => {
         {/* Bottom Containers - depending on user input */}
         { buttonContainer && 
             // {/* Bottom Container with Buttons - outside of the main container*/}
-            <View style={{flex:1, backgroundColor:style.white, borderTopWidth:style.border_sm, borderTopColor:style.gray_300}}>
+            <View style={{flex:1, backgroundColor:style.white, borderTopWidth:1.5, borderTopColor:style.gray_200}}>
                 {/* Button Spacing */}
                 <View style={{paddingHorizontal: responsiveHorizontalPadding, flex: 1,
                             flexDirection:'row', justifyContent:'space-between', alignItems:'center', alignContent:'center'}}>

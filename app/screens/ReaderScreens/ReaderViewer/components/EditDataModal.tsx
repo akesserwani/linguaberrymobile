@@ -13,9 +13,12 @@ import CustomButton from "@/app/components/CustomButton";
 import { CurrentLangContext } from '@/app/data/CurrentLangContext.tsx';
 
 //import data functions from DataReader
-import { getWordData, updateWordData, getTranslationData, updateTranslationData } from "../../DataReader";
+import { getWordData, updateWordData, getTranslationData, updateTranslationData, getEntryContents } from "../../DataReader";
 //data functions
 import { validateCSVFormat, CSVToObject, ObjectToCSV } from "@/app/data/Functions";
+
+import * as Clipboard from 'expo-clipboard';
+
 
 const EditDataModal = ({onClose, entryId, setRefresh}) => {
 
@@ -27,6 +30,8 @@ const EditDataModal = ({onClose, entryId, setRefresh}) => {
     const [wordDataInput, setWordDataInput] = useState(null);
     const [textTranslation, setTextTranslation] = useState(null);
 
+    //reactive variable for the content
+    const [entryContents, setEntryContents] = useState(null);
 
     // create useEffect to get data and insert in form
     useEffect(()=>{
@@ -38,11 +43,17 @@ const EditDataModal = ({onClose, entryId, setRefresh}) => {
         const translation_data = getTranslationData(entryId, currentLang);
         setTextTranslation(translation_data);
 
+        //get the word entry contents
+        const contentsData = getEntryContents(entryId, currentLang);
+        setEntryContents(contentsData);
+
+
     },[entryId, currentLang])
 
     //reactive variable to render error messages for word data
     const [wordError, setWordError] = useState("");
     const [textError, setTextError] = useState("");
+
 
     //Function to push data
     const loadData = () =>{
@@ -70,6 +81,31 @@ const EditDataModal = ({onClose, entryId, setRefresh}) => {
 
     } 
 
+
+    //Copy AI prompt for Word Data
+    //** Goal of the word prompt is to go through the entire text and generate key value pairs in CSV format for the word and translation in the text
+    // Data to pass in: Text content, target language
+    const wordPrompt = async () =>{
+
+
+        const format = "term,translation,notes \n term 1, translation 1 \n word 2, translation 2 "
+
+        const prompt = `We are learning ${currentLang}. We want to generate translation values for this text: "${entryContents}". Generate the term translation values in this CSV format ${format}. Be sure to include the headers: term,translation,notes. All lowercase.`;
+
+        //go through the full text and 
+        await Clipboard.setStringAsync(prompt);
+    }
+
+    //Copy AI prompt for Translation
+    const translationPrompt = async () =>{
+
+        const prompt = `If this text is in English, translate it to ${currentLang}. If in ${currentLang} translate to English. Here is the text: "${entryContents}". Make it in a copyable format.`;
+
+        //go through the full text and 
+        await Clipboard.setStringAsync(prompt);
+
+    }
+
     const { width } = useWindowDimensions(); // Get screen width
 
     return ( 
@@ -85,7 +121,7 @@ const EditDataModal = ({onClose, entryId, setRefresh}) => {
                             <Text style={{color:style.gray_500, fontSize: style.text_md, fontWeight: '500'}}>Word Data:</Text>
 
                             {/* AI prompt button for word data */}
-                            <CustomButton onPress={()=>{}} customStyle={{flexDirection:'row', gap:5, backgroundColor:style.gray_200}}> 
+                            <CustomButton onPress={wordPrompt} customStyle={{flexDirection:'row', gap:5, backgroundColor:style.gray_200}}> 
                                 <Text style={{color:style.gray_500, fontSize:style.text_xs, fontWeight:'500'}}>AI Prompt</Text>
                                 <Icon name={"copy"} size={15} color={style.gray_500} />
                             </CustomButton>
@@ -109,7 +145,7 @@ const EditDataModal = ({onClose, entryId, setRefresh}) => {
                             <Text style={{color:style.gray_500, fontSize: style.text_md, fontWeight: '500'}}>Full Translation:</Text>
 
                             {/* AI prompt button for word data */}
-                            <CustomButton onPress={()=>{}} customStyle={{flexDirection:'row', gap:5, backgroundColor:style.gray_200}}> 
+                            <CustomButton onPress={translationPrompt} customStyle={{flexDirection:'row', gap:5, backgroundColor:style.gray_200}}> 
                                 <Text style={{color:style.gray_500, fontSize:style.text_xs, fontWeight:'500'}}>AI Prompt</Text>
                                 <Icon name={"copy"} size={15} color={style.gray_500} />
                             </CustomButton>
@@ -132,11 +168,11 @@ const EditDataModal = ({onClose, entryId, setRefresh}) => {
                     </CustomButton>
 
                     {/* Help Link */}
-                    <TouchableOpacity activeOpacity={0.7} style={{alignItems:'center'}}>
+                    {/* <TouchableOpacity activeOpacity={0.7} style={{alignItems:'center'}}>
                         <Text style={{color:style.blue_500, fontSize:style.text_sm, fontWeight:'500'}}>
                             Need help? 
                         </Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
 
                 </ScrollView>
 

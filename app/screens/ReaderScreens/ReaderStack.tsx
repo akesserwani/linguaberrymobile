@@ -11,8 +11,13 @@ const Stack = createStackNavigator();
 
 const ReaderStack = () => {
     return ( 
-      <Stack.Navigator>
-          <Stack.Screen name="ReaderHome" component={ ReaderHome } 
+        <Stack.Navigator
+            screenOptions={{
+                    headerStyle: {
+                        ...style.baseHeaderStyle, 
+                }
+            }}>
+      <Stack.Screen name="ReaderHome" component={ ReaderHome } 
                         options= {{
                         title: 'Reader',
                         headerTitleAlign: 'center',

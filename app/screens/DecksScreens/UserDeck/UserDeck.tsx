@@ -1,7 +1,7 @@
 
 import { View, Text, StyleSheet, useWindowDimensions, TouchableOpacity, FlatList} from 'react-native';
-import { useContext, useLayoutEffect, useState, useEffect, useRef } from 'react';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useContext, useLayoutEffect, useState, useEffect, useRef, useCallback } from 'react';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 //data for context
 import { CurrentLangContext } from '@/app/data/CurrentLangContext.tsx';
@@ -71,12 +71,14 @@ const UserDeck = ({route}) => {
         setWordData(data);
     };
 
-    // Initialize user data from the database and update it when component mounts
-    useEffect(() => {
-        fetchWords(); // Call `fetchDecks` when the component mounts
-    }, []); 
-    
-    
+    // Initialize user data from the database and update it when component mounts    
+    useFocusEffect(
+        useCallback(() => {
+            fetchWords(); // Call `fetchDecks` when the component mounts
+        }, []) 
+    )
+
+
 
     // State to track the active tab
     const [activeTab, setActiveTab] = useState('All');
