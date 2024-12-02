@@ -78,6 +78,7 @@ export const createNewDeck = (deckName, currentLang) => {
 
     db.withTransactionSync(() => {
       db.runSync(`INSERT INTO deck (name, bookmarked, language_id) VALUES (?, ?, ?);`, [deckName, 0, currentLang]);
+      
     });
 
 }
@@ -167,6 +168,41 @@ export const createBulkWords = (words, deck_id, language_id) => {
 
   } catch (error) {
     return false;
+  }
+};
+
+
+export const createBulkWordsByDeckName = (deckName, words, language_id) => {
+  try {
+    db.withTransactionSync(() => {
+      // Step 1: Get the deck ID by its name
+      const result = db.getFirstSync(
+        `SELECT id FROM deck WHERE name = ? LIMIT 1;`,
+        [deckName]
+      );
+
+      if (result.length === 0) {
+        throw new Error(`Deck with name "${deckName}" not found.`);
+      }
+
+      const deck_id = result.id; // Fetch the deck ID
+
+      // Step 2: Insert each word into the database
+      words.forEach(word => {
+        const { term, translation, notes } = word;
+
+        db.runSync(
+          `INSERT OR IGNORE INTO word (term, translation, etymology, tag, starred, deck_id, language_id)
+           VALUES (?, ?, ?, ?, ?, ?, ?);`,
+          [term, translation, notes || "None", "None", 0, deck_id, language_id]
+        );
+      });
+    });
+
+    return true; // Success
+  } catch (error) {
+    console.error("Error in createBulkWordsByDeckName:", error.message);
+    return false; // Failure
   }
 };
 

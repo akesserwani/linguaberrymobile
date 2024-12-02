@@ -8,7 +8,7 @@ import CustomAlert from "@/app/components/CustomAlert";
 
 import { deleteEntry } from "../../DataReader";
 import EditDataModal from "./EditDataModal";
-import ViewWordModal from "./ViewWordModal";
+import ViewWordModal from "../../../../components/ViewWordModal";
 
 const HeaderRight = ({currentLang, entryId, setRefresh}) => {
 

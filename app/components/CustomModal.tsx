@@ -10,7 +10,7 @@ import CustomButton from "./CustomButton";
 
 
 //Props: title, function to close, function to toggle, children  
-const CustomModal = ({title="My Modal", onClose, children, overrideStyle ={} }) => {
+const CustomModal = ({title="My Modal", onClose, children, overrideStyle ={}, horizontalPadding = 40, topPadding = 30 }) => {
 
     //Width logic
     //get window width
@@ -32,19 +32,19 @@ const CustomModal = ({title="My Modal", onClose, children, overrideStyle ={} }) 
                         {/* Top Bar with Title and exit button */}
                         <View style ={styles.topBar}>
                             {/* Modal Title */}
-                            <Text style={{ fontSize: style.text_lg, color: style.gray_600, margin: 5, fontWeight:"500" }}>
+                            <Text style={{ fontSize: style.text_md, color: style.gray_600, margin: 5, fontWeight:"500" }}>
                                 { title }
                             </Text>
                             
                             {/* Button to Close */}
                             <CustomButton onPress={onClose} customStyle={{ borderRadius: 40, backgroundColor: style.gray_300, paddingVertical: 10, paddingHorizontal: 11}}>
-                                <Icon name={"xmark"} width={10} color={style.gray_500}/>
+                                <Icon name={"xmark"} size={15} color={style.gray_500}/>
                             </CustomButton>
                         </View>
 
 
                         {/* Main Content Below - Children Content Here */}
-                        <View style={{ paddingHorizontal: 40, paddingTop:30, alignSelf:"stretch" }}>
+                        <View style={{ paddingHorizontal: horizontalPadding, paddingTop:topPadding, alignSelf:"stretch" }}>
                             { children }
                         </View>
                     </View>

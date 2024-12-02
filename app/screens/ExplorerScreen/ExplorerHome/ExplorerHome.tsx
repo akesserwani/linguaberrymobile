@@ -8,7 +8,11 @@ import { CurrentLangContext } from '@/app/data/CurrentLangContext.tsx';
 import * as style from '@/assets/styles/styles'
 import Icon from '@expo/vector-icons/FontAwesome6'
 
+//import data file
 import wordFiles from './ExplorerData';
+
+//import components
+import ViewWordModal from '@/app/components/ViewWordModal';
 
 const ExplorerHome = () => {
 
@@ -21,9 +25,15 @@ const ExplorerHome = () => {
     // State to track the active tab
     const [activeTab, setActiveTab] = useState('Words');
 
+    //reactive variable to view the word modal
+    const [wordModal, toggleWordModal] = useState(false);
 
     //Functionality here to pull the data from the respective JSON file 
     const [data, setData] = useState(null);
+
+    //word data - this data will be converted into a format that will be fed to ViewWordModal
+    const [wordData, setWordData] = useState(null);
+      
 
     useEffect(() => {
         const loadData = () => {
@@ -33,7 +43,6 @@ const ExplorerHome = () => {
                     title: item.title,
                     wordCount: Object.keys(item.words).length,
                 }));
-    
                 setData(transformedData); 
             } else {
                 console.error(`No data file found for language: ${currentLang}`);
@@ -43,7 +52,51 @@ const ExplorerHome = () => {
         loadData();
     }, [currentLang]); // Re-run whenever `currentLang` changes
     
+
+    //This function will transform the structures so that it may be passed to the ViewWordModal
+    const convertDeckWords = (data, title) => {
+        // Find the deck by its title
+        const deck = data.find((item) => item.title === title);
+      
+        // If the deck exists, transform its words
+        if (deck && deck.words) {
+          return Object.entries(deck.words).map(([term, translation]) => ({
+            term,
+            translation,
+            notes: "none", // Automatically set notes to "none"
+          }));
+        } else {
+          console.error(`Deck with title "${title}" not found or has no words.`);
+          return [];
+        }
+      };
+
+    //selected title
+    const [selectedTitle, setSelectedTitle] = useState("");
+    //this function is run when a vocabulary entry is clicked
+    const toggleWordModalFunc = (title) =>{
+
+        //convert the data of the clicked title        
+        const json = wordFiles[currentLang]; 
+        if (json) {
+            //run the data conversion function
+            const convertedData = convertDeckWords(json, title);
+            //set it to the reactive wordData variable
+            setWordData(convertedData);
+
+            //set the selected title
+            setSelectedTitle(title);
+
+            //toggle the modal
+            toggleWordModal(true);
+            
+        } else {
+            console.log("Error");
+        }
+    };
+
     
+
 
     //responsive variable for container padding
     //if width is less than 600 then padding is 40, if between 600 and 1000 then padding is 100, 1k+, padding is 200
@@ -55,9 +108,8 @@ const ExplorerHome = () => {
         
         <View style={[styles.mainContainer, { paddingHorizontal: responsiveHorizontalPadding }]}>
 
-
             {/* White card container that holds the content */}
-            <View style={{ flex:1, backgroundColor:style.white, padding:15, borderColor:style.gray_200, borderWidth:style.border_sm, borderTopRightRadius:style.rounded_lg, borderTopLeftRadius:style.rounded_lg}}>
+            <View style={{ flex:1, backgroundColor:style.white, paddingTop:15, paddingRight:15, paddingLeft:15, borderColor:style.gray_200, borderWidth:style.border_sm, borderTopRightRadius:style.rounded_lg, borderTopLeftRadius:style.rounded_lg}}>
                 {/* Top Container with Tabs - All and Bookmarks */}
                 <View style={styles.tabContainer}>
                     <TouchableOpacity onPress={() => setActiveTab('Words')} style={[styles.individualTab, activeTab === 'Words' && styles.activeTab]} activeOpacity={0.7}>
@@ -77,9 +129,7 @@ const ExplorerHome = () => {
                             Non-fiction
                         </Text>
                     </TouchableOpacity>
-
                 </View>
-
 
                 {/* Container for The Rendered Content  */}
                 <View style={{ flexDirection: 'column', flex:1, paddingHorizontal:15}} >
@@ -90,6 +140,7 @@ const ExplorerHome = () => {
                             renderItem={({ item, index }) => (
                                 // Individual Box being rendered
                                 <TouchableOpacity 
+                                    onPress={() => toggleWordModalFunc(item.title)}
                                     style={[
                                         styles.wordCard, 
                                         { 
@@ -104,7 +155,7 @@ const ExplorerHome = () => {
                                         </Text>
 
                                         {/* Title for Deck */}
-                                        <View style={{ width: '60%' }}>
+                                        <View style={{ width: '65%' }}>
                                             <Text style={{ color: style.gray_500, fontWeight: '500', fontSize: style.text_md }}>
                                                 {item.title.trim()}
                                             </Text>
@@ -124,6 +175,12 @@ const ExplorerHome = () => {
 
         </View>    
 
+        {/* Render modal that shows the words in the deck */}
+        { wordModal &&
+            <ViewWordModal onClose={()=>toggleWordModal(false)} 
+                           json={true} dataProp={wordData} 
+                           modalTitle={selectedTitle} />
+        }
 
         </>
 
@@ -149,7 +206,7 @@ const styles = StyleSheet.create({
         fontSize: style.text_md,
         color: style.gray_400,
         fontWeight: "600",
-        paddingVertical: 10,
+        paddingVertical: 15,
         flexDirection: 'row',
 
     },

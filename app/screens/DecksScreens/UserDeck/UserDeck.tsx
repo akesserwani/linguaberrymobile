@@ -298,9 +298,11 @@ const UserDeck = ({route}) => {
                                     getStarred(currentLang, deckId, item.term) === 1 && { borderWidth: 1, borderColor: '#facc15' }
                                 ]}>
 
-                                <Text style={{ color: style.gray_400, fontSize: style.text_md }}> 
-                                    {index + 1}
-                                </Text> 
+                                <View style={{ width: '10%',justifyContent: 'center' }}>
+                                    <Text style={{ color: style.gray_300, fontSize: style.text_md }}>
+                                        {index + 1}
+                                    </Text>
+                                </View>
 
                                 {/* Container for Term */}
                                 <View style={{ width: '40%', height: 60, justifyContent: 'center' }}>
@@ -312,7 +314,7 @@ const UserDeck = ({route}) => {
                                 {/* Container for Translation */}
                                 <View style={{ width: '40%', height: 60, justifyContent: 'center' }}>
                                     <Text style={{ color: style.gray_400, fontSize: style.text_md }}> 
-                                    { limitLength(item.translation, 15) } 
+                                    { limitLength(item.translation, 20) } 
                                     </Text>
                                 </View>
 
@@ -398,7 +400,6 @@ const styles = StyleSheet.create({
         borderWidth: style.border_sm,
 
         flexDirection: 'row',
-        gap: 20,
         alignItems:'center',
         paddingHorizontal: 15,
         marginBottom: 10

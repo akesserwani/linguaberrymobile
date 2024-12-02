@@ -7,6 +7,7 @@ import * as style from '@/assets/styles/styles'
 
 import CustomModal from "@/app/components/CustomModal";
 import CustomInput from "@/app/components/CustomInput";
+import CustomAlert from "./CustomAlert";
 import CustomButton from "@/app/components/CustomButton";
 import AddWordToDeck from "@/app/components/AddWordToDeck";
 
@@ -14,10 +15,12 @@ import AddWordToDeck from "@/app/components/AddWordToDeck";
 import { CurrentLangContext } from '@/app/data/CurrentLangContext.tsx';
 
 //get data
-import { getWordData, getTranslationData } from "../../DataReader";
+import { getWordData } from "../screens/ReaderScreens/DataReader";
+
+import { deckNameExist, createNewDeck, createBulkWordsByDeckName } from "../screens/DecksScreens/DataDecks";
 
 
-const ViewWordModal = ({onClose, entryId}) => {
+const ViewWordModal = ({onClose, json=false, entryId = null, dataProp = null, modalTitle="View Data"}) => {
 
     //current language
     const { currentLang } = useContext(CurrentLangContext);
@@ -33,13 +36,43 @@ const ViewWordModal = ({onClose, entryId}) => {
     const [wordData, setWordData] = useState("");
 
     useEffect(()=>{
-        const wordData = getWordData(entryId, currentLang);
-        setWordData(wordData);
+        //If the data passed is JSON (json prop is true), use the data from the data prop
+        if (json){
+            setWordData(dataProp);    
+        } else {
+            //Else get the word data using the decks ID 
+            const wordData = getWordData(entryId, currentLang);
+            setWordData(wordData);    
+        }
     },[])
+
+    const saveDeck = () =>{
+
+        //This method will create a new deck
+        //create new deck name
+        //Check if the deckname doesnt exist
+        if (deckNameExist(modalTitle, currentLang)){
+            //If deck already exists make an alert
+            CustomAlert("You have already saved this deck", "Check to see if you already have a deck by this name under 'Decks'");
+        } else {
+            //If it does not exist, create the name of the deck
+            createNewDeck(modalTitle, currentLang);
+
+            //Next run the bulk words to create this
+            createBulkWordsByDeckName(modalTitle, dataProp, currentLang);
+
+            //Make an alert showing that it was successful
+            CustomAlert("Deck Saved!", "Look under 'Decks' to find this deck");
+
+            //close the modal
+            onClose();
+
+        }
+    }
 
 
     return ( 
-        <CustomModal title="View Data" onClose={onClose} overrideStyle={{maxHeight:'80%'}}>
+        <CustomModal title={modalTitle} onClose={onClose} overrideStyle={{maxHeight:'80%'}} horizontalPadding={0} topPadding={0}>
 
             {/* Add word to deck component will be triggered at top of page  */}
             { addToDeck &&
@@ -48,8 +81,23 @@ const ViewWordModal = ({onClose, entryId}) => {
 
             {/* Content Area */}
             <View style={styles.contentContainer}>
+
+                {/* Button here to add entire data to deck */}
+                {/* Toggle this button if JSON is true - so only when it is fetching from JSON data */}
+                { json && 
+                    <View style={{justifyContent:'center', alignItems:'flex-end', alignContent:'center', paddingVertical:15, backgroundColor:style.gray_100 }}>
+                        <CustomButton customStyle={{width:150, marginRight:30, flexDirection:'row', gap:15}} onPress={saveDeck}>
+                            {/* Text */}
+                            <Text style={{color:style.white, fontWeight:'500'}}>Save Deck</Text>
+                            {/* Icon */}
+                            <Icon name={"download"} size={15} color={style.white}/>
+                        </CustomButton>
+                    </View>
+                }
+
+
                 {/* Top bar with labels */}
-                <View style={{flexDirection:'row', borderBottomWidth: style.border_md, gap:20, borderColor: style.gray_200, padding:10, justifyContent:'center' }}>
+                <View style={{flexDirection:'row', backgroundColor: style.gray_100 ,borderBottomWidth: style.border_md, gap:20, borderColor: style.gray_200, padding:15, paddingVertical:20, justifyContent:'center' }}>
                     <View style={{width: '40%', justifyContent: 'center'}}>
                         <Text style={{ color: style.gray_600, fontSize: style.text_md, fontWeight:'600' }}>Term</Text> 
                     </View>
@@ -61,13 +109,16 @@ const ViewWordModal = ({onClose, entryId}) => {
                 {/* Check if there are no words in renderedWords */}
 
                 {wordData.length === 0 ? (
-                    <Text style={{ color: style.gray_400, fontSize: style.text_md, fontWeight:'600', textAlign: 'center', margin: 20 }}>
-                        No words
-                    </Text>
+                    <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+                        <Text style={{ color: style.gray_400, fontSize: style.text_md, fontWeight:'600', textAlign: 'center', margin: 20 }}>
+                            No words
+                        </Text>
+                    </View>
                 ) : (
                     // Render words in a flatlist 
                     <FlatList
                         data={wordData}
+                        contentContainerStyle = {{paddingRight:10, paddingTop:10, paddingBottom:20, paddingHorizontal:20 }}
                         keyExtractor={(item, index) => index.toString()} 
                         renderItem={({ item, index }) => (
                         <TouchableOpacity onPress={ 
@@ -75,7 +126,8 @@ const ViewWordModal = ({onClose, entryId}) => {
                                 toggleAddWord(true);
                                 setWordtoAdd([ item.term, item.translation, item.notes ]); 
                             } 
-                        } activeOpacity={0.7} style={styles.item}>
+                        } activeOpacity={0.7} 
+                          style={[styles.item, {borderBottomWidth: index === wordData.length - 1 ? 0 : style.border_sm}]}>
 
                             <Text style={{ color: style.gray_400, fontSize: style.text_md }}> 
                                 {index + 1}
@@ -109,8 +161,9 @@ const styles = StyleSheet.create({
 
     contentContainer: {
         flexDirection: 'column',
-        gap: 10,
-        maxHeight:'95%'
+        maxHeight:'95%',
+        minHeight:'50%',
+        backgroundColor:style.white
     },
     item: {
         backgroundColor: style.white, 
