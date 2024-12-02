@@ -24,7 +24,7 @@ const DecksHome = ({ navigation }) => {
 
 
     //current language
-    const { currentLang, setCurrentLang } = useContext(CurrentLangContext);
+    const { currentLang } = useContext(CurrentLangContext);
 
     // Get screen width dynamically
     const { width } = useWindowDimensions();

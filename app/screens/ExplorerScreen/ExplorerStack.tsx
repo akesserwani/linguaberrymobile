@@ -1,6 +1,6 @@
 
 import { createStackNavigator } from '@react-navigation/stack';
-import ExplorerHome from './ExplorerHome';
+import ExplorerHome from './ExplorerHome/ExplorerHome';
 
 import * as style from '@/assets/styles/styles'
 
