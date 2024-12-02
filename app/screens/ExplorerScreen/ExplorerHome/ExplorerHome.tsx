@@ -8,6 +8,7 @@ import { CurrentLangContext } from '@/app/data/CurrentLangContext.tsx';
 import * as style from '@/assets/styles/styles'
 import Icon from '@expo/vector-icons/FontAwesome6'
 
+import wordFiles from './ExplorerData';
 
 const ExplorerHome = () => {
 
@@ -19,6 +20,30 @@ const ExplorerHome = () => {
 
     // State to track the active tab
     const [activeTab, setActiveTab] = useState('Words');
+
+
+    //Functionality here to pull the data from the respective JSON file 
+    const [data, setData] = useState(null);
+
+    useEffect(() => {
+        const loadData = () => {
+            const json = wordFiles[currentLang]; 
+            if (json) {
+                const transformedData = json.map((item) => ({
+                    title: item.title,
+                    wordCount: Object.keys(item.words).length,
+                }));
+    
+                setData(transformedData); 
+            } else {
+                console.error(`No data file found for language: ${currentLang}`);
+            }
+        };
+    
+        loadData();
+    }, [currentLang]); // Re-run whenever `currentLang` changes
+    
+    
 
     //responsive variable for container padding
     //if width is less than 600 then padding is 40, if between 600 and 1000 then padding is 100, 1k+, padding is 200
@@ -59,25 +84,41 @@ const ExplorerHome = () => {
                 {/* Container for The Rendered Content  */}
                 <View style={{ flexDirection: 'column', flex:1, paddingHorizontal:15}} >
 
-                    {/* Individual container */}
-                    <TouchableOpacity style={[styles.wordCard, { marginBottom: 10 }]} activeOpacity={0.7}>
-                        <View style={{ flexDirection: 'row', gap: 15 }}>
-                            {/* Index Number for the Card */}
-                            <Text style={{ color: style.gray_300, fontSize: style.text_md }}>
-                                1
-                            </Text>
+                    <FlatList data={data}
+                            keyExtractor={(item, index) => index.toString()}
+                            contentContainerStyle={{ paddingBottom: 150, paddingTop: 20, paddingRight:10 }} 
+                            renderItem={({ item, index }) => (
+                                // Individual Box being rendered
+                                <TouchableOpacity 
+                                    style={[
+                                        styles.wordCard, 
+                                        { 
+                                            marginBottom: 10, 
+                                            borderBottomWidth: index === data.length - 1 ? 0 : style.border_sm
+                                        }
+                                    ]} activeOpacity={0.7}>
+                                    <View style={{ flexDirection: 'row', gap: 15, alignItems: 'center' }}>
+                                        {/* Index Number for the Card */}
+                                        <Text style={{ color: style.gray_300, fontSize: style.text_md }}>
+                                            {index + 1}
+                                        </Text>
 
-                            {/* Title for Deck */}
-                            <Text style={{ color: style.gray_500, fontWeight: '500', fontSize: style.text_md }}>
-                                Deck 1
-                            </Text>
-                        </View>
+                                        {/* Title for Deck */}
+                                        <View style={{ width: '60%' }}>
+                                            <Text style={{ color: style.gray_500, fontWeight: '500', fontSize: style.text_md }}>
+                                                {item.title.trim()}
+                                            </Text>
+                                        </View>
+                                    </View>
 
-                        {/* Word Count */}
-                        <Text style={{ color: style.gray_400, fontWeight: '400' }}>
-                            20 words
-                        </Text>
-                    </TouchableOpacity>
+                                    {/* Word Count */}
+                                    <Text style={{ color: style.gray_400, fontWeight: '400' }}>
+                                        {item.wordCount} words
+                                    </Text>
+                                </TouchableOpacity>
+                            )}
+                        />
+
                 </View>
             </View>
 
@@ -145,7 +186,7 @@ const styles = StyleSheet.create({
         backgroundColor: style.white, 
         height: 60, 
         borderBottomColor: style.gray_200,
-        borderBottomWidth: style.border_md,
+        borderBottomWidth: style.border_sm,
 
         flexDirection: 'row',
         justifyContent:'space-between',
