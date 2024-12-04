@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useRef } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Text, View, TouchableOpacity, Modal, StyleSheet } from 'react-native';
 import * as style from '@/assets/styles/styles';
 import Icon from '@expo/vector-icons/FontAwesome6';
@@ -13,7 +13,7 @@ import AddWordToDeck from '@/app/components/AddWordToDeck';
 
 import { storyFiles, wordStoryData, toggleHighlightedWord, getHighlightedWords } from '../../ExplorerHome/ExplorerData';
 
-const TooltipComponent = ({title}) => {
+const TooltipComponent = ({ title }) => {
 
     //function to clean the string
     const cleanString = (str) => {
@@ -116,11 +116,12 @@ const TooltipComponent = ({title}) => {
     }
     
 
+
     return (
         <>
 
             {/* Render the Text */}
-            <View style={{ flexWrap: 'wrap', flexDirection: 'row', marginBottom:50, direction:isRTL ? 'rtl' : 'ltr' }}>
+            <View style={{ flexWrap: 'wrap', flexDirection: 'row', marginBottom:60, direction:isRTL ? 'rtl' : 'ltr' }}>
                 {words.map((word, index) => (
                     <View key={index} style={styles.wordContainer}>
                         {/* Individual Word */}
@@ -154,9 +155,9 @@ const TooltipComponent = ({title}) => {
                 ]}/>
             }
 
+            {/* BOTTOM POPUP */}
             {/* Bottom Popup for the Word Data */}
             <Modal transparent={true} visible={bottomPopup} onRequestClose={() => setPopup(false)} >
-
                 {/* Opaque overlay will be clickable to dimiss the modal  */}
                 <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} 
                                 onPress={() => {
@@ -210,7 +211,7 @@ const TooltipComponent = ({title}) => {
 
         </>
     );
-};
+}
 
 const styles = StyleSheet.create({
     wordContainer: {

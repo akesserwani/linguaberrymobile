@@ -1,5 +1,14 @@
 
 
+//This function will convert the JSON data in the language files and make it compatible with ViewWordModal
+export const convertLangFiletoJSON = (data) => {
+    return Object.entries(data).map(([key, value]) => ({
+        notes: "none", // Add a default value for notes
+        term: value,
+        translation: key,
+    }));
+};
+
 //Fisher Yates Shuffle Algorithm
 export const shuffleArray = (array) => {
     const shuffledArray = [...array]; // Copy the array to avoid mutating the original

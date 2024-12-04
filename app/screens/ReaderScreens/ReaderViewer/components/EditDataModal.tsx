@@ -90,7 +90,7 @@ const EditDataModal = ({onClose, entryId, setRefresh}) => {
 
         const format = "term,translation,notes \n term 1, translation 1 \n word 2, translation 2 "
 
-        const prompt = `We are learning ${currentLang}. We want to generate translation values for this text: "${entryContents}". Generate the term translation values in this CSV format ${format}. Be sure to include the headers: term,translation,notes. All lowercase.`;
+        const prompt = `We are learning ${currentLang}. We want to generate translation values for this text: "${entryContents}". Generate the term translation values in this CSV format ${format}. Be sure to include the headers: term,translation,notes. All lowercase. Make sure term is in English, then translation is the ${currentLang} translation`;
 
         //go through the full text and 
         await Clipboard.setStringAsync(prompt);

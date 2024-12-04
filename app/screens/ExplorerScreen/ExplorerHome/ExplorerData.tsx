@@ -180,3 +180,70 @@ export const getHighlightedWords = (storyName, currentLang) => {
         return []; // Return an empty array on failure
     }
 };
+
+//Get bookmark status function for the story
+export const getBookmarkedStatus = (storyName, currentLang) => {
+    try {
+        let bookmarkedStatus = false;
+
+        db.withTransactionSync(() => {
+            // Retrieve the bookmarked status
+            const result = db.getFirstSync(
+                `SELECT bookmarked FROM explorer WHERE story_name = ? AND language_id = ?;`,
+                [storyName, currentLang]
+            );
+
+            // If the story is found, set the status
+            if (result) {
+                bookmarkedStatus = result.bookmarked === 1; // Convert 1/0 to true/false
+            } else {
+                throw new Error(`Story "${storyName}" not found for language ID ${currentLang}.`);
+            }
+        });
+
+        return bookmarkedStatus; // Return true/false
+    } catch (error) {
+        console.error("Error retrieving bookmark status:", error.message);
+        return false; // Return false in case of an error
+    }
+};
+
+
+
+//Toggle bookmark status for the story
+export const toggleBookmarkStory = (storyName, currentLang) => {
+    try {
+        let newBookmarkedStatus = false;
+
+        db.withTransactionSync(() => {
+            // Step 1: Retrieve the current bookmark status
+            const result = db.getFirstSync(
+                `SELECT bookmarked FROM explorer WHERE story_name = ? AND language_id = ?;`,
+                [storyName, currentLang]
+            );
+
+            // Step 2: If no result, handle the case where the story instance does not exist
+            if (!result) {
+                throw new Error(`Story "${storyName}" not found for language ID ${currentLang}.`);
+            }
+
+            // Step 3: Toggle the bookmark status
+            const currentStatus = result.bookmarked;
+            const updatedStatus = currentStatus === 1 ? 0 : 1;
+
+            // Step 4: Update the database with the new bookmark status
+            db.runSync(
+                `UPDATE explorer SET bookmarked = ? WHERE story_name = ? AND language_id = ?;`,
+                [updatedStatus, storyName, currentLang]
+            );
+
+            // Step 5: Set the new status for return
+            newBookmarkedStatus = updatedStatus === 1;
+        });
+
+        return newBookmarkedStatus; // Return the new bookmark status (true/false)
+    } catch (error) {
+        console.error("Error toggling bookmark for the ExplorerStory:", error.message);
+        return false; // Return false in case of an error
+    }
+};

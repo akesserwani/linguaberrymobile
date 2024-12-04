@@ -10,7 +10,7 @@ import { deleteEntry } from "../../DataReader";
 import EditDataModal from "./EditDataModal";
 import ViewWordModal from "../../../../components/ViewWordModal";
 
-const HeaderRight = ({currentLang, entryId, setRefresh}) => {
+const HeaderRight = ({currentLang, entryId, entryTitle, setRefresh}) => {
 
     const [buttonClicked, setClick] = useState(false);
 
@@ -47,7 +47,7 @@ const HeaderRight = ({currentLang, entryId, setRefresh}) => {
 
         {/* Call Each of the Modals */}
         { viewDataModal &&
-            <ViewWordModal onClose={()=> setViewDataModal(false)} entryId={entryId}/>
+            <ViewWordModal onClose={()=> setViewDataModal(false)} entryId={entryId} modalTitle={entryTitle}/>
         }
 
         {   editDataModal &&

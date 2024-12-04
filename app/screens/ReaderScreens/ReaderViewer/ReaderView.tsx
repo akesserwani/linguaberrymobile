@@ -38,7 +38,7 @@ const ReaderViewer = ({route}) => {
             // Set custom text for the back button          
             headerBackTitle: 'All',
             headerRight: () => (
-                <HeaderRight currentLang={currentLang} entryId={entryId} setRefresh={setRefresh} />
+                <HeaderRight currentLang={currentLang} entryId={entryId} entryTitle={entryTitle} setRefresh={setRefresh} />
             ),
             
         });
@@ -121,7 +121,7 @@ const ReaderViewer = ({route}) => {
             <View style={{flexDirection:'row', justifyContent:'space-between', marginTop:20}}>
 
                 {/* Container for title and created_at */}
-                <View style={{flexDirection:'column'}}>
+                <View style={{flexDirection:'column', width:'90%'}}>
                     {entryData ? (
                         <>
                         {/* Title Text */}

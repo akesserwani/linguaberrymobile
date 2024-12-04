@@ -130,14 +130,17 @@ const ReaderHome = ({ navigation }) => {
                             style={[styles.itemCard, { marginBottom: 10 }]} activeOpacity={0.7}>
                             <View style={{ flexDirection: 'row', gap: 15 }}>
                                 {/* Index Number for the Card */}
-                                <Text style={{ color: style.gray_300, fontSize: style.text_md }}>
-                                {index + 1}
-                                </Text>
-
+                                <View style={{ width: '10%',justifyContent: 'center' }}>
+                                    <Text style={{ color: style.gray_300, fontSize: style.text_md }}>
+                                    {index + 1}
+                                    </Text>
+                                </View>
                                 {/* Title for Deck */}
-                                <Text style={{ color: style.gray_500, fontWeight: '500', fontSize: style.text_md }}>
-                                    { limitLength(item.title, 20) } 
-                                </Text>
+                                <View style={{ width: '60%', justifyContent: 'center' }}>
+                                    <Text style={{ color: style.gray_500, fontWeight: '500', fontSize: style.text_md }}>
+                                        { limitLength(item.title, 20) } 
+                                    </Text>
+                                </View>
                             </View>
 
                             {/* Created At */}
@@ -225,7 +228,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent:'space-between',
         alignItems:'center',
-        paddingHorizontal: 20,
+        paddingHorizontal: 15,
     }
 
 });

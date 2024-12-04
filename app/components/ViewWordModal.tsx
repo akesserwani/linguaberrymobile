@@ -17,10 +17,12 @@ import { CurrentLangContext } from '@/app/data/CurrentLangContext.tsx';
 //get data
 import { getWordData } from "../screens/ReaderScreens/DataReader";
 
+import { limitLength } from "../data/Functions";
+
 import { deckNameExist, createNewDeck, createBulkWordsByDeckName } from "../screens/DecksScreens/DataDecks";
 
 
-const ViewWordModal = ({onClose, json=false, entryId = null, dataProp = null, modalTitle="View Data"}) => {
+const ViewWordModal = ({onClose, modalTitle, json=false, entryId = null, dataProp = null}) => {
 
     //current language
     const { currentLang } = useContext(CurrentLangContext);
@@ -41,8 +43,8 @@ const ViewWordModal = ({onClose, json=false, entryId = null, dataProp = null, mo
             setWordData(dataProp);    
         } else {
             //Else get the word data using the decks ID 
-            const wordData = getWordData(entryId, currentLang);
-            setWordData(wordData);    
+            const word_data = getWordData(entryId, currentLang);
+            setWordData(word_data);    
         }
     },[])
 
@@ -58,8 +60,8 @@ const ViewWordModal = ({onClose, json=false, entryId = null, dataProp = null, mo
             //If it does not exist, create the name of the deck
             createNewDeck(modalTitle, currentLang);
 
-            //Next run the bulk words to create this
-            createBulkWordsByDeckName(modalTitle, dataProp, currentLang);
+            //Push the data to the database
+            createBulkWordsByDeckName(modalTitle, wordData, currentLang);
 
             //Make an alert showing that it was successful
             CustomAlert("Deck Saved!", "Look under 'Decks' to find this deck");
@@ -72,7 +74,7 @@ const ViewWordModal = ({onClose, json=false, entryId = null, dataProp = null, mo
 
 
     return ( 
-        <CustomModal title={modalTitle} onClose={onClose} overrideStyle={{maxHeight:'80%'}} horizontalPadding={0} topPadding={0}>
+        <CustomModal title={limitLength(modalTitle, 25)} onClose={onClose} overrideStyle={{maxHeight:'80%'}} horizontalPadding={0} topPadding={0}>
 
             {/* Add word to deck component will be triggered at top of page  */}
             { addToDeck &&
@@ -82,22 +84,26 @@ const ViewWordModal = ({onClose, json=false, entryId = null, dataProp = null, mo
             {/* Content Area */}
             <View style={styles.contentContainer}>
 
+                {/* Top container above the labels */}
                 {/* Button here to add entire data to deck */}
-                {/* Toggle this button if JSON is true - so only when it is fetching from JSON data */}
-                { json && 
-                    <View style={{justifyContent:'center', alignItems:'flex-end', alignContent:'center', paddingVertical:15, backgroundColor:style.gray_100 }}>
-                        <CustomButton customStyle={{width:150, marginRight:30, flexDirection:'row', gap:15}} onPress={saveDeck}>
-                            {/* Text */}
-                            <Text style={{color:style.white, fontWeight:'500'}}>Save Deck</Text>
-                            {/* Icon */}
-                            <Icon name={"download"} size={15} color={style.white}/>
-                        </CustomButton>
-                    </View>
-                }
+                <View style={{flexDirection:'row', justifyContent:'space-between', alignContent:'center', paddingHorizontal:25, paddingVertical:15, backgroundColor:style.gray_100 }}>         
+                    
+                    {/* Save deck button on the Right */}
+                    <CustomButton customStyle={{width:150, flexDirection:'row', gap:15}} onPress={saveDeck}>
+                        {/* Text */}
+                        <Text style={{color:style.white, fontWeight:'500'}}>Save Deck</Text>
+                        {/* Icon */}
+                        <Icon name={"download"} size={15} color={style.white}/>
+                    </CustomButton>
+
+                    {/* number of words on the left */}
+                    <Text style={{color:style.gray_400, fontWeight:'600', margin:15, marginRight:30}}>{ wordData.length } words</Text>
+
+                </View>
 
 
                 {/* Top bar with labels */}
-                <View style={{flexDirection:'row', backgroundColor: style.gray_100 ,borderBottomWidth: style.border_md, gap:20, borderColor: style.gray_200, padding:15, paddingVertical:20, justifyContent:'center' }}>
+                <View style={{flexDirection:'row', backgroundColor: style.gray_100 ,borderBottomWidth: style.border_md, gap:20, borderColor: style.gray_200, paddingHorizontal:15, paddingVertical:20, justifyContent:'center' }}>
                     <View style={{width: '40%', justifyContent: 'center'}}>
                         <Text style={{ color: style.gray_600, fontSize: style.text_md, fontWeight:'600' }}>Term</Text> 
                     </View>
