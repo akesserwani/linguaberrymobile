@@ -1,10 +1,10 @@
 
-import { View, Text, StyleSheet, useWindowDimensions, TouchableOpacity, FlatList, TextInput} from 'react-native';
+import { View, Text, StyleSheet, useWindowDimensions, KeyboardAvoidingView, ScrollView, TextInput} from 'react-native';
 import { useContext, useLayoutEffect, useState, useEffect, useRef } from 'react';
 import { useNavigation, useRoute, useIsFocused } from '@react-navigation/native';
 //data for context
 import { CurrentLangContext } from '@/app/data/CurrentLangContext.tsx';
-import { RTLlanguages } from '@/app/data/LangData';
+import { isLanguageRTL } from '../../HomeScreen/LanguageSelection/DataLanguages';
 
 import * as style from '@/assets/styles/styles'
 
@@ -18,7 +18,7 @@ const ReaderStory = ({route}) => {
     //current language
     const { currentLang } = useContext(CurrentLangContext);
     //Check to see direction of language
-    const isRTL = RTLlanguages.includes(currentLang);
+    const isRTL = isLanguageRTL(currentLang);
 
     //get the data from the navigator
     const { entryTitle, entryId } = route.params;
@@ -87,40 +87,42 @@ const ReaderStory = ({route}) => {
 
 
     return ( 
-        <>
-        <View style={[styles.mainContainer, { paddingHorizontal: responsiveHorizontalPadding }]}>
+        <View style={{flex:1, backgroundColor:style.slate_100}}>
+        <KeyboardAvoidingView behavior={'padding'} keyboardVerticalOffset={20}>
+            <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{paddingRight:10, paddingBottom:100}}>
 
-            {/* title form - can be edited */}
-            <TextInput  style={{fontSize:style.text_lg, color: style.gray_600, fontWeight:'600', width:'100%', flexWrap:'wrap',
-                                writingDirection: isRTL ? 'rtl' : 'ltr'
+                {/* title form - can be edited */}
+                <TextInput  style={[ styles.titleContainer, {writingDirection: isRTL ? 'rtl' : 'ltr', paddingHorizontal: responsiveHorizontalPadding + 10} ]}
+                            placeholder= { "Enter title..." }
+                            value={ titleForm } 
+                            onChangeText={ handleTitleChange }
+                            autoCorrect={ false }
+                            autoCapitalize='none'
+                            multiline={true}
+                            maxLength={50}/>
 
-            }}
-                        placeholder= { "Enter title..." }
-                        value={ titleForm } 
-                        onChangeText={ handleTitleChange }
-                        autoCorrect={ false }
-                        autoCapitalize='none'
-                        multiline={true}
-                        maxLength={50}/>
+                <View style={[styles.mainContainer, { paddingHorizontal: responsiveHorizontalPadding }]}>
 
-            {/* Main body data here */}
-            <TextInput  style={{fontSize:style.text_lg, color: style.gray_500, fontWeight:'500', width:'100%', flexWrap:'wrap', marginTop:30, paddingBottom:100,
-                writingDirection: isRTL ? 'rtl' : 'ltr'
-            }}
-                        placeholder= { "Start writing here..." }
-                        value={ contentsForm } 
-                        onChangeText={ handleContentsChange }
-                        autoCorrect={ false }
-                        autoCapitalize='none'
-                        multiline={true}
-                        maxLength={10000}/>
+                    {/* Main body data here */}
+                    <TextInput  style={{fontSize:style.text_lg, color: style.gray_500, fontWeight:'500', width:'100%', flexWrap:'wrap', paddingBottom:100,
+                        writingDirection: isRTL ? 'rtl' : 'ltr', padding:10
+                    }}
+                                placeholder= { "Start writing here..." }
+                                value={ contentsForm } 
+                                onChangeText={ handleContentsChange }
+                                autoCorrect={ false }
+                                autoCapitalize='none'
+                                multiline={true}
+                                maxLength={10000}/>
 
 
-        </View>
+                </View>
+            </ScrollView>
+        </KeyboardAvoidingView>
 
         {/* Bottom footer that adds top border */}
         <View style={style.baseFooterStyle} />
-        </>
+        </View>
      );
 }
 
@@ -128,7 +130,22 @@ const styles = StyleSheet.create({
     mainContainer: {
         flex: 1,
         backgroundColor: style.slate_100,
-        paddingTop: 30,
+        marginTop:20
+    },
+    titleContainer:{
+        fontSize:style.text_lg, 
+        color: style.gray_600, 
+        backgroundColor:style.slate_100, 
+        fontWeight:'600', 
+
+        width:'100%', 
+
+        flexWrap:'wrap',
+
+        padding:20,
+
+        borderBottomWidth:style.border_md,
+        borderBottomColor:style.gray_200
     }
     
 });

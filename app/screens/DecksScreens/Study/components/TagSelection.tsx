@@ -67,7 +67,7 @@ const TagSelection = ({currentLang, deckId, onTagSelect, starredWordCount }) => 
         {/* Dropdown content */}
         {dropdownOpen && (
             <View style={styles.dropdownBox}>
-                <ScrollView>
+                <ScrollView contentContainerStyle={{paddingRight:10}}>
 
                     {/* Dropdown option if user wants to select None */}
                     <TouchableOpacity onPress={()=>selectTagFunc("None")} activeOpacity={0.7} style={{padding:10, flexDirection:'row', justifyContent:'space-between', alignItems:'center'}}>

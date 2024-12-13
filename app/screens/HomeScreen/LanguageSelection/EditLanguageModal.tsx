@@ -15,7 +15,7 @@ const EditLanguageModal = ({ userLanguages, deleteLanguage, onClose }) => {
     return ( 
         <CustomModal title='Edit Languages' onClose={onClose} >
         {/* Wrap the language items in a ScrollView */}
-        <ScrollView style={{ maxHeight: useWindowDimensions().height * 0.6 }} persistentScrollbar={true}>
+        <ScrollView style={{ maxHeight: useWindowDimensions().height * 0.6, paddingRight:20 }} persistentScrollbar={true}>
 
             {/* Individual Language Box, if trash icon pressed then it will render confirmation and delete */}
             {userLanguages.map((language, index) => (

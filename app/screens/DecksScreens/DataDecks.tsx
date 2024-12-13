@@ -99,11 +99,30 @@ export const updateDeck = (currentLang, deckId, newDeckName) =>{
 //DELETE DECK
 export const deleteDeck = (currentLang, deckId) => {
   db.withTransactionSync(() => {
+
+    //delete all corresponding data
+    // Delete all words associated with the deck
     db.runSync(
-      `DELETE FROM deck 
-       WHERE language_id = ? AND id = ?;`,
-      [currentLang, deckId]
+      `DELETE FROM word 
+        WHERE deck_id = ? AND language_id = ?;`,
+      [deckId, currentLang]
     );
+
+    // Delete all tags associated with the deck
+    db.runSync(
+      `DELETE FROM tag 
+        WHERE deck_id = ? AND language_id = ?;`,
+      [deckId, currentLang]
+    );
+  
+
+      //Finally delete the language itself
+      db.runSync(
+        `DELETE FROM deck 
+         WHERE language_id = ? AND id = ?;`,
+        [currentLang, deckId]
+      );
+  
   });
 };
 

@@ -82,8 +82,8 @@ const EditTagSelection = ({currentLang, deckId, wordData }) => {
             <Icon name={dropdownOpen ? "caret-down" : "caret-up"} size={15} color={style.gray_500}/>
         </CustomButton>
 
-                {/* Dropdown content */}
-                {dropdownOpen && (
+        {/* Dropdown content */}
+        {dropdownOpen && (
             <View style={styles.dropdownBox}>
                 <ScrollView>
 
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
         right: 0,
         padding: 15,
 
-        maxHeight:400,
+        maxHeight:'70%',
         zIndex: 99,
 
         borderWidth: 1,

@@ -287,7 +287,7 @@ const UserDeck = ({route}) => {
                     <FlatList ref={flatListRef}
                         data={renderedWords}
                         keyExtractor={(item, index) => index.toString()} 
-                        contentContainerStyle={{ paddingBottom: 150, paddingTop:20 }} 
+                        contentContainerStyle={{ paddingBottom: 150, paddingTop:20, paddingRight:10 }} 
                         renderItem={({ item, index }) => (
                             <TouchableOpacity onPress={() => {
                                 setSelectedWord(item); 

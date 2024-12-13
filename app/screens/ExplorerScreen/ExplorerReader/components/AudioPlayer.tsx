@@ -2,16 +2,22 @@
 import React, { useState, useContext, useEffect, useRef, useLayoutEffect} from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, useWindowDimensions, FlatList, Modal } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { useNavigation, useRoute, useFocusEffect, useIsFocused } from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 
 import Slider from '@react-native-community/slider';
+
+import { Audio } from 'expo-av';
+import { audioPaths } from './AudioData';
 
 //styles
 import * as style from '@/assets/styles/styles'
 import Icon from '@expo/vector-icons/FontAwesome6';
 
 
-const AudioPlayer = ({title, currentLang}) => {
+const AudioPlayer = ({audioId, currentLang}) => {
+
+    //variable to set the audio to it
+    const [audioSound, setAudioSound] = useState(null);
 
     //dummy values
     const [audioSize, setAudioSize] = useState(127);
@@ -24,19 +30,98 @@ const AudioPlayer = ({title, currentLang}) => {
 
 
     //Play button toggled
-    const [play, togglePlay] = useState(false);
+    const [play, setPlay] = useState(false);
 
 
+
+    //UseEffect to load the audio 
+    useEffect(() => {
+
+        //get the respective audio link
+        const loadAudio = async () => {
+            try {
+                //get the audio path by inserting current language and audioId from the parent component
+
+                const audioUrl = audioPaths[currentLang][audioId];
+
+                if (audioUrl){
+                    const { sound } = await Audio.Sound.createAsync(
+                        audioUrl
+                    );    
+                    setAudioSound(sound);    
+
+                    // Set the playback status update to track progress
+                    sound.setOnPlaybackStatusUpdate((status) => {
+                        if (status.isLoaded && !isDragging) {
+                            setAudioTime(status.positionMillis / 1000); // Convert from ms to seconds
+                            setAudioSize(status.durationMillis / 1000 || 0); // Convert from ms to seconds
+                        }
+                    });
+
+
+
+                } else {
+                    console.log("No data");
+                }
+            
+            } catch (error) {
+                console.error("Error loading audio:", error);
+            }
+        };
+
+        loadAudio();
+
+        return () => {
+            if (audioSound) {
+                audioSound.unloadAsync();
+            }
+        };
+    }, [audioId, currentLang]);
+
+
+
+    //function to toggle audio
+    const togglePlay = async () => {
+        if (audioSound) {
+            if (play) {
+                // Pause the audio if currently playing
+                await audioSound.pauseAsync();
+            } else {
+                // Play the audio if currently paused
+                await audioSound.playAsync();
+            }
+
+            // Toggle the play state
+            setPlay(!play);
+        } 
+    };
+    
+
+    //stop the audio if user leaves screen
+    useFocusEffect(
+        React.useCallback(() => {
+            // Cleanup function to stop the audio when leaving the page
+            return () => {
+                if (audioSound) {
+                    audioSound.pauseAsync();
+                }
+            };
+        }, [audioSound])
+    );
+    
     //Rate and rate dropdown
     //rate dropdown toggled
     const [dropdown, toggleDropdown] = useState(false);
     //rates available
-    const [rateData, setRateData] = useState([0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2]);
+    const [rateData, setRateData] = useState([0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2]);
     //Variable will render selected rate
-    const [selectedRate, setRate] = useState(1);
-    const rateSelected = (rate) =>{
-        //update selected rate
+    const [selectedRate, setRate] = useState(1.0);
+    const rateSelected = async (rate) =>{
+        //update selected rate to show in the UI
         setRate(rate);
+
+        //Adjust the rate
+        await audioSound.setRateAsync(rate, true); // Adjust the rate
 
         //close dropdown
         toggleDropdown(false);
@@ -50,7 +135,7 @@ const AudioPlayer = ({title, currentLang}) => {
         <View style={styles.mainPlayer}>
 
             {/* Player Button */}
-            <TouchableOpacity style={styles.playButton} activeOpacity={0.7} onPress={()=>togglePlay(!play)}>
+            <TouchableOpacity style={styles.playButton} activeOpacity={0.7} onPress={togglePlay}>
                 { play ? (
                     <Icon name={'pause'} solid={true} size={18} color={style.white} />
                 ) : (
@@ -60,7 +145,9 @@ const AudioPlayer = ({title, currentLang}) => {
 
 
             {/* Time Left */}
-            <Text style={{color:style.gray_500, fontWeight:'500'}}>{(audioSize - audioTime).toFixed(0)}s</Text>
+            <Text style={{color:style.gray_500, fontWeight:'500'}}>
+            {`${Math.floor(Math.round(audioSize - audioTime) / 60)}:${(Math.round(audioSize - audioTime) % 60).toString().padStart(2, '0')}`}
+            </Text>
 
             {/* Scrolling Button */}
             <Slider
@@ -71,13 +158,18 @@ const AudioPlayer = ({title, currentLang}) => {
                 minimumTrackTintColor={style.blue_400}
                 thumbTintColor={style.white}
                 maximumTrackTintColor={style.gray_400}
-                value={audioTime}
+                value={isDragging ? undefined : audioTime}
                 onValueChange={(value) => {
                     setIsDragging(true); // Set dragging to true
                     setAudioTime(value); // Update audio time while dragging
                 }}
-                onSlidingComplete={() => setIsDragging(false)} // Reset dragging state when user releases
-                />
+                onSlidingComplete={async (value) => {
+                    setIsDragging(false); // Reset dragging state when user releases
+                    if (audioSound) {
+                        await audioSound.setPositionAsync(value * 1000); // Seek to the selected position
+                    }
+                }}
+            />
 
 
             {/* Speed - Text Button */}
@@ -139,6 +231,8 @@ const styles = StyleSheet.create({
         height:40,
         width:40,
         borderRadius: 20,
+
+        paddingLeft:2,
 
         justifyContent:'center',
         alignItems:'center',

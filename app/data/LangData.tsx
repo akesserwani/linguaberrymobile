@@ -12,4 +12,7 @@ export const languagesSupported = {
     "Swedish": ["sv", "sv-SE"], "Turkish": ["tr","tr-TR"]
   };
   
+
+
+  
   export const RTLlanguages = ["Arabic", "Hebrew"];

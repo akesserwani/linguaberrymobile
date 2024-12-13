@@ -22,6 +22,8 @@ const AddLanguageModal = ({ languagesSupported, userLanguages, addLanguage, onCl
 
     //get input from the form
     const [langInput, setLangInput] = useState("");
+    //get whether Left to Right or Right to Left is selected
+    const [RTL, setRTL] = useState("LTR");
 
     //function to submit the language
     const submitLang = () =>{
@@ -41,7 +43,7 @@ const AddLanguageModal = ({ languagesSupported, userLanguages, addLanguage, onCl
                 const formattedLangInput = langInput.charAt(0).toUpperCase() + langInput.slice(1).toLowerCase();
 
                 // Add the formatted language to the list
-                addLanguage(formattedLangInput);
+                addLanguage(formattedLangInput, RTL);
                 
             } else {
                 //alert that language already exists in supported languages
@@ -59,7 +61,7 @@ const AddLanguageModal = ({ languagesSupported, userLanguages, addLanguage, onCl
 
         <CustomModal title='Add a Language' onClose={onClose} >
             {/* Wrap the language items in a ScrollView */}
-            <ScrollView style={{ maxHeight: useWindowDimensions().height * 0.6 }} persistentScrollbar={true}>
+            <ScrollView style={{ maxHeight: useWindowDimensions().height * 0.6, paddingRight:20 }} persistentScrollbar={true}>
 
                 {/* CUSTOM LANGUAGE FUNCTIONALITY */}
                 {/* Ability to Add Custom Language */}
@@ -71,14 +73,20 @@ const AddLanguageModal = ({ languagesSupported, userLanguages, addLanguage, onCl
 
                     {/* Add Icon - Toggle Custom Language Modal */}
                     <CustomButton onPress={()=> openCustomLangForm(!customLangForm)} customStyle={{backgroundColor: style.blue_100, height:50}}>
-                        <Icon name={"plus"} size={20} color={style.blue_600}/>
+                        { customLangForm ? (
+                            <Icon name={"minus"} size={20} color={style.blue_600}/>
+                        ) : (
+                            <Icon name={"plus"} size={20} color={style.blue_600}/>
+                        )}
+
                     </CustomButton>
                 </View>
 
                 {/* Form that is toggled if add language is clicked */}
+
                 {/* shows if customLangForm == true which is toggled by previous button */}
                 { customLangForm && 
-                <View style={{ flexDirection: "column", gap: 40, justifyContent: "center", marginTop: 20, marginBottom: 30,}}>
+                <View style={{ flexDirection: "column", gap: 20, justifyContent: "center", marginTop: 20, marginBottom: 30,}}>
                     {/* Input Form */}
                     <CustomInput 
                         showLabel={false}
@@ -86,6 +94,31 @@ const AddLanguageModal = ({ languagesSupported, userLanguages, addLanguage, onCl
                         onChangeText={setLangInput}
                         placeholder='Type language here...'
                         />
+                        
+                    {/* Buttons for selecting keyboard direction */}
+                    <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between'}}>
+
+                        <CustomButton onPress={()=>{setRTL("LTR")}} 
+                                      customStyle={{width:120, backgroundColor:style.gray_200,
+                                        borderColor: RTL === "LTR" ? style.blue_500 : style.gray_300,
+                                        borderWidth: RTL === "LTR" ? 3 : 1,
+                                      }}>
+                            <Text style={{color: style.gray_500, fontSize: style.text_xs, fontWeight:'600'}}>
+                                Left to Right
+                            </Text>
+                        </CustomButton>
+
+                        <CustomButton onPress={()=>{setRTL("RTL")}} 
+                                      customStyle={{width:120, backgroundColor:style.gray_200, 
+                                        borderColor: RTL === "RTL" ? style.blue_500 : style.gray_300,
+                                        borderWidth: RTL === "RTL" ? 3 : 1,
+                                      }}>
+                            <Text style={{color: style.gray_500, fontSize: style.text_xs, fontWeight:'600'}}>
+                                Right to Left
+                            </Text>
+                        </CustomButton>
+
+                    </View>
 
                     {/* Submit Button */}
                     <CustomButton onPress={submitLang} customStyle={null}>

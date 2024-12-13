@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
+import { TouchableOpacity, View, Text, StyleSheet, ScrollView, KeyboardAvoidingView } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import * as style from '@/assets/styles/styles'
 
@@ -109,44 +109,48 @@ const EditDeckModal = ({onClose, currentLang, deckId, deckName, refreshDeck, ref
     return ( 
         <CustomModal title="Edit Deck" onClose={onClose}>
 
-            {/* DECK NAME */}
-            {/* Input to edit the deck */}
-            <CustomInput label={ "Deck Name"} placeholder={"Type deck name..." } value={inputName} onChangeText={setInputName} 
-                        maxLength={30} customFormStyle={{height: 50}}/>
+            <KeyboardAvoidingView behavior={'padding'} keyboardVerticalOffset={50} >
+            <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{paddingRight:10}}>
 
-                {/* Deck name already exists */}
-                { nameExists && 
-                    <Text style={{color:style.red_500, fontWeight:"400", position: "relative", left:5, top:10}}>Deck name already exists</Text>
-                }
+                {/* DECK NAME */}
+                {/* Input to edit the deck */}
+                <CustomInput label={ "Deck Name"} placeholder={"Type deck name..." } value={inputName} onChangeText={setInputName} 
+                            maxLength={30} customFormStyle={{height: 50}}/>
 
-            {/* Input for the deck data */}
-            <CustomInput label={ "Text Data (CSV)"} placeholder={"Enter data..." } value={inputData} onChangeText={setInputData} 
-                       multiline={true} maxLength={100000} customStyle={{marginTop:40}} customFormStyle={{height: 120}} />
+                    {/* Deck name already exists */}
+                    { nameExists && 
+                        <Text style={{color:style.red_500, fontWeight:"400", position: "relative", left:5, top:10}}>Deck name already exists</Text>
+                    }
 
-                {/* Print the errors of the CSV data input */}
-                <Text style={{color:style.red_500, fontWeight:"400", position: "relative", left:5, top:10}}>
-                    { dataError }
+                {/* Input for the deck data */}
+                <CustomInput label={ "Text Data (CSV)"} placeholder={"Enter data..." } value={inputData} onChangeText={setInputData} 
+                        multiline={true} maxLength={100000} customStyle={{marginTop:40}} customFormStyle={{height: 120}} />
+
+                    {/* Print the errors of the CSV data input */}
+                    <Text style={{color:style.red_500, fontWeight:"400", position: "relative", left:5, top:10}}>
+                        { dataError }
+                    </Text>
+                
+                {/* User warning to use semicolon instead of commas*/}
+                <Text style={{color:style.gray_400, fontWeight:"500", margin:5, marginTop:20}}>
+                    Note: Use semicolons instead of commas in the term, translation, and notes
                 </Text>
-            
-            {/* User warning to use semicolon instead of commas*/}
-            <Text style={{color:style.gray_400, fontWeight:"500", margin:5, marginTop:20}}>
-                Note: Use semicolons instead of commas in the term, translation, and notes
-            </Text>
 
 
-            {/* Button to update the deck */}
-            <CustomButton onPress={updateDeckFunc} customStyle={{marginTop: 40, height:45}}>
-                    <Text style={{color:style.white, fontSize: style.text_md}}>Update Deck</Text>
-            </CustomButton>
+                {/* Button to update the deck */}
+                <CustomButton onPress={updateDeckFunc} customStyle={{marginTop: 40, height:45}}>
+                        <Text style={{color:style.white, fontSize: style.text_md}}>Update Deck</Text>
+                </CustomButton>
 
 
-            {/* Button to delete the deck */}
-            <View style={{flexDirection:'column', alignItems:'center',justifyContent:'center', marginTop: 10}}>
-                <TouchableOpacity onPress={deleteDeckFunc} style={{ marginTop:20 }} activeOpacity={0.7}>
-                            <Text style={{color:style.red_400, fontSize:style.text_md}}>Delete Deck</Text>
-                </TouchableOpacity>
-            </View>
-
+                {/* Button to delete the deck */}
+                <View style={{flexDirection:'column', alignItems:'center',justifyContent:'center', marginTop: 10}}>
+                    <TouchableOpacity onPress={deleteDeckFunc} style={{ marginTop:20 }} activeOpacity={0.7}>
+                                <Text style={{color:style.red_400, fontSize:style.text_md}}>Delete Deck</Text>
+                    </TouchableOpacity>
+                </View>
+            </ScrollView>
+            </KeyboardAvoidingView>
         </CustomModal>
      );
 }

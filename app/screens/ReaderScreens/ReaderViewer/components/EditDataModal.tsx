@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { TouchableOpacity, View, Text, StyleSheet, ScrollView, useWindowDimensions } from "react-native";
+import { TouchableOpacity, View, Text, StyleSheet, ScrollView, useWindowDimensions, KeyboardAvoidingView } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 import Icon from '@expo/vector-icons/FontAwesome6'
@@ -8,6 +8,7 @@ import * as style from '@/assets/styles/styles'
 import CustomModal from "@/app/components/CustomModal";
 import CustomInput from "@/app/components/CustomInput";
 import CustomButton from "@/app/components/CustomButton";
+import CustomAlert from "@/app/components/CustomAlert";
 
 //data for context
 import { CurrentLangContext } from '@/app/data/CurrentLangContext.tsx';
@@ -90,10 +91,13 @@ const EditDataModal = ({onClose, entryId, setRefresh}) => {
 
         const format = "term,translation,notes \n term 1, translation 1 \n word 2, translation 2 "
 
-        const prompt = `We are learning ${currentLang}. We want to generate translation values for this text: "${entryContents}". Generate the term translation values in this CSV format ${format}. Be sure to include the headers: term,translation,notes. All lowercase. Make sure term is in English, then translation is the ${currentLang} translation`;
+        const prompt = `We are learning ${currentLang}. We want to generate translation values for this text: "${entryContents}". Generate the term translation values in this CSV format ${format}. Be sure to include the headers: term,translation,notes. All lowercase. Make sure term is in English, then translation is the ${currentLang} translation. You can keep the notes column empty (so just term 1, translation 1). `;
 
         //go through the full text and 
         await Clipboard.setStringAsync(prompt);
+
+        CustomAlert("Data copied to clipboard");
+
     }
 
     //Copy AI prompt for Translation
@@ -104,14 +108,17 @@ const EditDataModal = ({onClose, entryId, setRefresh}) => {
         //go through the full text and 
         await Clipboard.setStringAsync(prompt);
 
+        CustomAlert("Data copied to clipboard");
+
     }
 
     const { width } = useWindowDimensions(); // Get screen width
 
     return ( 
-        <CustomModal title="Edit Data" onClose={onClose}>
+        <CustomModal title="Edit Data" onClose={onClose} horizontalPadding={0}>
                 {/* Main Content here */}
-                <ScrollView contentContainerStyle={[{ gap: 20 },{ flexDirection: width > 1000 ? 'row' : 'column' } ]}>
+                <KeyboardAvoidingView behavior={'padding'} keyboardVerticalOffset={50} >
+                <ScrollView contentContainerStyle={[{ gap: 20, padding:25 },{ flexDirection: width > 1000 ? 'row' : 'column' } ]}>
 
                     {/* Column 1 - Word Data */}
                     <View style={{flexDirection:'column', gap:10, width: width > 800 ? '50%' : '100%'}}>
@@ -175,6 +182,7 @@ const EditDataModal = ({onClose, entryId, setRefresh}) => {
                     </TouchableOpacity> */}
 
                 </ScrollView>
+                </KeyboardAvoidingView>
 
         </CustomModal>
      );

@@ -37,7 +37,7 @@ const CustomModal = ({title="My Modal", onClose, children, overrideStyle ={}, ho
                             </Text>
                             
                             {/* Button to Close */}
-                            <CustomButton onPress={onClose} customStyle={{ borderRadius: 40, backgroundColor: style.gray_300, paddingVertical: 10, paddingHorizontal: 11}}>
+                            <CustomButton onPress={onClose} customStyle={{ borderRadius: 10, backgroundColor: style.gray_300, paddingVertical: 10, paddingHorizontal: 12}}>
                                 <Icon name={"xmark"} size={15} color={style.gray_500}/>
                             </CustomButton>
                         </View>

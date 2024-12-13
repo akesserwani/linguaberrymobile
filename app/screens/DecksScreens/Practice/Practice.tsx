@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, useWindowDimensions, TouchableOpacity} from 'react-native';
+import { View, Text, StyleSheet, useWindowDimensions, TouchableOpacity, KeyboardAvoidingView, ScrollView} from 'react-native';
 import { useContext, useLayoutEffect, useState, useEffect } from 'react';
 import { useNavigation, useRoute, useIsFocused } from '@react-navigation/native';
 
@@ -320,64 +320,66 @@ const Practice = () => {
     const responsiveHorizontalPadding = width < 600 ? 40 : width < 1000 ? 100 : 200;
 
     return ( 
-        <>
+        <View style={{flex:1, backgroundColor:style.slate_100}}>
         {/* Main Container */}
-        <View style={[styles.mainContainer, { paddingHorizontal: responsiveHorizontalPadding }]}>
-            {/* Top Container with Tags */}
-            <View style={{flexDirection:'row', justifyContent:'space-between', borderBottomWidth: style.border_md, borderBottomColor:style.gray_200, paddingBottom: 20, zIndex:1}}>
-                {/* Tags selection Dropdown  */}
-                <TagSelection currentLang={currentLang} deckId={deckId} onTagSelect={selectTag} starredWordCount={starredWordCount}/>      
+        <KeyboardAvoidingView behavior={"padding"} style={{ flex: 5 }} keyboardVerticalOffset={50}>
+            <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{padding: 20}}>
 
-                {/* Current Index - Progress Count */}
-                <Text style={{color:style.gray_500, fontSize:style.text_md, fontWeight:'700', margin:10}}>
-                    { wordData.length } left
-                </Text>          
-            </View>
+                <View style={[styles.mainContainer, { paddingHorizontal: responsiveHorizontalPadding }]}>
+                    {/* Top Container with Tags */}
+                    <View style={{flexDirection:'row', justifyContent:'space-between', borderBottomWidth: style.border_md, borderBottomColor:style.gray_200, paddingBottom: 20, zIndex:1}}>
+                        {/* Tags selection Dropdown  */}
+                        <TagSelection currentLang={currentLang} deckId={deckId} onTagSelect={selectTag} starredWordCount={starredWordCount}/>      
 
-
-                {/* Middle Container - Text and Input */}
-                {/* Render data only if wordData.length > 1 */}
-                { wordData.length > 0 ? (
-
-                    <View style={{flexDirection:'column', justifyContent:'center', gap:30, paddingTop:50, paddingBottom:50}}>
-
-                        {/* Title to translate */}
-                        <Text style={{color:style.gray_700, fontSize:style.text_lg, fontWeight:'500', marginLeft:2}}>
-                            Translate to { !frontFirst ? 'English' : currentLang }:
+                        {/* Current Index - Progress Count */}
+                        <Text style={{color:style.gray_500, fontSize:style.text_md, fontWeight:'700', margin:10}}>
+                            { wordData.length } left
                         </Text>          
-
-                        {/* Text to Translate - from the data */}
-                        <Text style={{color:style.gray_600, fontSize:style.text_md, fontWeight:'400', marginLeft:5}}>
-                            {loading ? (
-                                    "Loading..."
-                                ) : (
-                                    //Check if frontFirst is true
-                                    frontFirst ? (
-                                        currentWordData.term// Show `term` if `frontFirst` is true
-                                    ) : (
-                                        currentWordData.translation// Show `translation` if `frontFirst` is false
-                                    )
-                                )}
-                        </Text>          
-
-
-                        {/* Input Form */}
-                        <CustomInput showLabel={false} placeholder={"Begin translating here..."} value={userInput} onChangeText={setUserInput}
-                            maxLength={100} multiline={true} 
-                            customStyle={{alignSelf:'stretch'}}
-                            editable={isEditable}
-                            customFormStyle={{padding:20, color:style.gray_600, backgroundColor:style.slate_100, borderColor:style.gray_300, height:200}}/>
                     </View>
 
-                ) : (
-                    <View style={{marginTop:60, justifyContent:'center', alignItems:'center'}}>
-                        <Text style={{color:style.gray_500, fontSize:style.text_lg, fontWeight:'500'}}>
-                            Not Enough Words
-                        </Text>
-                    </View>
-                )}
+                        {/* Middle Container - Text and Input */}
+                        {/* Render data only if wordData.length > 1 */}
+                        { wordData.length > 0 ? (
 
-        </View>
+                            <View style={{flexDirection:'column', justifyContent:'center', gap:30, paddingTop:50, paddingBottom:50}}>
+
+                                {/* Title to translate */}
+                                <Text style={{color:style.gray_700, fontSize:style.text_lg, fontWeight:'500', marginLeft:2}}>
+                                    Translate to { !frontFirst ? 'English' : currentLang }:
+                                </Text>          
+
+                                {/* Text to Translate - from the data */}
+                                <Text style={{color:style.gray_600, fontSize:style.text_md, fontWeight:'400', marginLeft:5}}>
+                                    {loading ? (
+                                            "Loading..."
+                                        ) : (
+                                            //Check if frontFirst is true
+                                            frontFirst ? (
+                                                currentWordData.term// Show `term` if `frontFirst` is true
+                                            ) : (
+                                                currentWordData.translation// Show `translation` if `frontFirst` is false
+                                            )
+                                        )}
+                                </Text>          
+
+                                {/* Input Form */}
+                                <CustomInput showLabel={false} placeholder={"Begin translating here..."} value={userInput} onChangeText={setUserInput}
+                                    maxLength={100} multiline={true} 
+                                    customStyle={{alignSelf:'stretch'}}
+                                    editable={isEditable}
+                                    customFormStyle={{padding:20, color:style.gray_600, backgroundColor:style.slate_100, borderColor:style.gray_300, height:200}}/>
+                            </View>
+
+                        ) : (
+                            <View style={{marginTop:60, justifyContent:'center', alignItems:'center'}}>
+                                <Text style={{color:style.gray_500, fontSize:style.text_lg, fontWeight:'500'}}>
+                                    Not Enough Words
+                                </Text>
+                            </View>
+                        )}
+                </View>
+            </ScrollView>
+        </KeyboardAvoidingView>
 
         {/* Bottom Containers - depending on user input */}
         { buttonContainer && 
@@ -470,7 +472,7 @@ const Practice = () => {
         }
 
 
-        </>
+        </View>
      );
 }
  

@@ -20,11 +20,14 @@ import HeaderRight from './components/HeaderRight';
 import { limitLength, formatDate } from '@/app/data/Functions';
 import { ScrollView } from 'react-native-gesture-handler';
 import TooltipComponent from './components/TooltipComponent';
+import { isLanguageRTL } from '../../HomeScreen/LanguageSelection/DataLanguages';
 
 const ReaderViewer = ({route}) => {
 
     //current language
     const { currentLang } = useContext(CurrentLangContext);
+    //Check database to see if the function is RTL (right to left, returns true if it is, false if it is not)
+    const isRTL = isLanguageRTL(currentLang);
 
     //get the data from the navigator
     const { entryTitle, entryId } = route.params;
@@ -107,60 +110,69 @@ const ReaderViewer = ({route}) => {
     return ( 
         <>
         <View style={[styles.mainContainer, { paddingHorizontal: responsiveHorizontalPadding }]}>
-            {/* Button Container for the Show English and Practice functionaities*/}
-            <View style={{flexDirection:'row', gap:10, paddingBottom:10}}>
-                {/* Show English Button */}
-                <CustomButton onPress={()=>setTranslation(!showTranslation)} customStyle={null}>
-                    <Text style={{color:style.white, fontWeight:'500', fontSize:style.text_xs}}>
-                        {showTranslation ? 'Hide Translation' : 'Show Translation'}
-                    </Text>
-                </CustomButton>
-            </View>
+            {/* Container for the main text with interactive functionalities */}
+            <ScrollView style={{ flex:1}} contentContainerStyle={{marginTop:20, padding:10, paddingBottom:100}}>
 
-            {/* Container for title, date, and bookmarked status */}
-            <View style={{flexDirection:'row', justifyContent:'space-between', marginTop:20}}>
-
-                {/* Container for title and created_at */}
-                <View style={{flexDirection:'column', width:'90%'}}>
-                    {entryData ? (
-                        <>
-                        {/* Title Text */}
-                        <View>
-                            <Text style={{color:style.gray_600, fontSize:style.text_lg, fontWeight:'600'}}>
-                                {entryData.title}
-                            </Text>
-                        </View>
-                        
-                        {/* Date */}
-                        <Text style={{color:style.gray_400, fontSize:style.text_sm, fontWeight:'400', marginTop:10}}>
-                            Created on {formatDate(entryData.created_at)}
+                {/* Button Container for the Show English and Practice functionaities*/}
+                <View style={{flexDirection:'row', gap:10, paddingBottom:10}}>
+                    {/* Show English Button */}
+                    <CustomButton onPress={()=>setTranslation(!showTranslation)} customStyle={null}>
+                        <Text style={{color:style.white, fontWeight:'500', fontSize:style.text_xs}}>
+                            {showTranslation ? 'Hide Translation' : 'Show Translation'}
                         </Text>
-                        </>
-                    ) : (
-                        <Text style={{color:style.gray_500, fontSize:style.text_md, fontWeight:'500'}}>Loading...</Text>
-                    )}
+                    </CustomButton>
                 </View>
 
-                {/* Bookmark icon and functionality goes here */}
-                <TouchableOpacity onPress={
-                    ()=>{
-                        //update the database
-                        toggleBookmark(currentLang, entryId);
-                        //toggle the variable so it shows in UI
-                        setBookmarked(!isBookmarked);
-                    }
-                    } activeOpacity={0.7}>
-                    { isBookmarked ? (
-                        <Icon name={'bookmark'} solid={true} size={25} color={style.red_400} />
-                        ) : (
-                            <Icon name={'bookmark'} size={25} color={style.gray_400} />
-                        )
-                    }
-                </TouchableOpacity>
-            </View>
 
-            {/* Container for the main text with interactive functionalities */}
-            <ScrollView style={{ flex:1}} contentContainerStyle={{marginTop:20}}>
+                {/* Container for title, date, and bookmarked status on top */}
+                <View style={{flexDirection:'row', justifyContent:'space-between', marginTop:20, marginBottom:20}}>
+
+                    {/* Container for title and created_at */}
+                    <View style={{flexDirection:'column', width:'90%'}}>
+                        {entryData ? (
+                            <>
+                            {/* Title Text */}
+                            <View>
+                                <Text style={{color:style.gray_600, fontSize:style.text_lg, fontWeight:'600',
+                                    textAlign: isRTL ? 'right' : 'left', // Align text
+                                    writingDirection: isRTL ? 'rtl' : 'ltr', // Set writing direction                                            
+                                }}>
+                                    {entryData.title}
+                                </Text>
+                            </View>
+                            
+                            {/* Date */}
+                            <Text style={{color:style.gray_400, fontSize:style.text_sm, fontWeight:'400', marginTop:10,
+                                textAlign: isRTL ? 'right' : 'left', // Align text
+                            }}>
+                                Created on {formatDate(entryData.created_at)}
+                            </Text>
+                            </>
+                        ) : (
+                            <Text style={{color:style.gray_500, fontSize:style.text_md, fontWeight:'500', borderWidth:1}}>
+                                Loading...
+                            </Text>
+                        )}
+                    </View>
+
+                    {/* Bookmark icon and functionality goes here */}
+                    <TouchableOpacity onPress={
+                        ()=>{
+                            //update the database
+                            toggleBookmark(currentLang, entryId);
+                            //toggle the variable so it shows in UI
+                            setBookmarked(!isBookmarked);
+                        }
+                        } activeOpacity={0.7}>
+                        { isBookmarked ? (
+                            <Icon name={'bookmark'} solid={true} size={25} color={style.red_400} />
+                            ) : (
+                                <Icon name={'bookmark'} size={25} color={style.gray_400} />
+                            )
+                        }
+                    </TouchableOpacity>
+                </View>
+
                     {entryData ? (
                         <>
                             {/* Main Text here in the Target Language */}

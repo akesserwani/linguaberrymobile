@@ -1,5 +1,5 @@
 
-import { Text, View, StyleSheet, TouchableOpacity, useWindowDimensions, ScrollView } from 'react-native'
+import { Text, View, StyleSheet, TouchableOpacity, useWindowDimensions, ScrollView, FlatList } from 'react-native'
 import { useState, useContext, useEffect} from 'react';
 
 //styles
@@ -12,7 +12,7 @@ import CustomModal from '@/app/components/CustomModal';
 import CustomAlert from '@/app/components/CustomAlert';
 
 //data 
-import { languagesSupported } from '@/app/data/LangData';
+import { languagesSupported, RTLlanguages } from '@/app/data/LangData';
 //data for context
 import { CurrentLangContext } from '@/app/data/CurrentLangContext.tsx';
 
@@ -133,7 +133,7 @@ const LanguageSelection = () => {
     };
           
     //function to add a language
-    const addLanguage = (language) =>{
+    const addLanguage = (language, direction) =>{
 
         //add the selected language to the usersLanguages array
         const updatedLanguages = [...userLanguages, language];  // This has the new language
@@ -141,8 +141,20 @@ const LanguageSelection = () => {
         //set it to the reactive variable so it is refleced in the UI
         editUserLanguages(updatedLanguages);
 
-        //update the database here with the updatedLanguages variable
-        addLangStorage(language);
+        //if the direction is undefined, make it check to see what the language currently is, then it sets the direction
+        if (direction === undefined){
+            //check to see if the selected language is RTL or LTR
+            if (RTLlanguages.includes(language)){
+                addLangStorage(language, "RTL");
+            } else {
+                addLangStorage(language, "LTR");
+            }
+
+        } else {
+            //if it is undefined then that means it is a custom language
+            addLangStorage(language, direction);
+
+        }
 
         //close the modal
         openAddModal(false);
@@ -171,22 +183,24 @@ const LanguageSelection = () => {
             {dropdownOpen && (
             <View style={styles.dropdownBox}>
 
-                {/* Create scrollview */}
-                <ScrollView style={{ maxHeight: 400 }} persistentScrollbar={true}>
-                    {/* Users Added Languages */}
-                    {userLanguages.map((language, index) => (
-                        //if language is currently selected - it will NOT show in the dropdown 
-                        language !== currentLang && (
+                {/* Render Each Individual Language  */}
 
-                            <TouchableOpacity onPress={() => setCurrentLanguage(language)}
-                                key={index} style={{ paddingVertical: 15, paddingHorizontal: 10, borderRadius: style.rounded_md }} activeOpacity={0.5}>
-                                <Text style={{fontSize: style.text_md, fontWeight: "500", color: style.gray_500}}>
-                                    {language}
-                                </Text>
+                <FlatList
+                        data={[...userLanguages.filter(language => language !== currentLang)].sort((a, b) => a.localeCompare(b))} // Filter and sort alphabetically
+                        keyExtractor={(item, index) => index.toString()}
+                        style={{ maxHeight: 400 }}
+                        persistentScrollbar={true}
+                        contentContainerStyle={{ paddingVertical: 10 }}
+                        renderItem={({ item }) => (
+
+                            <TouchableOpacity
+                                onPress={() => setCurrentLanguage(item)}
+                                style={{paddingVertical: 15, paddingHorizontal: 10, borderRadius: style.rounded_md}}
+                                activeOpacity={0.7}>
+                                <Text style={{fontSize: style.text_md, fontWeight: "500", color: style.gray_500}}>{item}</Text>
                             </TouchableOpacity>
-                        )
-                    ))}
-                </ScrollView>
+                )}/>
+
 
                 {/* <hr> line break */}
                 {/* Do not show it if there are no languages */}

@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, useWindowDimensions, TouchableOpacity, ScrollView} from 'react-native';
+import { View, Text, StyleSheet, useWindowDimensions, TouchableOpacity, ScrollView, KeyboardAvoidingView} from 'react-native';
 import { useContext, useLayoutEffect, useState, useEffect, useRef } from 'react';
 //data for context
 import { CurrentLangContext } from '@/app/data/CurrentLangContext.tsx';
@@ -109,8 +109,10 @@ const WordModal = ({onClose, deckId, wordData, deckName}) => {
     
 
     return ( 
-        <CustomModal onClose={onClose} title= {limitLength(wordData.term, 15)}>
-            <ScrollView style={{maxHeight:500}}>
+        <CustomModal onClose={onClose} title= {limitLength(wordData.term, 15)} overrideStyle={{maxHeight:550}}>
+
+            <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{paddingRight:15, paddingBottom:200}} style={{ maxHeight: 400 }} >
+
             {/* Top Panel with Edit Button and Star Button */}
             <View style={{flexDirection:'row', justifyContent:"space-between", paddingBottom: 10}}>
 
@@ -208,6 +210,7 @@ const WordModal = ({onClose, deckId, wordData, deckName}) => {
                             <Text style={{color:style.red_400, fontSize:style.text_md}}>Delete Word</Text>
                 </TouchableOpacity>
             </View>
+            
         </ScrollView>
     </CustomModal>
 

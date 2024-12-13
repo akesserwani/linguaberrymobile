@@ -122,7 +122,7 @@ const ReaderHome = ({ navigation }) => {
                         ref={flatListRef}
                         data={renderedData}
                         keyExtractor={(item, index) => item.id.toString()}
-                        contentContainerStyle={{ paddingBottom: 150, paddingTop:20 }} 
+                        contentContainerStyle={{ paddingBottom: 150, paddingTop:20, paddingRight:10 }} 
                         renderItem={({ item, index }) => (
                         //Individual Box being rendered
 

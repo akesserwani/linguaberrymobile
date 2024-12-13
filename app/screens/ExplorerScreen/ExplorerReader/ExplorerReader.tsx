@@ -13,6 +13,8 @@ import * as style from '@/assets/styles/styles'
 import { CurrentLangContext } from '@/app/data/CurrentLangContext.tsx';
 import { RTLlanguages } from '@/app/data/LangData';
 
+import { isLanguageRTL } from '../../HomeScreen/LanguageSelection/DataLanguages';
+
 //Database files from ExplorerData
 import { storyFiles, createStoryInstance, toggleBookmarkStory, getBookmarkedStatus } from '../ExplorerHome/ExplorerData';
 
@@ -26,7 +28,8 @@ const ExplorerReader = ({route}) => {
 
     //current language
     const { currentLang } = useContext(CurrentLangContext);
-    const isRTL = RTLlanguages.includes(currentLang);
+    //Check database to see if the function is RTL (right to left, returns true if it is, false if it is not)
+    const isRTL = isLanguageRTL(currentLang);
 
 
     //get data from the route
@@ -110,6 +113,24 @@ const ExplorerReader = ({route}) => {
         toggleBookmarkStory(title, currentLang);
     }
 
+
+    //get the story audio type to send it to the audiofile 
+    const [audioFile, setAudioFile] = useState("");
+    //audio loaded - only render the audio player when the audio has loaded
+    const [audioLoaded, setAudioLoaded] = useState(false);
+
+    //This is the use effect that gets the story file and loads the audio
+    useEffect(()=>{
+        if (storyData && storyData[0]?.audio_file){
+
+            //remove the .wav extension
+            setAudioFile(storyData[0].audio_file.replace('.wav', ''));
+
+            //render the audioLoaded to true to render the audio player
+            setAudioLoaded(true);
+        }
+    },[storyData])
+
     //Reactive variables for User interaction
     //for toggling trasnlation 
     const [showTranslation, setTranslation] = useState(false);
@@ -133,8 +154,10 @@ const ExplorerReader = ({route}) => {
         <>
         <View style={[styles.mainContainer, { paddingHorizontal: responsiveHorizontalPadding }]}>
 
-            {/* Audio Player */}
-            <AudioPlayer currentLang={currentLang} title={title}/>
+            {/* Audio Player - only render when the audio has loaded*/}
+            { audioLoaded && 
+                <AudioPlayer currentLang={currentLang} audioId={audioFile}/>
+            }
 
             {/* Button Container for the Show English and Practice functionaities*/}
             <View style={{flexDirection:'row', gap:10, paddingBottom:10, paddingTop:20}}>

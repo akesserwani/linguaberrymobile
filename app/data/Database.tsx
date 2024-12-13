@@ -2,18 +2,6 @@ import * as SQLite from "expo-sqlite";
 import { Platform } from "react-native";
 
 
-//sqlite cheat sheet
-    //function to delete
-    // db.runSync(`DROP TABLE IF EXISTS general;`);
-    // db.runSync(`DROP TABLE IF EXISTS user_languages;`);
-    // db.runSync(`DROP TABLE IF EXISTS deck;`);
-    // db.runSync(`DROP TABLE IF EXISTS word;`);
-
-    //to add data and insert or replace
-    // db.runSync(
-    //     `INSERT OR REPLACE INTO general (id, current_language, user_languages)
-    //     VALUES (1, 'French', '['Spanish', 'French']');`
-    //   );
 
 function openDatabase() {
     if (Platform.OS === "web") {
@@ -28,21 +16,10 @@ function openDatabase() {
   
     const db = SQLite.openDatabaseSync("db.db");
 
+
     //create table 
     db.withTransactionSync(() => {
       // // Insert initial data into the general table
-      // db.runSync(
-      //   `INSERT OR IGNORE INTO general (id, current_language) VALUES (1, 'French');`
-      // );
-
-      // // Insert initial data into the user_languages table
-      // db.runSync(
-      //   `INSERT OR IGNORE INTO user_languages (language) VALUES ('French');`
-      // );
-
-      // db.runSync(
-      //   `INSERT OR IGNORE INTO user_languages (language) VALUES ('Spanish');`
-      // );
 
       // Create tables
       db.runSync(
@@ -55,7 +32,8 @@ function openDatabase() {
       db.runSync(
         `CREATE TABLE IF NOT EXISTS user_languages (
           id INTEGER PRIMARY KEY AUTOINCREMENT, 
-          language TEXT NOT NULL
+          language TEXT NOT NULL,
+          direction TEXT NOT NULL
         );`
       );
 
@@ -65,7 +43,7 @@ function openDatabase() {
           name TEXT NOT NULL,
           bookmarked INTEGER NOT NULL,
           language_id INTEGER,
-          FOREIGN KEY(language_id) REFERENCES user_languages(id)
+          FOREIGN KEY(language_id) REFERENCES user_languages(id) ON DELETE CASCADE
         );`
       );
 
@@ -80,7 +58,7 @@ function openDatabase() {
           deck_id INTEGER,
           language_id INTEGER,
           FOREIGN KEY(deck_id) REFERENCES deck(id) ON DELETE CASCADE,
-          FOREIGN KEY(language_id) REFERENCES user_languages(id)
+          FOREIGN KEY(language_id) REFERENCES user_languages(id) ON DELETE CASCADE
         );`
       );
 
@@ -90,8 +68,8 @@ function openDatabase() {
           name TEXT NOT NULL,
           deck_id INTEGER,
           language_id INTEGER,
-          FOREIGN KEY(deck_id) REFERENCES deck(id),
-          FOREIGN KEY(language_id) REFERENCES user_languages(id)
+          FOREIGN KEY(deck_id) REFERENCES deck(id) ON DELETE CASCADE,
+          FOREIGN KEY(language_id) REFERENCES user_languages(id) ON DELETE CASCADE
         );`
       );
 
@@ -105,7 +83,7 @@ function openDatabase() {
           bookmarked BOOLEAN,
           created_at DATETIME DEFAULT CURRENT_TIMESTAMP,  
           language_id INTEGER,
-          FOREIGN KEY(language_id) REFERENCES user_languages(id)
+          FOREIGN KEY(language_id) REFERENCES user_languages(id) ON DELETE CASCADE
         );`
       );
 
@@ -116,9 +94,10 @@ function openDatabase() {
           highlighted_words TEXT NOT NULL,
           bookmarked BOOLEAN,
           language_id INTEGER,
-          FOREIGN KEY(language_id) REFERENCES user_languages(id)
+          FOREIGN KEY(language_id) REFERENCES user_languages(id) ON DELETE CASCADE
         );`
       );
+
 
       pushInitialData(db);
 
@@ -151,6 +130,9 @@ function pushInitialData(db) {
   // );
 
 //   // Add more initial data here as needed...
+
+
+
 }
 
 //export the database constant

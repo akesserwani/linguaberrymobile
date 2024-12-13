@@ -1,6 +1,5 @@
 
 import { View, Text, StyleSheet, useWindowDimensions } from "react-native";
-import { useEffect, useState } from "react";
 
 import * as style from "@/assets/styles/styles";
 import Icon from '@expo/vector-icons/FontAwesome6'
@@ -32,7 +31,7 @@ const Home = () => {
             {/* Main White Container for Content */}
             <View style={styles.main_container}>
                 {/* Top Horizontal Container with Bookmarks label and Drop Down (only if screen > 800)*/}
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between'  }}>
+                <View style={{ flexDirection: 'row', paddingVertical:20, marginTop:10 }}>
                     {/* Bookmarks label */}
                     <View style={{flexDirection: "row", alignItems: "center", justifyContent: "center", gap:10}}>
                       <Icon name={'bookmark'} solid={true} size={15} color={style.gray_500} />
@@ -58,7 +57,7 @@ const styles = StyleSheet.create({
     main_container: {
       flex: 1,
       flexDirection: 'column',
-      gap: 25,
+      gap: 5,
       backgroundColor: style.white, 
       borderTopRightRadius: 20,
       borderTopLeftRadius: 20,
@@ -69,7 +68,6 @@ const styles = StyleSheet.create({
 
       //add padding to contents in container
       paddingHorizontal: 50,
-      paddingVertical: 30,
     },
 });
   

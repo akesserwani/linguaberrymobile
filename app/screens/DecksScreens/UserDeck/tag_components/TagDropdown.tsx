@@ -139,7 +139,7 @@ const TagDropdown = ({currentLang, deck_id, onTagSelect}) => {
         {/* Dropdown content */}
         {dropdownOpen && (
             <View style={styles.dropdownBox}>
-                <ScrollView>
+                <ScrollView contentContainerStyle={{paddingRight:10}}>
 
                     {/* If there are no tags - do not render */}
                     {  tagData.length !== 0 && (

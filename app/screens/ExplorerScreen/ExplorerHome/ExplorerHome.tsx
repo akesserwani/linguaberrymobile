@@ -1,5 +1,5 @@
 import { useFocusEffect } from '@react-navigation/native';
-import { View, Text, TouchableOpacity, StyleSheet, useWindowDimensions, FlatList } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, useWindowDimensions, FlatList, Alert } from 'react-native';
 import { useContext, useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigation } from '@react-navigation/native';
 
@@ -11,6 +11,8 @@ import Icon from '@expo/vector-icons/FontAwesome6'
 
 //import data file
 import {wordFiles, storyFiles} from './ExplorerData';
+
+import CustomAlert from '@/app/components/CustomAlert';
 
 //import components
 import ViewWordModal from '@/app/components/ViewWordModal';
@@ -39,7 +41,14 @@ const ExplorerHome = () => {
     const [wordData, setWordData] = useState(null);
       
 
+    //no data trigger
+    const [noData, setNoData] = useState(false);
+
     useEffect(() => {
+
+        //set the variable to false everytime language refreshes
+        setNoData(false);
+
         const loadData = () => {
 
             //Check to see what the active tab is
@@ -54,7 +63,8 @@ const ExplorerHome = () => {
                     }));
                     setData(transformedData); 
                 } else {
-                    console.error(`No data file found for language: ${currentLang}`);
+                    //This will trigger text to appear
+                    setNoData(true);
                 }
 
             } else if (activeTab === "Fiction"){
@@ -68,7 +78,8 @@ const ExplorerHome = () => {
                         }));
                     setData(transformedData);
                 } else {
-                    console.error(`No data file found for language: ${currentLang}`);
+                    //This will trigger text to appear
+                    setNoData(true);
                 }
 
             } else if (activeTab === "Nonfiction"){
@@ -82,7 +93,8 @@ const ExplorerHome = () => {
                         }));
                     setData(transformedData);
                 } else {
-                    console.error(`No data file found for language: ${currentLang}`);
+                    //This will trigger text to appear
+                    setNoData(true);
                 }
             }
         };
@@ -104,7 +116,7 @@ const ExplorerHome = () => {
             notes: "none", // Automatically set notes to "none"
           }));
         } else {
-          console.error(`Deck with title "${title}" not found or has no words.`);
+          console.log(`Deck with title "${title}" not found or has no words.`);
           return [];
         }
       };
@@ -188,44 +200,53 @@ const ExplorerHome = () => {
                 {/* Container for The Rendered Content  */}
                 <View style={{ flexDirection: 'column', flex:1, paddingHorizontal:15}} >
 
-                    <FlatList data={data}
-                            keyExtractor={(item, index) => index.toString()}
-                            contentContainerStyle={{ paddingBottom: 150, paddingTop: 20, paddingRight:10 }} 
-                            renderItem={({ item, index }) => (
-                                // Individual Box being rendered
-                                <TouchableOpacity 
-                                    onPress={() => triggerItem(item.title)}
-                                    style={[
-                                        styles.wordCard, 
-                                        { 
-                                            marginBottom: 10, 
-                                            borderBottomWidth: index === data.length - 1 ? 0 : style.border_sm
-                                        }
-                                    ]} activeOpacity={0.7}>
-                                    <View style={{ flexDirection: 'row', gap: 15, alignItems: 'center' }}>
-                                        {/* Index Number for the Card */}
-                                        <Text style={{ color: style.gray_300, fontSize: style.text_md }}>
-                                            {index + 1}
-                                        </Text>
-
-                                        {/* Title for Deck */}
-                                        <View style={{ width: activeTab === "Words" ? '65%' : '90%' }}>
-                                            <Text style={{ color: style.gray_500, fontWeight: '500', fontSize: style.text_md }}>
-                                                {item.title.trim()}
+                    {/* If there is no data, render the message here */}
+                    { noData ? (
+                        <Text style={{ color: style.gray_400, fontSize: style.text_md, fontWeight:'600', textAlign: 'center', marginTop: 40 }}>
+                            No Data
+                        </Text>
+                    ) : (
+                        // {/* If language is detected, generate the flatlist */}
+                        <FlatList data={data}
+                                keyExtractor={(item, index) => index.toString()}
+                                contentContainerStyle={{ paddingBottom: 150, paddingTop: 20, paddingRight:10 }} 
+                                renderItem={({ item, index }) => (
+                                    // Individual Box being rendered
+                                    <TouchableOpacity 
+                                        onPress={() => triggerItem(item.title)}
+                                        style={[
+                                            styles.wordCard, 
+                                            { 
+                                                marginBottom: 10, 
+                                                borderBottomWidth: index === data.length - 1 ? 0 : style.border_sm
+                                            }
+                                        ]} activeOpacity={0.7}>
+                                        <View style={{ flexDirection: 'row', gap: 15, alignItems: 'center' }}>
+                                            {/* Index Number for the Card */}
+                                            <Text style={{ color: style.gray_300, fontSize: style.text_md }}>
+                                                {index + 1}
                                             </Text>
+
+                                            {/* Title for Deck */}
+                                            <View style={{ width: activeTab === "Words" ? '65%' : '90%' }}>
+                                                <Text style={{ color: style.gray_500, fontWeight: '500', fontSize: style.text_md }}>
+                                                    {item.title.trim()}
+                                                </Text>
+                                            </View>
                                         </View>
-                                    </View>
 
-                                    {/* Word Count - only show if active tab is Words */}
-                                    { activeTab === "Words" &&
-                                        <Text style={{ color: style.gray_400, fontWeight: '400' }}>
-                                            {item.wordCount} words
-                                        </Text>
-                                    }
+                                        {/* Word Count - only show if active tab is Words */}
+                                        { activeTab === "Words" &&
+                                            <Text style={{ color: style.gray_400, fontWeight: '400' }}>
+                                                {item.wordCount} words
+                                            </Text>
+                                        }
 
-                                </TouchableOpacity>
-                            )}
-                        />
+                                    </TouchableOpacity>
+                                )}
+                            />
+                        )}
+
                 </View>
             </View>
 
@@ -237,6 +258,7 @@ const ExplorerHome = () => {
                            json={true} dataProp={wordData} 
                            modalTitle={selectedTitle} />
         }
+
 
         </>
 

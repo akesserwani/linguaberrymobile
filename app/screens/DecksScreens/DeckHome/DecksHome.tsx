@@ -114,7 +114,7 @@ const DecksHome = ({ navigation }) => {
 
 
             {/* Container for Individual Decks rendered as cards  */}
-            <View style={{ flexDirection: 'column', flex:1  }} >
+            <View style={{ flexDirection: 'column', flex:1 }} >
 
                 {/* Display no decks text if deckData is empty, else render everything  */}
                 {renderedData.length === 0 ? (
@@ -127,7 +127,7 @@ const DecksHome = ({ navigation }) => {
                             ref={flatListRef}
                             data={renderedData}
                             keyExtractor={(item, index) => item.id.toString()}
-                            contentContainerStyle={{ paddingBottom: 150, paddingTop:20 }} 
+                            contentContainerStyle={{ paddingBottom: 150, paddingTop:20, paddingRight:10 }} 
                             renderItem={({ item, index }) => (
                             //Individual Box being rendered
                             <TouchableOpacity onPress={() => navigation.navigate("UserDeck", { deckName: item.name, deckId: item.id })}

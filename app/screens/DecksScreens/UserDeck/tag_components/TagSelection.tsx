@@ -64,9 +64,10 @@ const TagSelection = ({currentLang, deckId, onTagSelect }) => {
             <Icon name={dropdownOpen ? "caret-down" : "caret-up"} size={15} color={style.gray_500}/>
         </CustomButton>
 
-                {/* Dropdown content */}
-                {dropdownOpen && (
+        {/* Dropdown content */}
+        {dropdownOpen && (
             <View style={styles.dropdownBox}>
+
                 <ScrollView>
 
                     {/* Generic select a tag dropdown */}

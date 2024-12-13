@@ -37,7 +37,7 @@ const CreateDeckModal = ({onClose, refresh, scrollToBottom}) => {
     //function to create a new deck
     const createDeck = () =>{
         //Check if deck name already exists
-        if (deckNameExist(formInput, currentLang)){
+        if (deckNameExist(formInput, currentLang) || !formInput.trim()){
             setNameExists(true);
 
         } else{

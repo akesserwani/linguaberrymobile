@@ -58,7 +58,7 @@ const CreateWordModal = ({ onClose, refresh, scrollToBottom, deckId }) => {
     const createWord = () =>{
 
         //check if the word already exists
-        if (wordExistsInDeck(currentLang, deckId, formWord)){
+        if (wordExistsInDeck(currentLang, deckId, formWord) || !formWord.trim()){
             //set warning to true therefore rendering it
             setTermExist(true);
         } else{
@@ -97,10 +97,10 @@ const CreateWordModal = ({ onClose, refresh, scrollToBottom, deckId }) => {
     
     
     return ( 
-        <CustomModal title='New Word' onClose={onClose} overrideStyle={{width: dynamicWidth,  }}>
+        <CustomModal title='New Word' onClose={onClose} overrideStyle={{width: dynamicWidth }}>
 
             <KeyboardAvoidingView behavior={'padding'} keyboardVerticalOffset={50} >
-                <ScrollView>
+                <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{paddingRight:10}}>
 
                     {/* Dropdown to add a tag */}
                     <TagSelection currentLang={currentLang} deckId={deckId} onTagSelect={handleTagSelection}/>

@@ -6,6 +6,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 
 import { CurrentLangContext } from '@/app/data/CurrentLangContext.tsx';
 import { RTLlanguages } from '@/app/data/LangData';
+import { isLanguageRTL } from '@/app/screens/HomeScreen/LanguageSelection/DataLanguages';
 //database functions
 import { getWordData } from '../../DataReader';
 
@@ -16,7 +17,7 @@ const TooltipComponent = ({ entryId, contents, refresh }) => {
     //current language
     const { currentLang } = useContext(CurrentLangContext);
     //Check to see direction of language
-    const isRTL = RTLlanguages.includes(currentLang);
+    const isRTL = isLanguageRTL(currentLang);
 
     //function to get the word_data from the database
     const [entryData, setEntryData] = useState(null);
