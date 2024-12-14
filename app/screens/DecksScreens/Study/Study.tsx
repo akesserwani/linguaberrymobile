@@ -19,6 +19,7 @@ import { getWords } from '../DataDecks';
 
 //import function to shuffle
 import { shuffleArray } from '@/app/data/Functions';
+import React from 'react';
 
 const Study = () => {
 
@@ -201,7 +202,7 @@ const Study = () => {
             </View>
 
             {/* Card Container */}
-            <View style={{flex:5, alignItems:'center', justifyContent:'center', zIndex:0}}>
+            <View style={{flex:2, alignItems:'center', justifyContent:'center', zIndex:0}}>
 
                 {/*Card Component */}
                 {loading ? (
@@ -286,6 +287,7 @@ const styles = StyleSheet.create({
         backgroundColor: style.slate_100,
         paddingTop: 30,
         flexDirection:'column',
+        gap:30
     },
     flashcardButtons:{
         backgroundColor: style.gray_200, 

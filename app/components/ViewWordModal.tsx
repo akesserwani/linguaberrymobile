@@ -115,7 +115,7 @@ const ViewWordModal = ({onClose, modalTitle, json=false, entryId = null, dataPro
                 {/* Check if there are no words in renderedWords */}
 
                 {wordData.length === 0 ? (
-                    <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+                    <View style={{height:100, justifyContent:'center', alignItems:'center'}}>
                         <Text style={{ color: style.gray_400, fontSize: style.text_md, fontWeight:'600', textAlign: 'center', margin: 20 }}>
                             No words
                         </Text>

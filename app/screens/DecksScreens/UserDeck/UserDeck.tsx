@@ -210,7 +210,7 @@ const UserDeck = ({route}) => {
                 <TagDropdown currentLang={currentLang} deck_id={deckId} onTagSelect={handleTagSelection}/>
 
                 {/* Container with study and practice butons */}
-                <View style={{flexDirection:"row", justifyContent:"space-between"}}>
+                <View style={{flexDirection:"row", gap:20}}>
 
                     {/* Button to go to Study.tsx */}
                     <CustomButton onPress={()=>{
@@ -260,7 +260,7 @@ const UserDeck = ({route}) => {
                 <TouchableOpacity onPress={() => setActiveTab('All')} style={[styles.individualTab, activeTab === 'All' && styles.activeTab]} activeOpacity={0.7}>
                     <Text style={[styles.tabText, activeTab === 'All' && styles.activeTab]} >All</Text>
                     {/* Text for count of of wordData */}
-                    <Text style={[{fontSize:10, marginTop: 2, color: style.gray_400 }, activeTab === 'All' && styles.activeTab]} >
+                    <Text style={[{fontSize:style.text_sm, marginTop: 2, color: style.gray_400 }, activeTab === 'All' && styles.activeTab]} >
                         ({wordData.length})
                     </Text>
                 </TouchableOpacity>
@@ -268,7 +268,7 @@ const UserDeck = ({route}) => {
                 <TouchableOpacity onPress={() => setActiveTab('Starred')} style={[styles.individualTab, activeTab === 'Starred' && styles.activeTab]} activeOpacity={0.7}>
                     <Text style={[styles.tabText, activeTab === 'Starred' && styles.activeTab]} >Starred</Text>
                     {/* Text for count of STARRED words in wordData */}
-                    <Text style={[{fontSize:10, marginTop: 2, color: style.gray_400 }, activeTab === 'Starred' && styles.activeTab]} >
+                    <Text style={[{fontSize:style.text_sm, marginTop: 2, color: style.gray_400 }, activeTab === 'Starred' && styles.activeTab]} >
                         ({starredWords.length})
                     </Text>
                 </TouchableOpacity>

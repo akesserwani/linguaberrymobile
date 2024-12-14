@@ -1,14 +1,18 @@
 
-import { useState, useEffect } from "react";
-import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
+import { useState, useEffect, useRef } from "react";
+import { TouchableOpacity, View, Text, StyleSheet, Modal } from "react-native";
 import Icon from '@expo/vector-icons/FontAwesome6'
 import * as style from '@/assets/styles/styles'
 
 import EditDeckModal from "./EditDeckModal";
+import React from "react";
 
 const HeaderRight = ({currentLang, deckId, deckName, refreshDeck, refreshWords }) => {
 
     const [buttonClicked, setClick] = useState(false);
+
+    const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
+    const iconRef = useRef(null); // Ref to capture the position of the icon
 
     //Modal open
     const [modalActive, openModal] = useState(false);
@@ -21,20 +25,45 @@ const HeaderRight = ({currentLang, deckId, deckName, refreshDeck, refreshWords }
         setClick(false);
     }
 
+
+    //Set dropdown based on position of the target ref
+    const handleOpenDropdown = () => {
+        if (iconRef.current) {
+            iconRef.current.measure((fx, fy, width, height, px, py) => {
+                setDropdownPosition({ top: py + height, left: px - 70 }); // Adjust position dynamically
+                setClick(true);
+            });
+        }
+    };
+    
     return ( 
         <>
-            <TouchableOpacity onPress={()=>setClick(!buttonClicked)} style={{marginRight:30, width:30, height: 40, alignItems:'center', justifyContent:'center'}} activeOpacity={0.7}>
+
+            {/* Trigger button */}
+            <TouchableOpacity ref={iconRef} onPress={handleOpenDropdown} style={{marginRight:30, width:30, height: 40, alignItems:'center', justifyContent:'center'}} activeOpacity={0.7}>
                 <Icon name={"ellipsis-vertical"} size={20} color={style.gray_500} />
             </TouchableOpacity>
 
-            { buttonClicked && 
-                <View style={styles.dropdownBox}>
-                    {/* Edit Deck */}
-                    <TouchableOpacity onPress={openModalFunc} activeOpacity={0.7}>
-                        <Text style={{color:style.gray_500}}>Edit</Text>
-                    </TouchableOpacity>                    
-                </View>
-            }
+
+            {/* Main Dropdown in the form of a modal */}
+            <Modal transparent={true} visible={buttonClicked} onRequestClose={() => setClick(false)}>
+                {/* Invisible Overlay that can be clicked  */}
+                <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} 
+                            onPress={() => {
+                                setClick(false);
+                            }}>
+                    {/* Dropdown content */}
+                    <View style={[styles.dropdownBox, dropdownPosition]}>
+                        {/* Edit Deck */}
+                        <TouchableOpacity onPress={openModalFunc} activeOpacity={0.7}>
+                            <Text style={{color:style.gray_500}}>Edit</Text>
+                        </TouchableOpacity>                    
+                    </View>
+                </TouchableOpacity>
+            </Modal>
+
+
+
 
             {/* Modal to edit Deck */}
             {   modalActive &&
@@ -45,16 +74,16 @@ const HeaderRight = ({currentLang, deckId, deckName, refreshDeck, refreshWords }
         </>
      );
 }
- 
+
 const styles = StyleSheet.create({
     dropdownBox: {
         position: 'absolute', 
-        top: 40, 
+        top: 90, 
         right: 20,
         padding: 15,
 
-        height:50,
-        width: 100,
+        width:100,
+
         zIndex: 99,
 
         borderWidth: 1,
@@ -69,8 +98,10 @@ const styles = StyleSheet.create({
         flexDirection:"column",
         gap: 25,
     },
-    
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0, 0, 0, 0)',
+    },
 });
-
 
 export default HeaderRight;

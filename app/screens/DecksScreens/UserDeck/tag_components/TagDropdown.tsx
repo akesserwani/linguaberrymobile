@@ -14,6 +14,7 @@ import { ScrollView } from "react-native-gesture-handler";
 
 //import data functions from DataDecks
 import { createTag, tagExistsInDeck, getAllTagsInDeck, deleteTagByName, getWordsWithTag } from "../../DataDecks";
+import React from "react";
 
 const TagDropdown = ({currentLang, deck_id, onTagSelect}) => {
 

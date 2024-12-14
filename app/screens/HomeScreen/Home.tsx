@@ -31,7 +31,7 @@ const Home = () => {
             {/* Main White Container for Content */}
             <View style={styles.main_container}>
                 {/* Top Horizontal Container with Bookmarks label and Drop Down (only if screen > 800)*/}
-                <View style={{ flexDirection: 'row', paddingVertical:20, marginTop:10 }}>
+                <View style={{ flexDirection: 'row', paddingVertical:20, marginTop:10, justifyContent:'space-between' }}>
                     {/* Bookmarks label */}
                     <View style={{flexDirection: "row", alignItems: "center", justifyContent: "center", gap:10}}>
                       <Icon name={'bookmark'} solid={true} size={15} color={style.gray_500} />

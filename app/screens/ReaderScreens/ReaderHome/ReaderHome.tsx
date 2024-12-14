@@ -94,7 +94,7 @@ const ReaderHome = ({ navigation }) => {
                     <Text style={[styles.tabText, activeTab === 'All' && styles.activeTab]} >
                         All
                         {/* Count of All */}
-                        <Text style={{fontSize: style.text_xs }}>{'\u00A0'} ({entryData.length})</Text>
+                        <Text style={{fontSize: style.text_sm }}>{'\u00A0'} ({entryData.length})</Text>
                     </Text>
                 </TouchableOpacity>
 
@@ -102,7 +102,7 @@ const ReaderHome = ({ navigation }) => {
                     <Text style={[styles.tabText, activeTab === 'Bookmarks' && styles.activeTab]} >
                         Bookmarks
                         {/* Count of Bookmarks */}
-                        <Text style={{fontSize: style.text_xs }}>{'\u00A0'} ({ bookmarkedEntryData.length })</Text>
+                        <Text style={{fontSize: style.text_sm }}>{'\u00A0'} ({ bookmarkedEntryData.length })</Text>
                     </Text>
                 </TouchableOpacity>
             </View>

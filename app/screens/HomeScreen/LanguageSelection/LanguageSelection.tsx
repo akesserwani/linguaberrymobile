@@ -1,6 +1,7 @@
 
-import { Text, View, StyleSheet, TouchableOpacity, useWindowDimensions, ScrollView, FlatList } from 'react-native'
-import { useState, useContext, useEffect} from 'react';
+import { Text, View, StyleSheet, TouchableOpacity, useWindowDimensions, FlatList, Modal } from 'react-native'
+import { useState, useContext, useRef} from 'react';
+
 
 //styles
 import * as style from '@/assets/styles/styles'
@@ -29,6 +30,10 @@ const LanguageSelection = () => {
 
     //reactive variable for dropdown
     const [dropdownOpen, openDropdown] = useState(false);
+
+    const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 150 }); // Default width
+    const dropdownRef = useRef(null); // Ref to capture the position of the icon
+    
     //get window width
     const windowWidth = useWindowDimensions().width;
 
@@ -37,22 +42,6 @@ const LanguageSelection = () => {
     const [userLanguages, editUserLanguages] = useState(getLangStorage());
     
     
-    // useEffect(() => {
-    //     // Define an async function to fetch data
-    //     const fetchData = async () => {
-    //         const languages = await getLangStorage();
-    //         editUserLanguages(languages); // Update the state with fetched languages
-    //     };
-    
-    //     fetchData(); // Call the async function
-    // }, []); // Empty dependency array to run only on mount
-
-          
-    //function to open dropdown
-    const toggleDropdown = () =>{
-        openDropdown(!dropdownOpen);
-    }
-
     //current language
     const { currentLang, setCurrentLang } = useContext(CurrentLangContext);
 
@@ -163,6 +152,25 @@ const LanguageSelection = () => {
         setCurrentLanguage(language);
     }
 
+    //Set dropdown based on position of the target ref
+    const handleOpenDropdown = () => {
+        if (dropdownRef.current) {
+            dropdownRef.current.measure((fx, fy, width, height, px, py) => {
+                // Ensure fallback values to avoid NaN
+                const safeTop = py + height + 5 || 100; // Default to 100 if NaN
+                const safeLeft = px || 30; // Default to 30 if NaN
+                const safeWidth = width || 150; // Default width
+    
+                setDropdownPosition({
+                    top: safeTop,
+                    left: safeLeft,
+                    width: safeWidth,
+                });
+                openDropdown(true);
+            });
+        }
+    };
+    
 
     return ( 
 
@@ -170,58 +178,64 @@ const LanguageSelection = () => {
 
             {/* BUTTON */}
             {/* Main Dropdown Button  */}
-            <CustomButton customStyle={[styles.dropdownBtn, { width: windowWidth > 700 ? 250 : null }]} onPress={toggleDropdown}>
-                {/* Current Language */}
-                <Text style={{ fontSize: style.text_md, fontWeight: "500", color:style.gray_500 }}> { currentLang } </Text>
-                {/* Dropdown Icon */}
-                <Icon name={dropdownOpen ? "caret-up" : "caret-down"} size={15} color={style.gray_500}/>
-            </CustomButton>
+            <View ref={dropdownRef}>
+                <CustomButton customStyle={[styles.dropdownBtn, { width: windowWidth > 700 ? 250 : null }]} onPress={handleOpenDropdown}>
+                    {/* Current Language */}
+                    <Text style={{ fontSize: style.text_md, fontWeight: "500", color:style.gray_500 }}> { currentLang } </Text>
+                    {/* Dropdown Icon */}
+                    <Icon name={dropdownOpen ? "caret-up" : "caret-down"} size={15} color={style.gray_500}/>
+                </CustomButton>
+            </View>
 
 
             {/* DROPDOWN */}
             {/* Dropdown to view users added languages */}
-            {dropdownOpen && (
-            <View style={styles.dropdownBox}>
+            <Modal transparent={true} visible={dropdownOpen} onRequestClose={() => openDropdown(false)}>
+                {/* Invisible Overlay that can be clicked  */}
+                <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} 
+                                onPress={() => {
+                                    openDropdown(false);
+                                }}>
+                    {/* Main Content of the dropdown */}
+                    <View style={[styles.dropdownBox, { top: dropdownPosition.top, left: dropdownPosition.left, width: dropdownPosition.width }]}>
+                    {/* Render Each Individual Language  */}
+                        <FlatList
+                                data={[...userLanguages.filter(language => language !== currentLang)].sort((a, b) => a.localeCompare(b))} // Filter and sort alphabetically
+                                keyExtractor={(item, index) => index.toString()}
+                                style={{ maxHeight: 400 }}
+                                persistentScrollbar={true}
+                                contentContainerStyle={{ paddingVertical: 10 }}
+                                renderItem={({ item }) => (
 
-                {/* Render Each Individual Language  */}
+                                <TouchableOpacity
+                                    onPress={() => setCurrentLanguage(item)}
+                                    style={{paddingVertical: 15, paddingHorizontal: 10, borderRadius: style.rounded_md}}
+                                    activeOpacity={0.7}>
+                                    <Text style={{fontSize: style.text_md, fontWeight: "500", color: style.gray_500}}>{item}</Text>
+                                </TouchableOpacity>
+                        )}/>
 
-                <FlatList
-                        data={[...userLanguages.filter(language => language !== currentLang)].sort((a, b) => a.localeCompare(b))} // Filter and sort alphabetically
-                        keyExtractor={(item, index) => index.toString()}
-                        style={{ maxHeight: 400 }}
-                        persistentScrollbar={true}
-                        contentContainerStyle={{ paddingVertical: 10 }}
-                        renderItem={({ item }) => (
+                        {/* <hr> line break */}
+                        {/* Do not show it if there are no languages */}
+                        { userLanguages.length > 1 && (
+                            <View style={{ borderBottomColor: style.gray_200, borderBottomWidth: 1 }} />
+                        )}
 
-                            <TouchableOpacity
-                                onPress={() => setCurrentLanguage(item)}
-                                style={{paddingVertical: 15, paddingHorizontal: 10, borderRadius: style.rounded_md}}
-                                activeOpacity={0.7}>
-                                <Text style={{fontSize: style.text_md, fontWeight: "500", color: style.gray_500}}>{item}</Text>
-                            </TouchableOpacity>
-                )}/>
+                            {/* Buttons on Bottom of Dropdown */}
+                            <View style={{ flexDirection:"row", justifyContent:"space-between"}}>
+                                {/* Button To Add Languages */}
+                                <CustomButton onPress={toggleAddModal} customStyle={{width: 100, height:40,}}>
+                                    <Text style={{color: style.white, fontSize: style.text_md}}>Add</Text>
+                                </CustomButton>
 
-
-                {/* <hr> line break */}
-                {/* Do not show it if there are no languages */}
-                { userLanguages.length > 1 && (
-                    <View style={{ borderBottomColor: style.gray_200, borderBottomWidth: 1 }} />
-                )}
-
-                {/* Buttons on Bottom of Dropdown */}
-                <View style={{ flexDirection:"row", justifyContent:"space-between"}}>
-                    {/* Button To Add Languages */}
-                    <CustomButton onPress={toggleAddModal} customStyle={{width: 100, height:40,}}>
-                        <Text style={{color: style.white, fontSize: style.text_md}}>Add</Text>
-                    </CustomButton>
-
-                    {/* Button To Delete Languages */}
-                    <CustomButton onPress={toggleEditModal} customStyle={{width: 100, height:40, backgroundColor:style.gray_200}}>
-                        <Text style={{color: style.gray_600, fontSize: style.text_md}}>Edit</Text>
-                    </CustomButton>
-                </View>
-            </View>
-            )}
+                                {/* Button To Delete Languages */}
+                                <CustomButton onPress={toggleEditModal} customStyle={{width: 100, height:40, backgroundColor:style.gray_200}}>
+                                    <Text style={{color: style.gray_600, fontSize: style.text_md}}>Edit</Text>
+                                </CustomButton>
+                            </View>
+                        </View>
+                </TouchableOpacity>
+            </Modal>
 
 
             {/* Edit MODAL */}
@@ -250,7 +264,32 @@ const LanguageSelection = () => {
 }
 
 const styles = StyleSheet.create({
- 
+    
+    dropdownBox: {
+        position: 'absolute', 
+        top: 205, 
+        left: 30,
+        padding: 15,
+
+        zIndex: 99,
+
+        borderWidth: 1,
+        borderColor: style.gray_200,
+        borderRadius: style.rounded_lg,
+        backgroundColor: style.white,
+        shadowOpacity: 0.1,
+        shadowOffset: { width: 0, height: 1 },
+        shadowRadius: 4,
+        elevation: 2,       
+
+        flexDirection:"column",
+        gap: 25,
+    },
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0, 0, 0, 0)',
+    },
+
     dropdownBtn: {
         backgroundColor: style.white,
         borderColor: style.gray_200,
@@ -262,28 +301,6 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
     },
   
-    dropdownBox: {
-        position: 'absolute', 
-        top: 55, 
-        left: 1,
-        right: 0,
-        padding: 15,
-
-        maxHeight:400,
-        zIndex: 99,
-
-        borderWidth: 1,
-        borderColor: style.gray_200,
-        borderRadius: style.rounded_lg,
-        backgroundColor: style.white,
-        shadowOpacity: 0.1,
-        shadowOffset: { width: 0, height: 1 },
-        shadowRadius: 2,
-        elevation: 2,       
-
-        flexDirection:"column",
-        gap: 20,
-    },
     bottomSection: {
         alignItems: 'center', 
         paddingHorizontal: 30,
@@ -294,7 +311,7 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         gap: 20,
         borderRadius: 20,
-      }
+      },    
     
   
   });

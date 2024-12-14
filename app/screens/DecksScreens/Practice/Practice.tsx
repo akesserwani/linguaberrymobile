@@ -322,8 +322,8 @@ const Practice = () => {
     return ( 
         <View style={{flex:1, backgroundColor:style.slate_100}}>
         {/* Main Container */}
-        <KeyboardAvoidingView behavior={"padding"} style={{ flex: 5 }} keyboardVerticalOffset={50}>
-            <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{padding: 20}}>
+        <KeyboardAvoidingView behavior={"padding"} style={{ flex: 5 }} keyboardVerticalOffset={0}>
+            <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{padding: 20, paddingBottom:100}}>
 
                 <View style={[styles.mainContainer, { paddingHorizontal: responsiveHorizontalPadding }]}>
                     {/* Top Container with Tags */}

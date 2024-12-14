@@ -71,7 +71,7 @@ const Card = ({wordData, setWordData, currentLang, deckId, frontFirst}) => {
                 {/* Stationary text overlay */}
                 <View style={styles.textContainer}>
                     {/* Top Container with the Star Button on top right, notes button on left */}
-                    <View style={{flex:1, flexDirection:'row', justifyContent:'space-between', padding:15}}>
+                    <View style={{flexDirection:'row', justifyContent:'space-between', padding:15}}>
                         {/* Notes Buton - toggle modal */}
                         <TouchableOpacity onPress={()=>toggleModal(true)} activeOpacity={0.7}>
                                 <Icon name={"list"} solid={true} size={20} color={style.gray_300}/>     
@@ -91,7 +91,7 @@ const Card = ({wordData, setWordData, currentLang, deckId, frontFirst}) => {
 
                     {/* CARD TEXT HERE */}
                     {/* Bottom Container with full text */}
-                    <View style={{flex:4, alignItems:'center', marginTop:20, padding:20}}>
+                    <View style={{flex:1, alignItems:'center', justifyContent:'center', marginTop:10, padding:20}}>
                         <Text style={{fontSize:style.text_md, color:style.gray_600, fontWeight:'600'}}>
                             {/* Change value based on whether card and front first variable */}
                             { (!flipped && frontFirst) || (flipped && !frontFirst) ? (
@@ -141,14 +141,13 @@ const Card = ({wordData, setWordData, currentLang, deckId, frontFirst}) => {
 const styles = StyleSheet.create({
     cardContainer: {
         width: '100%', // Full width of parent
-        aspectRatio: 1.4, // Optional: controls height relative to width
         alignItems: 'center',
         justifyContent: 'center',
     },
     card: {
         position: 'absolute',
         backgroundColor: style.white,
-        borderWidth: style.border_sm,
+        borderWidth: style.border_md,
         height: '100%',
         width: '100%',
         borderRadius: style.rounded_md
@@ -157,7 +156,7 @@ const styles = StyleSheet.create({
     textContainer: {
         height: '100%',
         width: '100%',
-        flexDirection:'column'
+        flexDirection:'column',
     },
 });
 

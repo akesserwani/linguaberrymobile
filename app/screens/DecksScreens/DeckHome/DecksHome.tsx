@@ -99,7 +99,7 @@ const DecksHome = ({ navigation }) => {
                     <Text style={[styles.tabText, activeTab === 'All' && styles.activeTab]} >
                         All
                         {/* Count of All */}
-                        <Text style={{fontSize: style.text_xs }}>{'\u00A0'} ({deckData.length})</Text>
+                        <Text style={{fontSize: style.text_sm }}>{'\u00A0'} ({deckData.length})</Text>
                     </Text>
                 </TouchableOpacity>
 
@@ -107,7 +107,7 @@ const DecksHome = ({ navigation }) => {
                     <Text style={[styles.tabText, activeTab === 'Bookmarks' && styles.activeTab]} >
                         Bookmarks
                         {/* Count of Bookmarks */}
-                        <Text style={{fontSize: style.text_xs }}>{'\u00A0'} ({ bookmarkedDeckData.length })</Text>
+                        <Text style={{fontSize: style.text_sm }}>{'\u00A0'} ({ bookmarkedDeckData.length })</Text>
                     </Text>
                 </TouchableOpacity>
             </View>

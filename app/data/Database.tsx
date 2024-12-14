@@ -25,7 +25,8 @@ function openDatabase() {
       db.runSync(
         `CREATE TABLE IF NOT EXISTS general (
           id INTEGER PRIMARY KEY, 
-          current_language TEXT NOT NULL
+          current_language TEXT NOT NULL,
+          onboarding INTEGER DEFAULT 0
         );`
       );
 
