@@ -108,31 +108,35 @@ function openDatabase() {
 }
   
 function pushInitialData(db) {
+    
+    //check to see if the onboarding variable is 0
+    //if it is 0 then we will add languages and change it to 1
+    let result = db.getFirstSync(`SELECT onboarding FROM general WHERE id = 1;`);
+
+    if (result?.onboarding === 0 || !result){
+      //Add Spanish and French languages
+      db.runSync(
+        `INSERT OR IGNORE INTO user_languages (language, direction) VALUES ('French', 'LTR');`
+      );
+
+      db.runSync(
+        `INSERT OR IGNORE INTO user_languages (language, direction) VALUES ('Spanish', 'LTR');`
+      );
+
+      //Set Spanish as current language and onboarding to 1 so it does not reactivate
+      db.runSync(
+        `INSERT OR IGNORE INTO general (id, current_language, onboarding) VALUES (1, 'Spanish', 0);`
+      );
+
+    }
+
+
     // db.runSync(`DROP TABLE IF EXISTS general;`);
     // db.runSync(`DROP TABLE IF EXISTS user_languages;`);
     // db.runSync(`DROP TABLE IF EXISTS deck;`);
     // db.runSync(`DROP TABLE IF EXISTS word;`);
     // db.runSync(`DROP TABLE IF EXISTS tag;`);
     // db.runSync(`DROP TABLE IF EXISTS entry;`);
-
-
-  // Insert initial data into the general table
-  // db.runSync(
-  //   `INSERT OR IGNORE INTO general (id, current_language) VALUES (1, 'French');`
-  // );
-
-  // // Insert initial data into the user_languages table
-  // db.runSync(
-  //   `INSERT OR IGNORE INTO user_languages (language) VALUES ('French');`
-  // );
-
-  // db.runSync(
-  //   `INSERT OR IGNORE INTO user_languages (language) VALUES ('Spanish');`
-  // );
-
-//   // Add more initial data here as needed...
-
-
 
 }
 

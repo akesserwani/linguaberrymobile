@@ -11,7 +11,7 @@ export const getCurrentLangStorage = () =>{
 
     db.withTransactionSync(() => {
         const result = db.getFirstSync("SELECT current_language FROM general WHERE id = 1;");
-        currentLanguage = result.current_language;
+        currentLanguage = result?.current_language || "";
     });
     return currentLanguage; // Return the captured value
 }

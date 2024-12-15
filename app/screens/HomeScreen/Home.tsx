@@ -8,6 +8,8 @@ import Icon from '@expo/vector-icons/FontAwesome6'
 import LanguageSelection from "./LanguageSelection/LanguageSelection";
 import BookmarksList from "./components/BookmarksList";
 
+import WelcomeModal from "./components/WelcomeModal";
+import React from "react";
 
 const Home = () => {
 
@@ -18,7 +20,7 @@ const Home = () => {
 
 
     return (
-
+        <>
 
         <View style={{ flex: 1, backgroundColor: style.slate_100, paddingTop: 25, paddingLeft: 25, paddingRight: 25 }}>
 
@@ -49,6 +51,12 @@ const Home = () => {
 
             </View>
         </View>
+
+
+        {/* Welcome Modal - toggles only once */}
+        <WelcomeModal />
+
+        </>
 
       );
 }
