@@ -21,7 +21,7 @@ import CompleteModal from './components/CompleteModal';
 //get words from the database
 import { getWords } from '../DataDecks';
 
-import { shuffleArray } from '@/app/data/Functions';
+import { shuffleArray, compareIgnoringPunctuationAndAccents } from '@/app/data/Functions';
 
 const Practice = () => {
 
@@ -238,7 +238,7 @@ const Practice = () => {
         setIsEditable(false);
 
         // Compare `userInput` to the `correctAnswer`
-        if (userInput.trim() === correctAnswer.trim()) {
+        if (compareIgnoringPunctuationAndAccents(userInput, correctAnswer)) {
 
             // Play the correct sound
             await playCorrectSound();
@@ -364,7 +364,7 @@ const Practice = () => {
 
                                 {/* Input Form */}
                                 <CustomInput showLabel={false} placeholder={"Begin translating here..."} value={userInput} onChangeText={setUserInput}
-                                    maxLength={100} multiline={true} 
+                                    maxLength={500} multiline={true} 
                                     customStyle={{alignSelf:'stretch'}}
                                     editable={isEditable}
                                     customFormStyle={{padding:20, color:style.gray_600, backgroundColor:style.slate_100, borderColor:style.gray_300, height:200}}/>
@@ -448,7 +448,7 @@ const Practice = () => {
         {/* Correct Banner */}
         { correctBanner && 
             <View style={{flex:1, backgroundColor:style.emerald_200}}>
-            <View style={{paddingHorizontal: responsiveHorizontalPadding, flex: 1,
+                <View style={{paddingHorizontal: responsiveHorizontalPadding, flex: 1,
                         flexDirection:'row', justifyContent:'space-between', alignItems:'center', alignContent:'center'}}>
 
                     {/* Correct Label */}

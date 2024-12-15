@@ -2,6 +2,7 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import ExplorerHome from './ExplorerHome/ExplorerHome';
 import ExplorerReader from './ExplorerReader/ExplorerReader';
+import PracticeSentence from '@/app/components/PracticeSentence';
 
 import * as style from '@/assets/styles/styles'
 
@@ -27,6 +28,14 @@ const ReaderStack = () => {
         <Stack.Screen name="ExplorerReader" component={ ExplorerReader } 
                         options= {{
                         title: 'Interactive Story',
+                        headerTitleAlign: 'center',
+                        headerTitleStyle: {
+                            color: style.gray_500,
+                        }
+                    }} />
+        <Stack.Screen name="PracticeSentence" component={ PracticeSentence } 
+                        options= {{
+                        title: 'Practice',
                         headerTitleAlign: 'center',
                         headerTitleStyle: {
                             color: style.gray_500,

@@ -185,7 +185,7 @@ const BookmarksList = () => {
 
                 {/* Check if there are no words in renderedWords */}
                 { renderedData.length === 0 ? (
-                    <Text style={{ color: style.gray_400, fontSize: style.text_md, fontWeight:'600', textAlign: 'center', marginTop: 30 }}>
+                    <Text style={{ color: style.gray_400, fontSize: style.text_md, fontWeight:'600', textAlign: 'center', marginTop: 50 }}>
                         No bookmarks
                     </Text>
                 ) : (

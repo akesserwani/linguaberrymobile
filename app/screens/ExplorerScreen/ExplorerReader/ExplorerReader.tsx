@@ -147,7 +147,6 @@ const ExplorerReader = ({route}) => {
 
     const { width } = useWindowDimensions();
     const responsiveHorizontalPadding = width < 600 ? 40 : width < 1000 ? 100 : 200;
-
     
 
     return ( 
@@ -171,10 +170,20 @@ const ExplorerReader = ({route}) => {
                     setTranslation(!showTranslation);
 
                 }} customStyle={null}>
-                    <Text style={{color:style.white, fontWeight:'500', fontSize:style.text_xs}}>
+                    <Text style={{color:style.white, fontWeight:'600'}}>
                         {showTranslation ? 'Hide Translation' : 'Show Translation'}
                     </Text>
                 </CustomButton>
+
+                {/* Practice Button */}
+                <CustomButton onPress={()=>{ navigation.navigate('PracticeSentence', {story: storyData[0].story, storyTranslation: storyData[0].story_translation, title: title });}} 
+                              customStyle={{backgroundColor:style.blue_200, flexDirection:'row', gap:8}}>
+                        <Text style={{color:style.blue_500, fontWeight:'600'}}>
+                            Practice
+                        </Text>
+                        <Icon name={'dumbbell'} solid={true} width={15} color={style.blue_400} />
+                </CustomButton>
+
             </View>
 
             {/* Container for title and bookmarked status */}

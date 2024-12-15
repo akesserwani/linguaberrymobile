@@ -1,4 +1,23 @@
 
+//Function to clean input
+export const  compareIgnoringPunctuationAndAccents = (input, correct) => {
+    // Function to remove punctuation and normalize accents
+    const normalizeText = (text) => {
+        return text
+            .normalize("NFD") // Decompose accents (e.g., é -> e +  ́)
+            .replace(/[\u0300-\u036f]/g, "") // Remove accent marks
+            .replace(/[.,!?;:'"-]/g, "") // Remove punctuation
+            .toLowerCase() // Make lowercase for case-insensitive comparison
+            .trim(); // Remove leading and trailing whitespace
+    };
+
+    // Normalize both strings
+    const normalizedInput = normalizeText(input);
+    const normalizedCorrect = normalizeText(correct);
+
+    // Compare normalized strings
+    return normalizedInput === normalizedCorrect;
+}
 
 //This function will convert the JSON data in the language files and make it compatible with ViewWordModal
 export const convertLangFiletoJSON = (data) => {
