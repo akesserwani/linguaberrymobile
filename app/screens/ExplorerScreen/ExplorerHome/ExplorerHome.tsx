@@ -15,7 +15,7 @@ import {wordFiles, storyFiles} from './ExplorerData';
 import CustomAlert from '@/app/components/CustomAlert';
 
 //import components
-import ViewWordModal from '@/app/components/ViewWordModal';
+import ViewWordModal from '../../components/ViewWordModal';
 
 const ExplorerHome = () => {
 

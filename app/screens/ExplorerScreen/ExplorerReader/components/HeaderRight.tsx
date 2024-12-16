@@ -7,7 +7,7 @@ import * as style from '@/assets/styles/styles'
 import { wordStoryData } from "../../ExplorerHome/ExplorerData";
 import { convertLangFiletoJSON } from "@/app/data/Functions";
 
-import ViewWordModal from "@/app/components/ViewWordModal";
+import ViewWordModal from "@/app/screens/components/ViewWordModal";
 import React from "react";
 
 const HeaderRight = ({title, currentLang}) => {

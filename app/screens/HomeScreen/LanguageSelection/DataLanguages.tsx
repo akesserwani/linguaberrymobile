@@ -70,6 +70,8 @@ export const deleteLangStorage = (language) => {
         db.runSync(`DELETE FROM entry WHERE language_id = ?;`, [language]);
         //Delete explorer data
         db.runSync(`DELETE FROM explorer WHERE language_id = ?;`, [language]);
+        //Delete the entry tags 
+        db.runSync(`DROP TABLE IF EXISTS entry_tag;`);
 
         //Finally Delete the language itself
         db.runSync(`DELETE FROM user_languages WHERE language = ?;`, [language]);

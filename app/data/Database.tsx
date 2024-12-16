@@ -82,7 +82,17 @@ function openDatabase() {
           word_data TEXT,
           translation_data TEXT,
           bookmarked BOOLEAN,
+          tag TEXT,
           created_at DATETIME DEFAULT CURRENT_TIMESTAMP,  
+          language_id INTEGER,
+          FOREIGN KEY(language_id) REFERENCES user_languages(id) ON DELETE CASCADE
+        );`
+      );
+
+      db.runSync(
+        `CREATE TABLE IF NOT EXISTS entry_tag (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          name TEXT NOT NULL,
           language_id INTEGER,
           FOREIGN KEY(language_id) REFERENCES user_languages(id) ON DELETE CASCADE
         );`
@@ -136,7 +146,9 @@ function pushInitialData(db) {
     // db.runSync(`DROP TABLE IF EXISTS deck;`);
     // db.runSync(`DROP TABLE IF EXISTS word;`);
     // db.runSync(`DROP TABLE IF EXISTS tag;`);
+    // db.runSync(`DROP TABLE IF EXISTS entry_tag;`);
     // db.runSync(`DROP TABLE IF EXISTS entry;`);
+    // db.runSync(`DROP TABLE IF EXISTS explorer;`);
 
 }
 

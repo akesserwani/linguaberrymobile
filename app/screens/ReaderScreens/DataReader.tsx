@@ -6,9 +6,9 @@ import { db } from "@/app/data/Database";
 export const newEntry = (title, current_language) =>{
     db.withTransactionSync(() => {
         db.runSync(
-            `INSERT INTO entry (title, contents, word_data, translation_data, bookmarked, language_id) 
-                VALUES (?, ?, ?, ?, ?, ?)`,
-                title, "", "", "", 0, current_language);
+            `INSERT INTO entry (title, contents, word_data, translation_data, bookmarked, tag, language_id) 
+                VALUES (?, ?, ?, ?, ?, ?, ?)`,
+                title, "", "", "", 0, "none", current_language);
     });
 }
 
@@ -38,7 +38,7 @@ export const getEntryContents = (entryId, languageId) => {
             languageId
         );
 
-        content = result.contents;
+        content = result?.contents || "";
     });
 
     return content;
@@ -190,5 +190,101 @@ export const updateTranslationData = (translationData, entryId, currentLang) => 
         console.log("Translation data updated successfully!");
     } catch (error) {
         console.error("Error updating translation data:", error.message);
+    }
+};
+
+
+//Get all the entry_tags
+export const getAllReaderTags = (currentLang) =>{
+    let data = [];
+
+    db.withTransactionSync(() => {
+        const results = db.getAllSync(`SELECT id, name FROM entry_tag WHERE language_id = ?`, [currentLang]);
+        data = results || []; // Fallback to an empty array if no results
+    });
+
+    return data;
+}
+
+
+
+// Create a new entry tag if it does not already exist
+export const createNewTag = (name, currentLang) => {
+    let tagCreated = false; // Variable to capture result
+
+    db.withTransactionSync(() => {
+        // Check if the tag already exists
+        const result = db.getFirstSync(
+            `SELECT id FROM entry_tag WHERE name = ? AND language_id = ?`, 
+            [name, currentLang]
+        );
+
+        // If the result is null, the tag does not exist, so create it
+        if (!result) {
+            db.runSync(
+                `INSERT INTO entry_tag (name, language_id) VALUES (?, ?)`, 
+                [name, currentLang]
+            );
+            tagCreated = true; // Tag was created
+        } else {
+            console.log(`Tag "${name}" already exists for language ID ${currentLang}.`);
+        }
+    });
+
+    return tagCreated; // Return the result outside the transaction
+};
+
+//delete an entry tag
+export const deleteTagByName = (tagName, currentLang) => {
+    try {
+        db.withTransactionSync(() => {
+            // Execute the delete query
+            db.runSync(
+                `DELETE FROM entry_tag WHERE name = ? AND language_id = ?;`, 
+                [tagName, currentLang]
+            );
+            console.log(`Tag "${tagName}" deleted successfully.`);
+        });
+    } catch (error) {
+        console.log(`Failed to delete tag "${tagName}":`, error);
+    }
+}
+
+//Update a tag to a story
+export const updateTagInStory = (newTag, entryId, currentLang) => {
+    try {
+        db.withTransactionSync(() => {
+            db.runSync(
+                `UPDATE entry 
+                 SET tag = ? 
+                 WHERE id = ? AND language_id = ?;`,
+                [newTag, entryId, currentLang]
+            );
+        });
+        console.log(`Tag successfully updated for entry with ID: ${entryId}`);
+    } catch (error) {
+        console.error("Error updating tag in story:", error);
+    }
+};
+
+//get tag of a certain story
+// Get the tag of a specific story
+export const getTagOfStory = (entryId, currentLang) => {
+    try {
+        let tag = null; // Variable to store the retrieved tag
+        db.withTransactionSync(() => {
+            const result = db.getFirstSync(
+                `SELECT tag 
+                 FROM entry 
+                 WHERE id = ? AND language_id = ?;`,
+                [entryId, currentLang]
+            );
+            tag = result ? result.tag : null; // Check if result exists
+        });
+        console.log(`Tag retrieved for entry with ID: ${entryId} - Tag: ${tag}`);
+        return tag;
+    } catch (error) {
+        console.error("Error fetching tag of story:", error);
+        return null; // Return null if an error occurs
     }
 };

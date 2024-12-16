@@ -10,7 +10,7 @@ import { isLanguageRTL } from '@/app/screens/HomeScreen/LanguageSelection/DataLa
 //database functions
 import { getWordData } from '../../DataReader';
 
-import AddWordToDeck from '@/app/components/AddWordToDeck';
+import AddWordToDeck from '@/app/screens/components/AddWordToDeck';
 
 const TooltipComponent = ({ entryId, contents, refresh }) => {
 
@@ -44,25 +44,56 @@ const TooltipComponent = ({ entryId, contents, refresh }) => {
     const [bottomPopup, setPopup] = useState(false);
 
     // Get the translation for the selected word
-    const getTranslation = (term) => {
+    const getTranslation = (input) => {
+    
         if (!entryData || !Array.isArray(entryData)) {
             return "Translation not found"; 
         }
     
-        const foundItem = entryData.find(item => item.term === cleanString(selectedWord.toLowerCase()));
-        return foundItem ? cleanString(foundItem.translation.toLowerCase()) : "Translation not found";
+        const cleanedInput = cleanString(input.toLowerCase());
+    
+        // Find matching term or translation
+        const foundItem = entryData.find(item => {
+            const cleanedTerm = cleanString(item.term.toLowerCase());
+            const cleanedTranslation = cleanString(item.translation.toLowerCase());
+    
+    
+            return cleanedTerm === cleanedInput || cleanedTranslation === cleanedInput;
+        });
+    
+    
+        // Return the corresponding translation or term
+        if (foundItem) {
+            return cleanString(foundItem.term.toLowerCase()) === cleanedInput 
+                ? cleanString(foundItem.translation.toLowerCase()) 
+                : cleanString(foundItem.term.toLowerCase());
+        }
+    
+        return "Translation not found";
     };
-
+    
     // Get the notes for the selected word
-    const getNotes = (term) => {
+    const getNotes = (input) => {
+    
         if (!entryData || !Array.isArray(entryData)) {
             return "none"; 
         }
     
-        const foundItem = entryData.find(item => item.term === cleanString(selectedWord.toLowerCase()));
+        const cleanedInput = cleanString(input.toLowerCase());
+    
+        // Find the matching item
+        const foundItem = entryData.find(item => {
+            const cleanedTerm = cleanString(item.term.toLowerCase());
+            const cleanedTranslation = cleanString(item.translation.toLowerCase());
+        
+            return cleanedTerm === cleanedInput || cleanedTranslation === cleanedInput;
+        });
+    
+    
+        // Return notes if the item is found, or "none" otherwise
         return foundItem ? cleanString(foundItem.notes.toLowerCase()) : "none";
     };
-        
+            
 
     //function to add term, translation, and notes to deck
     //Create reactive variable to trigger whether we want to show AddWordToDeck Component or not

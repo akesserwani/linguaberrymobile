@@ -12,6 +12,8 @@ import CustomFab from '@/app/components/CustomFab';
 //import the entry creation modal 
 import CreateEntryModal from './components/CreateEntryModal';
 
+import BookmarkDropdown from './components/BookmarkDropdown';
+
 import * as style from '@/assets/styles/styles'
 
 //import data from reader data file
@@ -19,6 +21,7 @@ import { getEntriesByLanguage } from '../DataReader';
 
 //import miscellanous functions
 import { formatDate, limitLength } from '@/app/data/Functions';
+import React from 'react';
 
 
 const ReaderHome = ({ navigation }) => {
@@ -33,6 +36,10 @@ const ReaderHome = ({ navigation }) => {
     const [entryData, setEntryData] = useState([]);
     // bookmarked deck data
     const [bookmarkedEntryData, setBookmarkedEntryData] = useState([]);
+
+    //selected tag
+    const [selectedTag, selectTag] = useState("");
+    console.log(selectedTag)
 
     //rendered data
     //this is the data that is rendered in the dropdown
@@ -88,6 +95,12 @@ const ReaderHome = ({ navigation }) => {
     return (
         <>
         <View style={[styles.mainContainer, { paddingHorizontal: responsiveHorizontalPadding }]}>
+
+            {/* Tag Dropdown */}
+            <View style={{marginTop:20, marginBottom:30}}>
+                <BookmarkDropdown onTagSelect={selectTag} />
+            </View>
+
             {/* Top Container with Tabs - All and Bookmarks */}
             <View style={styles.tabContainer}>
                 <TouchableOpacity onPress={() => setActiveTab('All')} style={[styles.individualTab, activeTab === 'All' && styles.activeTab]} activeOpacity={0.7}>
@@ -223,7 +236,7 @@ const styles = StyleSheet.create({
         height: 60, 
         borderRadius: style.rounded_md, 
         borderColor: style.gray_200,
-        borderWidth: style.border_sm,
+        borderWidth: style.border_md,
 
         flexDirection: 'row',
         justifyContent:'space-between',

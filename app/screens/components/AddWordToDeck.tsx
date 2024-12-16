@@ -8,12 +8,12 @@ import * as style from '@/assets/styles/styles'
 import CustomModal from "@/app/components/CustomModal";
 import CustomInput from "@/app/components/CustomInput";
 import CustomButton from "@/app/components/CustomButton";
-import CustomAlert from "./CustomAlert";
+import CustomAlert from "@/app/components/CustomAlert";
 
 //data for context
 import { CurrentLangContext } from '@/app/data/CurrentLangContext.tsx';
 
-import { getAllDecks, createNewWord } from "../screens/DecksScreens/DataDecks";
+import { getAllDecks, createNewWord } from "../DecksScreens/DataDecks";
 
 const AddWordToDeck = ({onClose, wordToAdd}) => {
 

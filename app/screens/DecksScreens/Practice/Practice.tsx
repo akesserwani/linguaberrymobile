@@ -21,6 +21,8 @@ import CompleteModal from './components/CompleteModal';
 //get words from the database
 import { getWords } from '../DataDecks';
 
+import { isLanguageRTL } from '../../HomeScreen/LanguageSelection/DataLanguages';
+
 import { shuffleArray, compareIgnoringPunctuationAndAccents } from '@/app/data/Functions';
 
 const Practice = () => {
@@ -30,6 +32,7 @@ const Practice = () => {
 
     const { currentLang, deckId, deckName } = route.params; 
 
+    const isRTL = isLanguageRTL(currentLang);
 
     //Reactive variable for selected tag that will be sent over to the TagSelection component
     const [selectedTag, selectTag] = useState("None");
@@ -311,6 +314,21 @@ const Practice = () => {
             }
         };
     }, []);
+
+    //indicator for text alignment
+    //front first false is target language , RTL true is Arabic/Hebrew/RTL language
+    const getTextDirection = (isRTL, frontFirst) => {
+        if (isRTL && !frontFirst) return 'rtl';
+        if (!isRTL) return 'ltr';
+        return 'ltr';
+    };
+
+    const getTextAlignment = (isRTL, frontFirst) => {
+        if (isRTL && !frontFirst) return 'right';
+        if (!isRTL) return 'left';
+        return 'left';
+    };
+
     
 
     //SCREEN WIDTH AND RESPONSIVE DESIGNS
@@ -349,7 +367,10 @@ const Practice = () => {
                                 </Text>          
 
                                 {/* Text to Translate - from the data */}
-                                <Text style={{color:style.gray_600, fontSize:style.text_md, fontWeight:'400', marginLeft:5}}>
+                                <Text style={{color:style.gray_600, fontSize:style.text_md, fontWeight:'400', marginLeft:5,
+                                              textAlign: getTextAlignment(isRTL, frontFirst), // Align text based on direction
+                                              writingDirection: getTextDirection(isRTL, frontFirst), // Ensure proper 
+                                }}>
                                     {loading ? (
                                             "Loading..."
                                         ) : (
@@ -367,7 +388,9 @@ const Practice = () => {
                                     maxLength={500} multiline={true} 
                                     customStyle={{alignSelf:'stretch'}}
                                     editable={isEditable}
-                                    customFormStyle={{padding:20, color:style.gray_600, backgroundColor:style.slate_100, borderColor:style.gray_300, height:200}}/>
+                                    customFormStyle={{padding:20, color:style.gray_600, backgroundColor:style.slate_100, borderColor:style.gray_300, height:200,
+                                                      writingDirection: getTextDirection(isRTL, !frontFirst)
+                                    }}/>
                             </View>
 
                         ) : (

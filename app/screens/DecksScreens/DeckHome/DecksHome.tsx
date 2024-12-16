@@ -18,6 +18,7 @@ import CreateDeckModal from './components/CreateDeckModal';
 import * as style from '@/assets/styles/styles'
 
 import { limitLength } from '@/app/data/Functions';
+import React from 'react';
 
 
 const DecksHome = ({ navigation }) => {

@@ -5,7 +5,7 @@ import { useNavigation, useRoute, useIsFocused } from '@react-navigation/native'
 
 import { Audio } from 'expo-av'
 
-import { CurrentLangContext } from '../data/CurrentLangContext.tsx';
+import { CurrentLangContext } from '@/app/data/CurrentLangContext.tsx';
 
 //styles
 import * as style from '@/assets/styles/styles'
@@ -16,11 +16,11 @@ import { compareIgnoringPunctuationAndAccents } from '@/app/data/Functions';
 import CustomButton from '@/app/components/CustomButton';
 import CustomInput from '@/app/components/CustomInput';
 
-//import the completion modal
-import CompleteModal from '../screens/DecksScreens/Practice/components/CompleteModal';
 
-import { shuffleArray } from '@/app/data/Functions';
+import { shuffleArray, matchSentences } from '@/app/data/Functions';
 import React from 'react';
+
+import { isLanguageRTL } from '../HomeScreen/LanguageSelection/DataLanguages';
 
 
 const PracticeSentence = () => {
@@ -31,10 +31,11 @@ const PracticeSentence = () => {
 
     //current language
     const { currentLang } = useContext(CurrentLangContext);
-    
 
-    const { story, storyTranslation, title } = route.params; 
+    //Check database to see if the function is RTL (right to left, returns true if it is, false if it is not)
+    const isRTL = isLanguageRTL(currentLang);
 
+    const { story, storyTranslation, title, stack, entryId } = route.params; 
 
     //Functionality to hide the tabBar when it is on the page
     const isFocused = useIsFocused();
@@ -54,48 +55,7 @@ const PracticeSentence = () => {
             });
         }
     }, [isFocused, navigation]);
-    
-
-
-    function matchSentences(mainText, translationText) {
-        // Regex to split sentences on `.`, `?`, or `!` while avoiding splits on abbreviations and ellipses
-        const sentenceRegex = /(?<!\b(?:Mr|Ms|Mrs|Dr|Jr|Sr|St|etc|e\.g|i\.e|vs)\.)(?<!\.\.\.)([.!?])\s+/;
-    
-        // Split and clean mainText sentences
-        const mainSentences = mainText
-            .split(sentenceRegex)
-            .reduce((acc, curr, idx) => {
-                if (/[.!?]/.test(curr) && idx > 0) {
-                    acc[acc.length - 1] += curr; // Append punctuation to the last sentence
-                } else if (curr.trim()) {
-                    acc.push(curr.trim());
-                }
-                return acc;
-            }, [])
-            .map(sentence => sentence.replace(/[.!?]/g, '').trim()); // Remove punctuation
-    
-        // Split and clean translationText sentences
-        const translationSentences = translationText
-            .split(sentenceRegex)
-            .reduce((acc, curr, idx) => {
-                if (/[.!?]/.test(curr) && idx > 0) {
-                    acc[acc.length - 1] += curr; // Append punctuation to the last sentence
-                } else if (curr.trim()) {
-                    acc.push(curr.trim());
-                }
-                return acc;
-            }, [])
-            .map(sentence => sentence.replace(/[.!?]/g, '').trim()); // Remove punctuation
-    
-        // Match sentences dynamically
-        const sentencePairs = mainSentences.map((mainSentence, index) => {
-            const translationSentence = translationSentences[index] || ''; // Handle cases where translations may be fewer
-            return { mainSentence, translationSentence };
-        });
-    
-        return sentencePairs;
-    }
-            
+                
 
     //Data variable - this variable will contain the data
     const [sentenceData, setSentenceData] = useState(matchSentences(story, storyTranslation))
@@ -272,12 +232,31 @@ const PracticeSentence = () => {
         toggleCompleteModal(false);
 
         //navigate pages
-        navigation.navigate('ExplorerReader', {title:title });
+        if (stack === "Explorer"){
+            navigation.navigate('ExplorerReader', {title:title });
+        } else {
+            //Redirect to reader main story page
+            navigation.navigate('ReaderViewer', {entryTitle:title, entryId: entryId });
+
+        }
 
 
     }
 
-    
+    //indicator for text alignment
+    //front first false is target language , RTL true is Arabic/Hebrew/RTL language
+    const getTextDirection = (isRTL, frontFirst) => {
+        if (isRTL && !frontFirst) return 'rtl';
+        if (!isRTL) return 'ltr';
+        return 'ltr';
+    };
+
+    const getTextAlignment = (isRTL, frontFirst) => {
+        if (isRTL && !frontFirst) return 'right';
+        if (!isRTL) return 'left';
+        return 'left';
+    };
+
 
     //SCREEN WIDTH AND RESPONSIVE DESIGNS
     // Get screen width dynamically
@@ -324,7 +303,10 @@ const PracticeSentence = () => {
                                     </Text>          
 
                                     {/* Text to Translate - from the data */}
-                                    <Text style={{color:style.gray_600, fontSize:style.text_md, fontWeight:'400', marginLeft:5}}>
+                                    <Text style={{color:style.gray_600, fontSize:style.text_md, fontWeight:'400', marginLeft:5,
+                                        textAlign: getTextAlignment(isRTL, frontFirst), // Align text based on direction
+                                        writingDirection: getTextDirection(isRTL, frontFirst), // Ensure proper
+                                    }}>
                                         {
                                             //Check if frontFirst is true
                                             frontFirst ? (
@@ -340,7 +322,9 @@ const PracticeSentence = () => {
                                         maxLength={500} multiline={true} 
                                         customStyle={{alignSelf:'stretch'}}
                                         editable={isEditable}
-                                        customFormStyle={{padding:20, color:style.gray_600, backgroundColor:style.slate_100, borderColor:style.gray_300, height:200}}/>
+                                        customFormStyle={{padding:20, color:style.gray_600, backgroundColor:style.slate_100, borderColor:style.gray_300, height:200,
+                                                          writingDirection: getTextDirection(isRTL, !frontFirst)
+                                        }}/>
                                 </View>
 
                             ) : (

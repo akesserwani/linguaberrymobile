@@ -7,19 +7,19 @@ import * as style from '@/assets/styles/styles'
 
 import CustomModal from "@/app/components/CustomModal";
 import CustomInput from "@/app/components/CustomInput";
-import CustomAlert from "./CustomAlert";
+import CustomAlert from "@/app/components/CustomAlert";
 import CustomButton from "@/app/components/CustomButton";
-import AddWordToDeck from "@/app/components/AddWordToDeck";
+import AddWordToDeck from "./AddWordToDeck";
 
 //data for context
 import { CurrentLangContext } from '@/app/data/CurrentLangContext.tsx';
 
 //get data
-import { getWordData } from "../screens/ReaderScreens/DataReader";
+import { getWordData } from "../ReaderScreens/DataReader";
 
-import { limitLength } from "../data/Functions";
+import { limitLength } from "@/app/data/Functions";
 
-import { deckNameExist, createNewDeck, createBulkWordsByDeckName } from "../screens/DecksScreens/DataDecks";
+import { deckNameExist, createNewDeck, createBulkWordsByDeckName } from "../DecksScreens/DataDecks";
 
 
 const ViewWordModal = ({onClose, modalTitle, json=false, entryId = null, dataProp = null}) => {
@@ -124,7 +124,7 @@ const ViewWordModal = ({onClose, modalTitle, json=false, entryId = null, dataPro
                     // Render words in a flatlist 
                     <FlatList
                         data={wordData}
-                        contentContainerStyle = {{paddingRight:10, paddingTop:10, paddingBottom:20, paddingHorizontal:20 }}
+                        contentContainerStyle = {{paddingRight:10, paddingTop:20, paddingBottom:20, paddingHorizontal:20 }}
                         keyExtractor={(item, index) => index.toString()} 
                         renderItem={({ item, index }) => (
                         <TouchableOpacity onPress={ 

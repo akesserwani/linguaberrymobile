@@ -8,8 +8,9 @@ import CustomAlert from "@/app/components/CustomAlert";
 
 import { deleteEntry } from "../../DataReader";
 import EditDataModal from "./EditDataModal";
-import ViewWordModal from "../../../../components/ViewWordModal";
+import ViewWordModal from "@/app/screens/components/ViewWordModal";
 import React from "react";
+import ViewSentences from "./ViewSentences";
 
 const HeaderRight = ({currentLang, entryId, entryTitle, setRefresh}) => {
 
@@ -18,7 +19,10 @@ const HeaderRight = ({currentLang, entryId, entryTitle, setRefresh}) => {
     const iconRef = useRef(null); // Ref to capture the position of the icon
 
     //triggers for the modals
-    const [viewDataModal, setViewDataModal] = useState(false);
+    const [viewWordModal, setViewWordModal] = useState(false);
+
+    const [viewSentenceModal, setViewSentenceModal] = useState(false);
+
     const [editDataModal, setEditDataModal] = useState(false);
 
     //Set dropdown based on position of the target ref
@@ -45,12 +49,21 @@ const HeaderRight = ({currentLang, entryId, entryTitle, setRefresh}) => {
                                     setClick(false);
                                 }}>
                     <View style={[styles.dropdownBox, dropdownPosition]}>
-                        {/* View Data Modal */}
+
+                        {/* View Word Modal */}
                         <TouchableOpacity onPress={()=>{
                             setClick(false);
-                            setViewDataModal(true);
+                            setViewWordModal(true);
                         }} activeOpacity={0.7}>
                             <Text style={{color:style.gray_500}}>View Words</Text>
+                        </TouchableOpacity>   
+
+                        {/* View Sentnece Modal */}
+                        <TouchableOpacity onPress={()=>{
+                            setClick(false);
+                            setViewSentenceModal(true);
+                        }} activeOpacity={0.7}>
+                            <Text style={{color:style.gray_500}}>View Sentences</Text>
                         </TouchableOpacity>   
 
                         {/* Edit Data Modal */}
@@ -65,13 +78,21 @@ const HeaderRight = ({currentLang, entryId, entryTitle, setRefresh}) => {
             </Modal>
 
         {/* Call Each of the Modals */}
-        { viewDataModal &&
-            <ViewWordModal onClose={()=> setViewDataModal(false)} entryId={entryId} modalTitle={entryTitle}/>
+        {/* Modal to view the words */}
+        { viewWordModal &&
+            <ViewWordModal onClose={()=> setViewWordModal(false)} entryId={entryId} modalTitle={entryTitle}/>
         }
 
+        {/* Modal to view the sentences */}
+        { viewSentenceModal && 
+            <ViewSentences onClose={()=> setViewSentenceModal(false)} entryId={entryId} modalTitle={entryTitle}/>
+        }
+
+        {/* Modal to Edit the Data */}
         {   editDataModal &&
             <EditDataModal onClose={()=> setEditDataModal(false)} entryId={entryId} setRefresh={setRefresh}/>
         }
+
 
         </>
       );

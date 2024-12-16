@@ -19,6 +19,47 @@ export const  compareIgnoringPunctuationAndAccents = (input, correct) => {
     return normalizedInput === normalizedCorrect;
 }
 
+//Function to match senteneces
+export const matchSentences = (mainText, translationText) => {
+    // Regex to split sentences on `.`, `?`, or `!` while avoiding splits on abbreviations and ellipses
+    const sentenceRegex = /(?<!\b(?:Mr|Ms|Mrs|Dr|Jr|Sr|St|etc|e\.g|i\.e|vs)\.)(?<!\.\.\.)([.!?])\s+/;
+
+    // Split and clean mainText sentences
+    const mainSentences = mainText
+        .split(sentenceRegex)
+        .reduce((acc, curr, idx) => {
+            if (/[.!?]/.test(curr) && idx > 0) {
+                acc[acc.length - 1] += curr; // Append punctuation to the last sentence
+            } else if (curr.trim()) {
+                acc.push(curr.trim());
+            }
+            return acc;
+        }, [])
+        .map(sentence => sentence.replace(/[.!?]/g, '').trim()); // Remove punctuation
+
+    // Split and clean translationText sentences
+    const translationSentences = translationText
+        .split(sentenceRegex)
+        .reduce((acc, curr, idx) => {
+            if (/[.!?]/.test(curr) && idx > 0) {
+                acc[acc.length - 1] += curr; // Append punctuation to the last sentence
+            } else if (curr.trim()) {
+                acc.push(curr.trim());
+            }
+            return acc;
+        }, [])
+        .map(sentence => sentence.replace(/[.!?]/g, '').trim()); // Remove punctuation
+
+    // Match sentences dynamically
+    const sentencePairs = mainSentences.map((mainSentence, index) => {
+        const translationSentence = translationSentences[index] || ''; // Handle cases where translations may be fewer
+        return { mainSentence, translationSentence };
+    });
+
+    return sentencePairs;
+}
+
+
 //This function will convert the JSON data in the language files and make it compatible with ViewWordModal
 export const convertLangFiletoJSON = (data) => {
     return Object.entries(data).map(([key, value]) => ({

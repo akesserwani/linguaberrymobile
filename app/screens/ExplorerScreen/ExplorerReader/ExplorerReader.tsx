@@ -176,7 +176,7 @@ const ExplorerReader = ({route}) => {
                 </CustomButton>
 
                 {/* Practice Button */}
-                <CustomButton onPress={()=>{ navigation.navigate('PracticeSentence', {story: storyData[0].story, storyTranslation: storyData[0].story_translation, title: title });}} 
+                <CustomButton onPress={()=>{ navigation.navigate('PracticeSentence', {story: storyData[0].story, storyTranslation: storyData[0].story_translation, title: title, stack:"Explorer" });}} 
                               customStyle={{backgroundColor:style.blue_200, flexDirection:'row', gap:8}}>
                         <Text style={{color:style.blue_500, fontWeight:'600'}}>
                             Practice

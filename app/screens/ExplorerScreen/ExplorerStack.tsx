@@ -2,7 +2,7 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import ExplorerHome from './ExplorerHome/ExplorerHome';
 import ExplorerReader from './ExplorerReader/ExplorerReader';
-import PracticeSentence from '@/app/components/PracticeSentence';
+import PracticeSentence from '@/app/screens/components/PracticeSentence';
 
 import * as style from '@/assets/styles/styles'
 

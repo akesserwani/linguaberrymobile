@@ -9,7 +9,7 @@ import { CurrentLangContext } from '@/app/data/CurrentLangContext.tsx';
 import { RTLlanguages } from '@/app/data/LangData';
 
 
-import AddWordToDeck from '@/app/components/AddWordToDeck';
+import AddWordToDeck from '@/app/screens/components/AddWordToDeck';
 
 import { storyFiles, wordStoryData, toggleHighlightedWord, getHighlightedWords } from '../../ExplorerHome/ExplorerData';
 

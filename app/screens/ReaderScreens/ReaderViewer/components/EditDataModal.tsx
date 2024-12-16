@@ -10,11 +10,13 @@ import CustomInput from "@/app/components/CustomInput";
 import CustomButton from "@/app/components/CustomButton";
 import CustomAlert from "@/app/components/CustomAlert";
 
+import BookmarkDropdown from "../../ReaderHome/components/BookmarkDropdown";
+
 //data for context
 import { CurrentLangContext } from '@/app/data/CurrentLangContext.tsx';
 
 //import data functions from DataReader
-import { getWordData, updateWordData, getTranslationData, updateTranslationData, getEntryContents } from "../../DataReader";
+import { getWordData, updateWordData, getTranslationData, updateTranslationData, getEntryContents, updateTagInStory, getTagOfStory } from "../../DataReader";
 //data functions
 import { validateCSVFormat, CSVToObject, ObjectToCSV } from "@/app/data/Functions";
 
@@ -33,6 +35,9 @@ const EditDataModal = ({onClose, entryId, setRefresh}) => {
 
     //reactive variable for the content
     const [entryContents, setEntryContents] = useState(null);
+
+    //selected tag dropdown
+    const [selectedTag, selectTag] = useState(getTagOfStory(entryId, currentLang));
 
     // create useEffect to get data and insert in form
     useEffect(()=>{
@@ -82,6 +87,10 @@ const EditDataModal = ({onClose, entryId, setRefresh}) => {
 
     } 
 
+    //create a useEffect to update the Entries tag
+    useEffect(()=>{
+        updateTagInStory(selectedTag, entryId, currentLang);
+    }, [selectedTag])
 
     //Copy AI prompt for Word Data
     //** Goal of the word prompt is to go through the entire text and generate key value pairs in CSV format for the word and translation in the text
@@ -116,9 +125,12 @@ const EditDataModal = ({onClose, entryId, setRefresh}) => {
 
     return ( 
         <CustomModal title="Edit Data" onClose={onClose} horizontalPadding={0}>
-                {/* Main Content here */}
-                <KeyboardAvoidingView behavior={'padding'} keyboardVerticalOffset={50} >
+            {/* Main Content here */}
+            <KeyboardAvoidingView behavior={'padding'} keyboardVerticalOffset={50} >
                 <ScrollView contentContainerStyle={[{ gap: 20, padding:25 },{ flexDirection: width > 1000 ? 'row' : 'column' } ]}>
+
+                    {/* Bookmark Dropdown */}
+                    <BookmarkDropdown onTagSelect={selectTag} currentTag={selectedTag} filter={false}/>
 
                     {/* Column 1 - Word Data */}
                     <View style={{flexDirection:'column', gap:10, width: width > 800 ? '50%' : '100%'}}>
@@ -182,7 +194,7 @@ const EditDataModal = ({onClose, entryId, setRefresh}) => {
                     </TouchableOpacity> */}
 
                 </ScrollView>
-                </KeyboardAvoidingView>
+            </KeyboardAvoidingView>
 
         </CustomModal>
      );

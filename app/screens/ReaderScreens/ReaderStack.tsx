@@ -3,6 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import ReaderHome from './ReaderHome/ReaderHome'
 import ReaderEditor from './ReaderEditor/ReaderEditor';
 import ReaderViewer from './ReaderViewer/ReaderView';
+import PracticeSentence from '@/app/screens/components/PracticeSentence';
 
 import * as style from '@/assets/styles/styles'
 
@@ -41,6 +42,15 @@ const ReaderStack = () => {
                     color: style.gray_500,
                 }
             }} />
+            <Stack.Screen name="PracticeReader" component={ PracticeSentence }
+                options= {{
+                title: 'Practice',
+                headerTitleAlign: 'center',
+                headerTitleStyle: {
+                    color: style.gray_500,
+                }
+            }} />
+
       </Stack.Navigator>
        );
 }

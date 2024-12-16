@@ -21,6 +21,8 @@ import { limitLength, formatDate } from '@/app/data/Functions';
 import { ScrollView } from 'react-native-gesture-handler';
 import TooltipComponent from './components/TooltipComponent';
 import { isLanguageRTL } from '../../HomeScreen/LanguageSelection/DataLanguages';
+import React from 'react';
+import CustomAlert from '@/app/components/CustomAlert';
 
 const ReaderViewer = ({route}) => {
 
@@ -71,19 +73,13 @@ const ReaderViewer = ({route}) => {
 
     useFocusEffect(
         useCallback(() => {
-        // Define an async function to fetch and set entry data
-        const fetchEntryData = async () => {
-            try {
-                // Await the asynchronous database fetch
-                const data = await getSingleEntryData(entryId, currentLang);
+            const fetchEntryData = () => {
+                const data = getSingleEntryData(entryId, currentLang);
                 // Set the retrieved data into the state
                 setEntryData(data);
                 // console.log("Loaded entry data:", data); 
-            } catch (error) {
-                console.error("Error fetching entry data:", error);
-            }
-        };
-        // Call the async function
+            };
+        // Call the function
         fetchEntryData();
         }, [entryId, currentLang, refresh]) // Re-run effect if entryId or currentLang changes
     )
@@ -100,6 +96,14 @@ const ReaderViewer = ({route}) => {
     //Reactive variable to show the english translation
     const [showTranslation, setTranslation] = useState(false);
 
+
+    //Sentence counter to detect how many sentences data has
+    const countSentences = (text) => {
+        if (!text) return 0; // Handle empty or null text
+        const sentenceRegex = /[.!?]+/g; // Matches sentence-ending punctuation
+        return (text.match(sentenceRegex) || []).length; // Returns number of matches
+      };
+  
     
     //responsive variable for container padding
     //if width is less than 600 then padding is 40, if between 600 and 1000 then padding is 100, 1k+, padding is 200
@@ -111,7 +115,6 @@ const ReaderViewer = ({route}) => {
         <>
         <View style={[styles.mainContainer, { paddingHorizontal: responsiveHorizontalPadding }]}>
             {/* Container for the main text with interactive functionalities */}
-            <ScrollView style={{ flex:1}} contentContainerStyle={{marginTop:20, padding:10, paddingBottom:100}}>
 
                 {/* Button Container for the Show English and Practice functionaities*/}
                 <View style={{flexDirection:'row', gap:10, paddingBottom:10}}>
@@ -121,14 +124,29 @@ const ReaderViewer = ({route}) => {
                             {showTranslation ? 'Hide Translation' : 'Show Translation'}
                         </Text>
                     </CustomButton>
+
+                    {/* Practice Button */}
+                    <CustomButton onPress={()=>{ 
+                                //Check if it has more than two sentences
+                                if (countSentences(entryData.contents) > 2 && countSentences(entryData.translation_data) > 2) {
+                                    navigation.navigate('PracticeReader', {story: entryData.contents, storyTranslation: entryData.translation_data, title: entryTitle, entryId: entryId, stack:"Reader"  });
+                                } else {
+                                    CustomAlert("You do not have enough sentences to practice!", "Minimum of THREE sentences for both the main text and translation to practice.")
+                                }
+                            }} 
+                              customStyle={{backgroundColor:style.blue_200, flexDirection:'row', gap:8}}>
+                        <Text style={{color:style.blue_500, fontWeight:'600'}}>
+                            Practice
+                        </Text>
+                        <Icon name={'dumbbell'} solid={true} width={15} color={style.blue_400} />
+                    </CustomButton>
                 </View>
 
 
                 {/* Container for title, date, and bookmarked status on top */}
-                <View style={{flexDirection:'row', justifyContent:'space-between', marginTop:20, marginBottom:20}}>
-
+                <View style={{flexDirection:'row', justifyContent:'space-between', marginTop:20, borderBottomColor:style.gray_300, borderBottomWidth:style.border_md}}>
                     {/* Container for title and created_at */}
-                    <View style={{flexDirection:'column', width:'90%'}}>
+                    <View style={{flexDirection:'column', gap:10, paddingBottom:15, width:'90%'}}>
                         {entryData ? (
                             <>
                             {/* Title Text */}
@@ -173,6 +191,7 @@ const ReaderViewer = ({route}) => {
                     </TouchableOpacity>
                 </View>
 
+                <ScrollView style={{ flex:1}} contentContainerStyle={{ paddingBottom:100, paddingTop:20}}>
                     {entryData ? (
                         <>
                             {/* Main Text here in the Target Language */}
@@ -192,10 +211,8 @@ const ReaderViewer = ({route}) => {
                         </>
                     ) : (
                         <Text style={{color:style.gray_500, fontSize:style.text_md, fontWeight:'500'}}>Loading...</Text>
-
                     )}
-
-            </ScrollView>
+                </ScrollView>
 
             {/* Fab button to go back to the editor */}
             <CustomFab icon='pen' onPress={()=>navigation.navigate("ReaderEditor", { entryTitle: entryTitle, entryId: entryId })}/>
