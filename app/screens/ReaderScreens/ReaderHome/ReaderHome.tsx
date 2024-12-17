@@ -36,10 +36,11 @@ const ReaderHome = ({ navigation }) => {
     const [entryData, setEntryData] = useState([]);
     // bookmarked deck data
     const [bookmarkedEntryData, setBookmarkedEntryData] = useState([]);
+    //filtered tag data
+    const [filteredEntryData, setFilteredEntryData] = useState([]);
 
     //selected tag
-    const [selectedTag, selectTag] = useState("");
-    console.log(selectedTag)
+    const [selectedTag, selectTag] = useState(null);
 
     //rendered data
     //this is the data that is rendered in the dropdown
@@ -57,9 +58,19 @@ const ReaderHome = ({ navigation }) => {
         const bookmarkedData = data.filter(entry => entry.bookmarked === 1);
         setBookmarkedEntryData(bookmarkedData);  
 
+        //set bookmarked deck data
+        const filteredTagData = data.filter(entry => entry.tag === selectedTag);
+        
+
         //get the current tab then set to the rendered data
         if (activeTab === "All"){
-            setRenderedData(data);
+            //render the filtered tags under all
+            if (selectedTag === null){
+                setRenderedData(data);
+            } else {
+                setRenderedData(filteredTagData);
+            }
+
         } else if (activeTab === "Bookmarks"){
             setRenderedData(bookmarkedData);
         }
@@ -71,7 +82,7 @@ const ReaderHome = ({ navigation }) => {
     useFocusEffect(
         useCallback(() => {
             fetchData(); // Fetch decks whenever the screen is focused
-        }, [currentLang, activeTab]) // Add any dependencies if needed
+        }, [currentLang, selectedTag, activeTab]) // Add any dependencies if needed
     );
     
 
@@ -97,7 +108,7 @@ const ReaderHome = ({ navigation }) => {
         <View style={[styles.mainContainer, { paddingHorizontal: responsiveHorizontalPadding }]}>
 
             {/* Tag Dropdown */}
-            <View style={{marginTop:20, marginBottom:30}}>
+            <View style={{marginTop:10, marginBottom:15}}>
                 <BookmarkDropdown onTagSelect={selectTag} />
             </View>
 

@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
         backgroundColor: style.white,
         borderColor: style.gray_200,
         borderWidth: style.border_sm,
-        borderRadius: 16,
+        borderRadius: style.rounded_md,
     
         height: 50,
         flexDirection: "row",

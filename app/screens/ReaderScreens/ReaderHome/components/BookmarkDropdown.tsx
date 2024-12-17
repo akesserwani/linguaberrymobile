@@ -228,12 +228,16 @@ const BookmarkDropdown = ({onTagSelect, currentTag = null, filter=true}) => {
                             </CustomButton>
                 
                             {/* Edit Button */}
-                            <CustomButton onPress={()=>toggleEdit(!editVar)} customStyle={{backgroundColor:style.gray_200}}>
-                                <Text style={{color:style.gray_500}}>
-                                    {editVar ? "Done" : "Edit"}
-                                </Text>
-                            </CustomButton>
+                            {  tagData.length !== 0 && (
+                                <CustomButton onPress={()=>toggleEdit(!editVar)} customStyle={{backgroundColor:style.gray_200}}>
+                                    <Text style={{color:style.gray_500}}>
+                                        {editVar ? "Done" : "Edit"}
+                                    </Text>
+                                </CustomButton>
+                            )}
+
                         </View>
+                        
 
                     </View>
                 </TouchableOpacity>
