@@ -183,7 +183,6 @@ const BookmarkDropdown = ({onTagSelect, currentTag = null, filter=true}) => {
                                 keyExtractor={(item) => item.id.toString()} // Ensure each item has a unique key
                                 contentContainerStyle={{ paddingRight: 10, paddingTop: 10 }}
                                 ListHeaderComponent={
-                                    tagData.length !== 0 && (
                                         // Render show all button
                                         <TouchableOpacity onPress={() => {
                                             if (filter){
@@ -196,7 +195,6 @@ const BookmarkDropdown = ({onTagSelect, currentTag = null, filter=true}) => {
                                                 {filter ? "Show All" : "No tag"}
                                             </Text>
                                         </TouchableOpacity>
-                                    )
                                 }
                                 renderItem={({ item }) => (
                                     <TouchableOpacity
@@ -228,13 +226,11 @@ const BookmarkDropdown = ({onTagSelect, currentTag = null, filter=true}) => {
                             </CustomButton>
                 
                             {/* Edit Button */}
-                            {  tagData.length !== 0 && (
-                                <CustomButton onPress={()=>toggleEdit(!editVar)} customStyle={{backgroundColor:style.gray_200}}>
-                                    <Text style={{color:style.gray_500}}>
-                                        {editVar ? "Done" : "Edit"}
-                                    </Text>
-                                </CustomButton>
-                            )}
+                            <CustomButton onPress={()=>toggleEdit(!editVar)} customStyle={{backgroundColor:style.gray_200}}>
+                                <Text style={{color:style.gray_500}}>
+                                    {editVar ? "Done" : "Edit"}
+                                </Text>
+                            </CustomButton>
 
                         </View>
                         
