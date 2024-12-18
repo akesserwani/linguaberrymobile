@@ -10,6 +10,7 @@ import BookmarksList from "./components/BookmarksList";
 
 import WelcomeModal from "./components/WelcomeModal";
 import React from "react";
+import UpdateModal from "./components/UpdateModal";
 
 const Home = () => {
 
@@ -55,6 +56,9 @@ const Home = () => {
 
         {/* Welcome Modal - toggles only once */}
         <WelcomeModal />
+
+        {/* Update modal - will render if triggered via the API */}
+        <UpdateModal />
 
         </>
 

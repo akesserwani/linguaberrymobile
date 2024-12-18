@@ -9,38 +9,39 @@ import CustomButton from "@/app/components/CustomButton";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 
-import { db } from "@/app/data/Database";
-
-const WelcomeModal = () => {
+const UpdateModal = () => {
 
 
     const [showModal, toggleModal] = useState(false);
+    const [message, setMessage] = useState("");
 
 
-    useEffect(()=>{
-        //Check to see if the onboarding value is 1, if it is 0 then showModal set to true, else set to false
-        db.withTransactionSync(() => {
-            let result = db.getFirstSync(`SELECT onboarding FROM general WHERE id = 1;`);
-            if (result?.onboarding === 0 || !result){
-                toggleModal(true);
-            }else{
-                toggleModal(false);
-            }
-        })
-    },[])
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const response = await fetch('http://linguaberry.com/api/update_modal');
+          const json = await response.json();
+
+          //set the showModal variable
+          toggleModal(json.showModal)
+          
+          //set the message
+          setMessage(json.message)
 
 
-    const beginLearning = () =>{
+        } catch (error) {
+          console.log(error);
+        }
+      };
+  
+      fetchData();
+    }, []);
+  
 
+
+    const closeButton = () =>{
         //close the modal
         toggleModal(false);
-        //update the onboarding function so it does not repeat
-        db.withTransactionSync(() => {
-            db.runSync(
-                `UPDATE general SET onboarding = 1 WHERE id = 1;`
-            );
-        })
-
     }
 
 
@@ -48,7 +49,7 @@ const WelcomeModal = () => {
     //get window width
     const windowWidth = useWindowDimensions().width;
     //if width is mobile < 800, make the width 90%, else make it 80%
-    const dynamicWidth = windowWidth < 800 ? '90%' : '50%';  // 90% for mobile, 80% for larger screens
+    const dynamicWidth = windowWidth < 800 ? '90%' : '80%';  // 90% for mobile, 80% for larger screens
     
     return ( 
         <Modal transparent={true} visible={showModal} onRequestClose={() => toggleModal(false)}>
@@ -59,17 +60,18 @@ const WelcomeModal = () => {
                         <Image source={require('@/assets/images/logo.png')} style={{ width:250, height:60 }}/>
                     </View>
 
-                    {/* Button Container On Bottom */}
-                    <View style={{flexDirection:'row', justifyContent:'space-between', marginTop:20}}>
-                        {/* Start Learning Button */}
-                        <CustomButton onPress={beginLearning} customStyle={null}>
-                            <Text style={{color:style.white}}>Begin Learning</Text>
-                        </CustomButton>
+                    {/* Message here */}
+                    <Text style={{color:style.blue_500, fontWeight:'500', fontSize:style.text_lg, textAlign:'center'}}>
+                        {message}
+                    </Text>
+                
 
-                        {/* Watch tutorial Buttom */}
-                        <TouchableOpacity style={{marginTop:10}} activeOpacity={0.7}>
-                            <Text style={{color:style.blue_500, fontWeight:'500'}}>Watch Tutorial</Text>
-                        </TouchableOpacity>
+                    {/* Button Container On Bottom */}
+                    <View style={{flexDirection:'row', justifyContent:'flex-end', marginTop:20}}>
+                        {/* Start Learning Button */}
+                        <CustomButton onPress={closeButton} customStyle={null}>
+                            <Text style={{color:style.white}}>Close</Text>
+                        </CustomButton>
                     </View>
 
                 </View>
@@ -93,9 +95,9 @@ const styles = StyleSheet.create({
       borderRadius: 20,
 
       padding:40,
-      paddingVertical:50,
+      paddingVertical:30,
     },
   });
 
  
-export default WelcomeModal;
+export default UpdateModal;

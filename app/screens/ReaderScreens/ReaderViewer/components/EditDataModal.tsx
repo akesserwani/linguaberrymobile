@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { TouchableOpacity, View, Text, StyleSheet, ScrollView, useWindowDimensions, KeyboardAvoidingView } from "react-native";
+import { TouchableOpacity, View, Text, StyleSheet, ScrollView, useWindowDimensions, KeyboardAvoidingView, Share } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 import Icon from '@expo/vector-icons/FontAwesome6'
@@ -121,6 +121,18 @@ const EditDataModal = ({onClose, entryId, setRefresh}) => {
 
     }
 
+    //share word data
+    const shareWordData = async() =>{
+        const result = await Share.share({message:wordDataInput});
+    }
+
+
+    //share translation
+    const shareTranslation = async() =>{
+        const result = await Share.share({message:textTranslation});
+    }
+
+
     const { width } = useWindowDimensions(); // Get screen width
 
     return ( 
@@ -138,12 +150,21 @@ const EditDataModal = ({onClose, entryId, setRefresh}) => {
                         <View style={{flexDirection:'row', justifyContent:'space-between', alignContent:'center', alignItems:'center', margin:5}}>
                             {/* Title */}
                             <Text style={{color:style.gray_500, fontSize: style.text_md, fontWeight: '500'}}>Word Data:</Text>
+                            {/*Buttons*/}
+                            <View style={{flexDirection:'row', gap:5}}>
+                                {/* AI prompt button for word data */}
+                                <CustomButton onPress={wordPrompt} customStyle={{flexDirection:'row', gap:5, backgroundColor:style.gray_200}}> 
+                                    <Text style={{color:style.gray_500, fontSize:style.text_xs, fontWeight:'500'}}>AI Prompt</Text>
+                                    <Icon name={"copy"} size={15} color={style.gray_500} />
+                                </CustomButton>
 
-                            {/* AI prompt button for word data */}
-                            <CustomButton onPress={wordPrompt} customStyle={{flexDirection:'row', gap:5, backgroundColor:style.gray_200}}> 
-                                <Text style={{color:style.gray_500, fontSize:style.text_xs, fontWeight:'500'}}>AI Prompt</Text>
-                                <Icon name={"copy"} size={15} color={style.gray_500} />
-                            </CustomButton>
+                                {/* Share button */}
+                                <CustomButton onPress={shareWordData} customStyle={{width:40, height:35}}>
+                                    <Icon name={"share"} width={12} height={10} color={style.white} />
+                                </CustomButton>
+                            </View>
+
+
                         </View>       
 
                         {/* Word Data input form */}
@@ -163,11 +184,20 @@ const EditDataModal = ({onClose, entryId, setRefresh}) => {
                             {/* Title */}
                             <Text style={{color:style.gray_500, fontSize: style.text_md, fontWeight: '500'}}>Full Translation:</Text>
 
-                            {/* AI prompt button for word data */}
-                            <CustomButton onPress={translationPrompt} customStyle={{flexDirection:'row', gap:5, backgroundColor:style.gray_200}}> 
-                                <Text style={{color:style.gray_500, fontSize:style.text_xs, fontWeight:'500'}}>AI Prompt</Text>
-                                <Icon name={"copy"} size={15} color={style.gray_500} />
-                            </CustomButton>
+                            {/*Buttons*/}
+                            <View style={{flexDirection:'row', gap:5}}>
+                                {/* AI prompt button for word data */}
+                                <CustomButton onPress={translationPrompt} customStyle={{flexDirection:'row', gap:5, backgroundColor:style.gray_200}}> 
+                                    <Text style={{color:style.gray_500, fontSize:style.text_xs, fontWeight:'500'}}>AI Prompt</Text>
+                                    <Icon name={"copy"} size={15} color={style.gray_500} />
+                                </CustomButton>
+
+                                {/* Share button */}
+                                <CustomButton onPress={shareTranslation} customStyle={{width:40, height:35}}>
+                                    <Icon name={"share"} width={12} height={10} color={style.white} />
+                                </CustomButton>
+
+                            </View>
                         </View>       
 
                         {/* Sentence Data input form */}

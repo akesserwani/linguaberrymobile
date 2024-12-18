@@ -41,7 +41,6 @@ const LanguageSelection = () => {
     //Get the data of the languages that the user has
     const [userLanguages, editUserLanguages] = useState(getLangStorage());
     
-    
     //current language
     const { currentLang, setCurrentLang } = useContext(CurrentLangContext);
 

@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-import { TouchableOpacity, View, Text, StyleSheet, ScrollView, KeyboardAvoidingView } from "react-native";
+import { TouchableOpacity, View, Text, StyleSheet, ScrollView, KeyboardAvoidingView, Share } from "react-native";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import * as style from '@/assets/styles/styles'
+import Icon from '@expo/vector-icons/FontAwesome6'
 
 //custom components
 import CustomButton from '@/app/components/CustomButton';
@@ -106,6 +107,11 @@ const EditDeckModal = ({onClose, currentLang, deckId, deckName, refreshDeck, ref
 
     }
 
+    //share data button
+    const shareData = async() =>{
+        const result = await Share.share({message:inputData});
+    }
+
     return ( 
         <CustomModal title="Edit Deck" onClose={onClose}>
 
@@ -131,9 +137,14 @@ const EditDeckModal = ({onClose, currentLang, deckId, deckName, refreshDeck, ref
                         { dataError }
                     </Text>
                 
+                {/* Share Data Button */}
+                <CustomButton onPress={shareData} customStyle={{width:40, height:40}}>
+                    <Icon name={"share"} width={12} height={10} color={style.white} />
+                </CustomButton>
+
                 {/* User warning to use semicolon instead of commas*/}
                 <Text style={{color:style.gray_400, fontWeight:"500", margin:5, marginTop:20}}>
-                    Note: Use semicolons instead of commas in the term, translation, and notes
+                    Note: Use semicolons instead of commas in the individual terms, translations, and notes
                 </Text>
 
 

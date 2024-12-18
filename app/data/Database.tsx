@@ -3,6 +3,8 @@ import { Platform } from "react-native";
 
 
 
+
+
 function openDatabase() {
     if (Platform.OS === "web") {
       return {
@@ -41,7 +43,7 @@ function openDatabase() {
       db.runSync(
         `CREATE TABLE IF NOT EXISTS user_languages (
           id INTEGER PRIMARY KEY AUTOINCREMENT, 
-          language TEXT NOT NULL,
+          language TEXT NOT NULL UNIQUE,          
           direction TEXT NOT NULL
         );`
       );
@@ -117,7 +119,6 @@ function openDatabase() {
         );`
       );
 
-
       pushInitialData(db);
 
     });
@@ -125,31 +126,29 @@ function openDatabase() {
     return db;
 }
   
+
 function pushInitialData(db) {
     
-  
-    //check to see if the onboarding variable is 0
-    //if it is 0 then we will add languages and change it to 1
-    let result = db.getFirstSync(`SELECT onboarding FROM general WHERE id = 1;`);
+  //check to see if the onboarding variable is 0
+  //if it is 0 then we will add languages and change it to 1
+  let result = db.getFirstSync(`SELECT onboarding FROM general WHERE id = 1;`);
 
-    if (result?.onboarding === 0 || !result){
-      //Add Spanish and French languages
-      db.runSync(
-        `INSERT OR IGNORE INTO user_languages (language, direction) VALUES ('French', 'LTR');`
-      );
+  if (result?.onboarding === 0 || !result){
+    //Add Spanish and French languages
+    db.runSync(
+      `INSERT OR IGNORE INTO user_languages (language, direction) VALUES ('French', 'LTR');`
+    );
 
-      db.runSync(
-        `INSERT OR IGNORE INTO user_languages (language, direction) VALUES ('Spanish', 'LTR');`
-      );
+    db.runSync(
+      `INSERT OR IGNORE INTO user_languages (language, direction) VALUES ('Spanish', 'LTR');`
+    );
 
-      //Set Spanish as current language and onboarding to 1 so it does not reactivate
-      db.runSync(
-        `INSERT OR IGNORE INTO general (id, current_language, onboarding) VALUES (1, 'Spanish', 0);`
-      );
+    //Set Spanish as current language and onboarding to 1 so it does not reactivate
+    db.runSync(
+      `INSERT OR IGNORE INTO general (id, current_language, onboarding) VALUES (1, 'Spanish', 0);`
+    );
 
-    }
-
-
+  }
 
 }
 
