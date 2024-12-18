@@ -77,7 +77,7 @@ const Card = ({wordData, setWordData, currentLang, deckId, frontFirst}) => {
                                 <Icon name={"list"} solid={true} size={20} color={style.gray_300}/>     
                         </TouchableOpacity>
 
-
+                        {/* Only show starred button if practice mode is off */}
                         {/* Star Button */}
                         <TouchableOpacity onPress={toggleStarred} activeOpacity={0.7}>
                             { starred ? (
@@ -87,6 +87,7 @@ const Card = ({wordData, setWordData, currentLang, deckId, frontFirst}) => {
                             )                            
                             }
                         </TouchableOpacity>
+
                     </View>
 
                     {/* CARD TEXT HERE */}

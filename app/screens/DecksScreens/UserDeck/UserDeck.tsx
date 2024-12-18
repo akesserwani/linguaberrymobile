@@ -221,7 +221,7 @@ const UserDeck = ({route}) => {
                                     return;
                                 }{
                                     //Else allow it to renavigate
-                                    navigation.navigate('Study', {currentLang: currentLang, deckId: deckId });
+                                    navigation.navigate('Study', {currentLang: currentLang, deckId: deckId, deckName:deckName });
                                 }
                             ;}} 
                             customStyle={{flexDirection:'row', gap:8}}>

@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, useWindowDimensions, TouchableOpacity, ScrollView} from 'react-native';
+import { View, Text, StyleSheet, useWindowDimensions, TouchableOpacity, Modal} from 'react-native';
 import { useContext, useLayoutEffect, useState, useEffect, useRef } from 'react';
 import { useNavigation, useRoute, useIsFocused } from '@react-navigation/native';
 
@@ -26,7 +26,7 @@ const Study = () => {
     const route = useRoute();
     const navigation = useNavigation();
 
-    const { currentLang, deckId } = route.params; 
+    const { currentLang, deckId, deckName } = route.params; 
 
 
     //Important variables for the process
@@ -183,12 +183,193 @@ const Study = () => {
         setStarredWordCount(starWordCountCalculate);
     }, [wordData])
 
+
+    //Logic for the spaced repetition
+
+    //if the study button is clicked, detect the change and generate the words in a structure
+    //Each word index in the structure will be matched with a number 
+    //each index (key) will have a second value in the key/value pair which is by default 0. If easy is clicked first time it will increment to 1. 
+    // (continue off of previous line) Card will only become easy (1) if the second value is 1, meaning it has been clicked twice 
+    //1 - easy
+    //2 - medium
+    //3 - hard
+
+    //spaced repition index frequency
+    const [srsData, setSrsData] = useState([]);
+    const [dataLoaded, setLoaded] = useState(false);
+
+    useEffect(()=>{
+        if (mode === false){
+            //generate structure here if mode has been switched to flashcard mode
+
+            //base the data structure off of the wordData
+            const newDataStructure = wordData.map((_, index) => ({ [index]: [3,0] }));
+            setSrsData(newDataStructure);
+
+            setLoaded(true);
+
+        }
+    }, [mode, selectedTag])
+
+
+    //function to rearrange the cards based on the first index of the value in the key value pair
+    const rearrange = () => {
+        setSrsData((prevData) => {
+          const sortedData = [...prevData].sort((a, b) => {
+            const aValue = Object.values(a)[0]; // Access the array value of the current object
+            const bValue = Object.values(b)[0];
+      
+            if (bValue[0] === aValue[0]) {
+              return aValue[1] - bValue[1]; // Secondary sort by the second value in ascending order
+            }
+            return bValue[0] - aValue[0]; // Primary sort by the first value in descending order
+          });
+      
+          return sortedData; // Return the sorted data
+        });
+      
+        console.log("srsData after sorting:", srsData);
+    };
+            
+    //Next card function
+    const nextCardSRS = () => {
+
+        //rearrange the data
+        rearrange();
+
+        setCurrentIndex((prevIndex) => {
+          const newIndex = (prevIndex + 1) % srsData.length; // Ensure it wraps around
+          const currentCard = srsData[newIndex];
+          const key = Object.keys(currentCard)[0];
+      
+          console.log("Next Key:", key);
+          console.log("Next Value:", currentCard[key]);
+      
+          return newIndex;
+        });
+      };
+      
+    //button functions
+    const hardButton = () => {
+        setSrsData((prevData) => {
+          const updatedData = [...prevData]; // Create a shallow copy
+          const currentCard = updatedData[currentIndex]; // Get the current card
+          const key = Object.keys(currentCard)[0]; // Extract the key as a string (e.g., "0")
+      
+          if (currentCard[key]) {
+            currentCard[key][0] = 3; // Update the first index in the value array
+          }
+      
+          return updatedData; // Return updated array
+        });
+      
+        // Go to the next card
+        nextCardSRS();
+    };
+      
+    const mediumButton = () => {
+        setSrsData((prevData) => {
+            const updatedData = [...prevData];
+            const currentCard = updatedData[currentIndex];
+            const key = Object.keys(currentCard)[0];
+        
+            if (currentCard[key]) {
+            currentCard[key][0] = 2; // Update the first index in the value array to 2
+            }
+        
+            return updatedData;
+        });
+        
+        nextCardSRS();
+    };
+      
+    const easyButton = () => {
+        setSrsData((prevData) => {
+          const updatedData = [...prevData];
+          const currentCard = updatedData[currentIndex];
+          const key = Object.keys(currentCard)[0];
+      
+          if (currentCard[key]) {
+            if (currentCard[key][1] === 0) {
+              currentCard[key][1] = 1; // Update the second index in the value array to 1
+            } else if (currentCard[key][1] === 1) {
+              currentCard[key][0] = 1; // Update the first index in the value array to 1
+            }
+          }
+      
+          return updatedData;
+        });
+      
+        nextCardSRS();
+    };
+
+    //function counts
+    const countHard = () => {
+        const count = srsData.filter((item) => {
+          const value = Object.values(item)[0]; // Get the value array from the object
+          return value[0] === 3; // Check if the first index is 3
+        }).length;
+      
+        return count;
+      };
+      
+    //count medium
+    const countMedium = () => {
+        const count = srsData.filter((item) => {
+            const value = Object.values(item)[0]; // Get the value array from the object
+            return value[0] === 2; // Check if the first index is 3
+        }).length;
+        
+        return count;
+    };
+      
+    //count medium
+    const countEasy = () => {
+        const count = srsData.filter((item) => {
+            const value = Object.values(item)[0]; // Get the value array from the object
+            return value[0] === 1; // Check if the first index is 3
+        }).length;
+        
+        return count;
+    };
+    
+
+    //trigger the completion modal when the number of easy words reaches the number of words in the object
+    const [modalComplete, setComplete] = useState(false);
+
+    //useEffect to check if the number of easy words reaches the number of words in the object
+    useEffect(()=>{
+        if (dataLoaded){
+            if (srsData.length === countEasy()){
+                setComplete(true);
+            }
+        }
+
+    }, [srsData])
+
+    const continueClicked = () =>{
+        //close the modal
+        setComplete(false);
+
+        //navigate pages
+        navigation.navigate("UserDeck", { deckName: deckName, deckId: deckId });
+
+    }
+  
+
     
     //SCREEN WIDTH AND RESPONSIVE DESIGNS
     // Get screen width dynamically
     const { width } = useWindowDimensions();
     //responsive padding
     const responsiveHorizontalPadding = width < 600 ? 40 : width < 1000 ? 100 : 200;
+
+    //Width logic
+    //get window width
+    const windowWidth = useWindowDimensions().width;
+
+    //if width is mobile < 800, make the width 90%, else make it 80%
+    const dynamicWidth = windowWidth < 800 ? '90%' : '80%';  // 90% for mobile, 80% for larger screens
 
     return ( 
         <>
@@ -251,20 +432,39 @@ const Study = () => {
                 // {/* Button Container for Study Mode */}
                 <View style={{flex:1, flexDirection:'row', justifyContent: 'space-between', alignItems:'flex-start'}}>
                     {/* Hard Button */}
-                    <CustomButton customStyle={{backgroundColor:style.red_400}} onPress={()=>{}}>
-                        <Text style={{fontSize:style.text_lg, color:style.white, fontWeight:"500"}}>Hard</Text>
-                    </CustomButton>
-
+                    <View style={{flexDirection:'column', gap:15}}>
+                        {/* Button */}
+                        <CustomButton customStyle={{backgroundColor:style.red_400}} onPress={hardButton}>
+                            <Text style={{fontSize:style.text_lg, color:style.white, fontWeight:"500"}}>Hard</Text>
+                        </CustomButton>
+                        {/* Cards left */}
+                        <Text style={{color: style.red_400, fontSize: style.text_lg, fontWeight: '600', textAlign:'center'}}>
+                            {countHard()}
+                        </Text>
+                    </View>
                     {/* Medium Button */}
-                    <CustomButton customStyle={{backgroundColor:"#2dd4bf"}} onPress={()=>{}}>
-                        <Text style={{fontSize:style.text_lg, color:style.white, fontWeight:"500"}}>Medium</Text>
-                    </CustomButton>
-
+                    <View style={{flexDirection:'column', gap:15}}>
+                        {/* Button */}
+                        <CustomButton customStyle={{backgroundColor:"#2dd4bf"}} onPress={mediumButton}>
+                            <Text style={{fontSize:style.text_lg, color:style.white, fontWeight:"500"}}>Medium</Text>
+                        </CustomButton>
+                        {/* Cards left */}
+                        <Text style={{color: '#2dd4bf', fontSize: style.text_lg, fontWeight: '600', textAlign:'center'}}>
+                            {countMedium()}
+                        </Text>
+                    </View>
 
                     {/* Easy Button */}
-                    <CustomButton customStyle={null} onPress={()=>{}}>
-                        <Text style={{fontSize:style.text_lg, color:style.white, fontWeight:"500"}}>Easy</Text>
-                    </CustomButton>
+                    <View style={{flexDirection:'column', gap:15}}>
+                        {/* Button */}
+                        <CustomButton customStyle={null} onPress={easyButton}>
+                            <Text style={{fontSize:style.text_lg, color:style.white, fontWeight:"500"}}>Easy</Text>
+                        </CustomButton>
+                        {/* Cards left */}
+                        <Text style={{color: style.blue_400, fontSize: style.text_lg, fontWeight: '600', textAlign:'center'}}>
+                            {countEasy()}
+                        </Text>
+                    </View>
                 </View>
             )
             }
@@ -276,6 +476,36 @@ const Study = () => {
 
         {/* Bottom footer that adds top border */}
         <View style={style.baseFooterStyle} />
+
+
+        {/* Completion Modal for the spaced repition */}
+        { modalComplete &&
+            <Modal transparent={true} >
+                {/* Backdrop with black opacity */}
+                <View style={styles.modalOverlay} >
+                    {/* Main Content - White Div */}
+                    <View style={[styles.modalContainer, { width: dynamicWidth }]}>
+
+                        {/* Main Content Below - Children Content Here */}
+                        <View style={{ paddingHorizontal: 40, paddingTop:30, alignSelf:"stretch", justifyContent:'center', gap:30, alignContent:'center', alignItems:'center' }}>
+
+                            <Text style={{color:style.blue_400, fontSize:style.text_xl, fontWeight:'700'}}>Complete!</Text>
+                            <Text style={{color:style.gray_500, textAlign:'center', fontSize:style.text_md, fontWeight:'500'}}>
+                                You have succesfully practiced "{deckName}"!
+                            </Text>
+
+                            {/* Continue Button */}
+                            <CustomButton onPress={continueClicked} customStyle={null}>
+                                <Text style={{color:style.white, fontWeight:'600'}}>Back to Deck</Text>
+                            </CustomButton>
+
+                        </View>
+                    </View>
+
+                </View>
+            </Modal>
+        }
+
 
         </>
      );
@@ -296,6 +526,20 @@ const styles = StyleSheet.create({
         width:60,
         height: 50
     },
+    modalOverlay: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.6)', 
+    },
+    modalContainer: {
+        backgroundColor: style.white,
+        borderRadius: 20,
+        width: '80%',
+        alignItems: 'center',
+        paddingBottom: 30
+    },
+    
 });
 
 export default Study;

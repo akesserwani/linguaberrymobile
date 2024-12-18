@@ -20,7 +20,15 @@ function openDatabase() {
     //create table 
     db.withTransactionSync(() => {
       // // Insert initial data into the general table
-
+      // db.runSync(`DROP TABLE IF EXISTS general;`);
+      // db.runSync(`DROP TABLE IF EXISTS user_languages;`);
+      // db.runSync(`DROP TABLE IF EXISTS deck;`);
+      // db.runSync(`DROP TABLE IF EXISTS word;`);
+      // db.runSync(`DROP TABLE IF EXISTS tag;`);
+      // db.runSync(`DROP TABLE IF EXISTS entry_tag;`);
+      // db.runSync(`DROP TABLE IF EXISTS entry;`);
+      // db.runSync(`DROP TABLE IF EXISTS explorer;`);
+  
       // Create tables
       db.runSync(
         `CREATE TABLE IF NOT EXISTS general (
@@ -119,6 +127,7 @@ function openDatabase() {
   
 function pushInitialData(db) {
     
+  
     //check to see if the onboarding variable is 0
     //if it is 0 then we will add languages and change it to 1
     let result = db.getFirstSync(`SELECT onboarding FROM general WHERE id = 1;`);
@@ -141,14 +150,6 @@ function pushInitialData(db) {
     }
 
 
-    // db.runSync(`DROP TABLE IF EXISTS general;`);
-    // db.runSync(`DROP TABLE IF EXISTS user_languages;`);
-    // db.runSync(`DROP TABLE IF EXISTS deck;`);
-    // db.runSync(`DROP TABLE IF EXISTS word;`);
-    // db.runSync(`DROP TABLE IF EXISTS tag;`);
-    // db.runSync(`DROP TABLE IF EXISTS entry_tag;`);
-    // db.runSync(`DROP TABLE IF EXISTS entry;`);
-    // db.runSync(`DROP TABLE IF EXISTS explorer;`);
 
 }
 
