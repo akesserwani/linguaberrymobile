@@ -100,7 +100,7 @@ const EditDataModal = ({onClose, entryId, setRefresh}) => {
 
         const format = "term,translation,notes \n term 1, translation 1 \n word 2, translation 2 "
 
-        const prompt = `We are learning ${currentLang}. We want to generate translation values for this text: "${entryContents}". Generate the term translation values in this CSV format ${format}. Be sure to include the headers: term,translation,notes. All lowercase. Make sure term is in English, then translation is the ${currentLang} translation. You can keep the notes column empty (so just term 1, translation 1). `;
+        const prompt = `We are learning ${currentLang}. We want to generate translation values for this text: "${entryContents}". Generate the term translation values in this CSV format ${format}. All lowercase. Make sure term is in English, then translation is the ${currentLang} translation. You can keep the notes column empty (so just term 1, translation 1). `;
 
         //go through the full text and 
         await Clipboard.setStringAsync(prompt);
@@ -132,26 +132,78 @@ const EditDataModal = ({onClose, entryId, setRefresh}) => {
         const result = await Share.share({message:textTranslation});
     }
 
+    //function to copy full text
+    const copyFullText = async () =>{
+
+        await Clipboard.setStringAsync(entryContents);
+
+        CustomAlert("Full text copied to clipboard");
+
+    }
+
+    //function to copy data from the forms
+    const copyWordData = async () =>{
+
+        //go through the full text and 
+        await Clipboard.setStringAsync(wordDataInput);
+
+        CustomAlert("Word data copied to clipboard");
+
+    }
+
+    //copy the translation
+    const copyTranslation = async ()=>{
+
+        //go through the full text and 
+        await Clipboard.setStringAsync(textTranslation);
+
+        CustomAlert("Translation copied to clipboard");
+
+    }
+
+
+
 
     const { width } = useWindowDimensions(); // Get screen width
 
     return ( 
-        <CustomModal title="Edit Data" onClose={onClose} horizontalPadding={0}>
+        <CustomModal title="Edit Data" onClose={onClose} horizontalPadding={0} overrideStyle={{maxHeight:'70%'}}>
             {/* Main Content here */}
-            <KeyboardAvoidingView behavior={'padding'} keyboardVerticalOffset={50} >
-                <ScrollView contentContainerStyle={[{ gap: 20, padding:25 },{ flexDirection: width > 1000 ? 'row' : 'column' } ]}>
+            <KeyboardAvoidingView behavior={'padding'} keyboardVerticalOffset={50} style={{maxHeight:'95%'}} >
+                <ScrollView contentContainerStyle={{ gap: 20, padding:25, flexDirection:'column' }}>
 
                     {/* Bookmark Dropdown */}
                     <BookmarkDropdown onTagSelect={selectTag} currentTag={selectedTag} filter={false}/>
 
+                    {/* Copy Text Button */}
+                    <CustomButton onPress={copyFullText} customStyle={{flexDirection:'row', gap:5, backgroundColor:style.gray_200}}> 
+                        <Text style={{color:style.gray_500, fontSize:style.text_xs, fontWeight:'500'}}>Copy full text</Text>
+                        <Icon name={"copy"} size={15} color={style.gray_500} />
+                    </CustomButton>
+
                     {/* Column 1 - Word Data */}
-                    <View style={{flexDirection:'column', gap:10, width: width > 800 ? '50%' : '100%'}}>
-                        {/* Title and Button in a row */}    
-                        <View style={{flexDirection:'row', justifyContent:'space-between', alignContent:'center', alignItems:'center', margin:5}}>
-                            {/* Title */}
-                            <Text style={{color:style.gray_500, fontSize: style.text_md, fontWeight: '500'}}>Word Data:</Text>
-                            {/*Buttons*/}
-                            <View style={{flexDirection:'row', gap:5}}>
+                    <View style={{flexDirection:'column', gap:10, width: width > 800 ? '70%' : '100%', marginTop:20}}>
+
+                        {/* Form Label */}
+                        <Text style={{color:style.gray_500, fontSize: style.text_md, fontWeight: '500'}}> Word data: </Text>
+
+                        {/* Word Data input form */}
+                        <View>
+                            <View style={{borderTopLeftRadius:style.rounded_md, borderTopRightRadius:style.rounded_md, backgroundColor:style.gray_300, height:50, padding:15}}>
+                                <Text style={{color:style.gray_600, fontWeight:'500'}}>Term, Translation, Notes (optional)</Text>
+                            </View>
+                            <CustomInput showLabel={false} placeholder={"Write csv data here..."} value={wordDataInput} 
+                                            onChangeText={setWordDataInput} maxLength={50000} multiline={true} customFormStyle={{height:120, borderTopLeftRadius:0, borderTopRightRadius:0, borderTopWidth:0}}/>
+                        </View>
+
+                        {/* Button Container below the form */}
+                        <View style={{flexDirection:'row', gap:5}}>
+                                {/* Copy Text Button */}
+                                <CustomButton onPress={copyWordData} customStyle={{flexDirection:'row', gap:5, backgroundColor:style.gray_200}}> 
+                                    <Text style={{color:style.gray_500, fontSize:style.text_xs, fontWeight:'500'}}>Data</Text>
+                                    <Icon name={"copy"} size={15} color={style.gray_500} />
+                                </CustomButton>
+
                                 {/* AI prompt button for word data */}
                                 <CustomButton onPress={wordPrompt} customStyle={{flexDirection:'row', gap:5, backgroundColor:style.gray_200}}> 
                                     <Text style={{color:style.gray_500, fontSize:style.text_xs, fontWeight:'500'}}>AI Prompt</Text>
@@ -159,17 +211,11 @@ const EditDataModal = ({onClose, entryId, setRefresh}) => {
                                 </CustomButton>
 
                                 {/* Share button */}
-                                <CustomButton onPress={shareWordData} customStyle={{width:40, height:35}}>
+                                <CustomButton onPress={shareWordData} customStyle={{flexDirection:'row', gap:5, height:35}}>
+                                    <Text style={{color:style.white, fontSize:style.text_xs, fontWeight:'600'}}>Share</Text>
                                     <Icon name={"share"} width={12} height={10} color={style.white} />
                                 </CustomButton>
-                            </View>
-
-
-                        </View>       
-
-                        {/* Word Data input form */}
-                        <CustomInput showLabel={false} placeholder={"Write csv data here..."} value={wordDataInput} 
-                                        onChangeText={setWordDataInput} maxLength={50000} multiline={true} customFormStyle={{height:120}}/>
+                        </View>
 
                         {/* Print the errors of the CSV word input */}
                         <Text style={{color:style.red_500, fontWeight:"400", position: "relative", left:5, top:10}}>
@@ -178,31 +224,34 @@ const EditDataModal = ({onClose, entryId, setRefresh}) => {
 
                     </View>
 
-                    {/* Column 2 - Sentence Data */}
-                    <View style={{flexDirection:'column', gap:5, width: width > 800 ? '50%' : '100%'}}>
-                        <View style={{flexDirection:'row', justifyContent:'space-between', alignContent:'center', alignItems:'center', margin:5}}>
-                            {/* Title */}
-                            <Text style={{color:style.gray_500, fontSize: style.text_md, fontWeight: '500'}}>Full Translation:</Text>
+                    {/* Column 2 - Translation Data */}
+                    <View style={{flexDirection:'column', gap:10, width: width > 800 ? '50%' : '100%'}}>
 
-                            {/*Buttons*/}
-                            <View style={{flexDirection:'row', gap:5}}>
-                                {/* AI prompt button for word data */}
-                                <CustomButton onPress={translationPrompt} customStyle={{flexDirection:'row', gap:5, backgroundColor:style.gray_200}}> 
-                                    <Text style={{color:style.gray_500, fontSize:style.text_xs, fontWeight:'500'}}>AI Prompt</Text>
-                                    <Icon name={"copy"} size={15} color={style.gray_500} />
-                                </CustomButton>
-
-                                {/* Share button */}
-                                <CustomButton onPress={shareTranslation} customStyle={{width:40, height:35}}>
-                                    <Icon name={"share"} width={12} height={10} color={style.white} />
-                                </CustomButton>
-
-                            </View>
-                        </View>       
-
-                        {/* Sentence Data input form */}
-                        <CustomInput showLabel={false} placeholder={"Write translation here..."} value={textTranslation} 
+                        {/* Translation Data input form */}
+                        <CustomInput showLabel={true} label={"Full Translation"} placeholder={"Write translation here..."} value={textTranslation} 
                                         onChangeText={setTextTranslation} maxLength={50000} multiline={true} customFormStyle={{height:120}}/>
+
+                        {/*Button container below the form*/}
+                        <View style={{flexDirection:'row', gap:5}}>
+                            {/* Copy Text Button */}
+                            <CustomButton onPress={copyTranslation} customStyle={{flexDirection:'row', gap:5, backgroundColor:style.gray_200}}> 
+                                <Text style={{color:style.gray_500, fontSize:style.text_xs, fontWeight:'500'}}>Data</Text>
+                                <Icon name={"copy"} size={15} color={style.gray_500} />
+                            </CustomButton>
+
+                            {/* AI prompt button for word data */}
+                            <CustomButton onPress={translationPrompt} customStyle={{flexDirection:'row', gap:5, backgroundColor:style.gray_200}}> 
+                                <Text style={{color:style.gray_500, fontSize:style.text_xs, fontWeight:'500'}}>AI Prompt</Text>
+                                <Icon name={"copy"} size={15} color={style.gray_500} />
+                            </CustomButton>
+
+                            {/* Share button */}
+                            <CustomButton onPress={shareTranslation} customStyle={{flexDirection:'row', gap:5, height:35}}>
+                                <Text style={{color:style.white, fontSize:style.text_xs, fontWeight:'600'}}>Share</Text>
+                                <Icon name={"share"} width={12} height={10} color={style.white} />
+                             </CustomButton>
+
+                        </View>
 
                         {/* Print the errors of the CSV sentence input */}
                         <Text style={{color:style.red_500, fontWeight:"400", position: "relative", left:5, top:10}}>

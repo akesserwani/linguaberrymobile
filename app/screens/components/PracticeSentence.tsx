@@ -45,6 +45,10 @@ const PracticeSentence = () => {
             navigation.getParent()?.setOptions({
                 tabBarStyle: { display: 'none' },
             });
+            navigation.setOptions({
+                headerBackTitle: 'Back', // Reset the back button title (optional)
+            });
+    
         } else {
             // Show the tab bar again when leaving this screen
             navigation.getParent()?.setOptions({
@@ -53,6 +57,7 @@ const PracticeSentence = () => {
                     display: 'flex',
                 },
             });
+    
         }
     }, [isFocused, navigation]);
                 
@@ -325,6 +330,9 @@ const PracticeSentence = () => {
                                         customFormStyle={{padding:20, color:style.gray_600, backgroundColor:style.slate_100, borderColor:style.gray_300, height:200,
                                                           writingDirection: getTextDirection(isRTL, !frontFirst)
                                         }}/>
+
+                                    {/* Make button to remove a sentence */}
+                                    <Text>Remove from queue</Text>   
                                 </View>
 
                             ) : (

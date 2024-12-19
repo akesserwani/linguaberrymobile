@@ -10,7 +10,7 @@ import { deleteEntry } from "../../DataReader";
 import EditDataModal from "./EditDataModal";
 import ViewWordModal from "@/app/screens/components/ViewWordModal";
 import React from "react";
-import ViewSentences from "./ViewSentences";
+import ViewSentences from "@/app/screens/components/ViewSentences";
 
 const HeaderRight = ({currentLang, entryId, entryTitle, setRefresh}) => {
 

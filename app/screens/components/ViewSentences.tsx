@@ -12,11 +12,13 @@ import CustomButton from "@/app/components/CustomButton";
 //data for context
 import { CurrentLangContext } from '@/app/data/CurrentLangContext.tsx';
 
-import { getSingleEntryData } from "../../DataReader";
+import { getSingleEntryData } from "../ReaderScreens/DataReader";
 
 import { limitLength, matchSentences } from "@/app/data/Functions";
 
-const ViewSentences = ({onClose, modalTitle, entryId}) => {
+import { storyFiles } from "../ExplorerScreen/ExplorerHome/ExplorerData";
+
+const ViewSentences = ({onClose, modalTitle, entryId=null}) => {
 
     //current language
     const { currentLang } = useContext(CurrentLangContext);
@@ -25,12 +27,24 @@ const ViewSentences = ({onClose, modalTitle, entryId}) => {
     const [sentenceData, setSentenceData] = useState([]);
 
     useEffect(()=>{
+        //If entryId is null - means that it is being called from Explorer 
+        if (entryId === null){
+            //Logic to load the sentence data from the files
+            const currentStoryFile = storyFiles[currentLang];
+            //Find the story based on the title
+            const story = currentStoryFile.find(story => story.title === modalTitle);
 
-        const data = getSingleEntryData(entryId, currentLang);
+            //convert the data and set it to reactive variable 
+            setSentenceData(matchSentences(story.story, story.story_translation));    
 
-        //set the sentence data
-        setSentenceData(matchSentences(data.contents, data.translation_data));
+        } 
+        //If not null then it is being called from the Reader - since entryId is provided
+        else {
+            const data = getSingleEntryData(entryId, currentLang);
 
+            //set the sentence data
+            setSentenceData(matchSentences(data.contents, data.translation_data));    
+        }
 
     }, [entryId, currentLang])
         
@@ -52,7 +66,7 @@ const ViewSentences = ({onClose, modalTitle, entryId}) => {
 
                 {/* Rendered Sentence Data */}
                 {sentenceData.length === 0 ? (
-                        <View style={{ height: 100, justifyContent: 'center', alignItems: 'center' }}>
+                    <View style={{ height: 100, justifyContent: 'center', alignItems: 'center' }}>
                         <Text style={{ color: style.gray_400, fontSize: style.text_md, fontWeight: '600', textAlign: 'center', margin: 20 }}>
                             No sentences
                         </Text>
@@ -61,25 +75,25 @@ const ViewSentences = ({onClose, modalTitle, entryId}) => {
                     // Render words in a flatlist 
                     <FlatList
                         data={sentenceData}
-                        contentContainerStyle={{ paddingRight: 10, paddingTop: 20, paddingBottom: 20, paddingHorizontal: 20 }}
+                        contentContainerStyle={{ paddingRight: 20, paddingTop: 20, paddingBottom: 20, paddingHorizontal: 20, minHeight:'50%' }}
                         keyExtractor={(item, index) => index.toString()}
                         renderItem={({ item, index }) => (
                             // Wrap all elements inside a parent container
-                            <View style={{ flexDirection: 'row', marginBottom: 10 }}>
-                                <View style={{ flex:1, minHeight: 60, justifyContent: 'center' }}>
+                            <View style={{ flexDirection: 'row', gap:10, marginBottom: 10 }}>
+                                <View style={{ flex:1, minHeight: 60, justifyContent: 'flex-start' }}>
                                     <Text style={{ color: style.gray_400, fontSize: style.text_md, marginRight: 10 }}>
                                         {index + 1}
                                     </Text>
                                 </View>
                                 {/* Container for Term */}
-                                <View style={{ flex:4, minHeight: 60, justifyContent: 'center' }}>
+                                <View style={{ flex:4, minHeight: 60, justifyContent: 'flex-start' }}>
                                     <Text style={{ color: style.gray_500, fontSize: style.text_md }}>
                                         {item.mainSentence}
                                     </Text>
                                 </View>
 
                                 {/* Container for Translation */}
-                                <View style={{ flex:4, minHeight: 60, justifyContent: 'center' }}>
+                                <View style={{ flex:4, minHeight: 60, justifyContent: 'flex-start' }}>
                                     <Text style={{ color: style.gray_400, fontSize: style.text_md }}>
                                         {item.translationSentence}
                                     </Text>
@@ -100,7 +114,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         maxHeight:'95%',
         minHeight:'50%',
-        backgroundColor:style.white
+        backgroundColor:style.white,
     },
     item: {
         backgroundColor: style.white, 

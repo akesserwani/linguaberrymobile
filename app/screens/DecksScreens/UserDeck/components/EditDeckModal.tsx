@@ -4,6 +4,8 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import * as style from '@/assets/styles/styles'
 import Icon from '@expo/vector-icons/FontAwesome6'
 
+import * as Clipboard from 'expo-clipboard';
+
 //custom components
 import CustomButton from '@/app/components/CustomButton';
 import CustomModal from '@/app/components/CustomModal';
@@ -14,6 +16,7 @@ import CustomAlert from '@/app/components/CustomAlert';
 import { updateDeck, deleteDeck, deckNameExist, getWords, createBulkWords} from "../../DataDecks";
 //import object to csv function
 import { ObjectToCSV, CSVToObject, validateCSVFormat } from "@/app/data/Functions";
+
 
 
 const EditDeckModal = ({onClose, currentLang, deckId, deckName, refreshDeck, refreshWords }) => {
@@ -112,6 +115,15 @@ const EditDeckModal = ({onClose, currentLang, deckId, deckName, refreshDeck, ref
         const result = await Share.share({message:inputData});
     }
 
+
+    //copy data button
+    const copyData = async() =>{
+        await Clipboard.setStringAsync(inputData);
+
+        CustomAlert("Data copied to clipboard");
+
+    }
+
     return ( 
         <CustomModal title="Edit Deck" onClose={onClose}>
 
@@ -129,18 +141,33 @@ const EditDeckModal = ({onClose, currentLang, deckId, deckName, refreshDeck, ref
                     }
 
                 {/* Input for the deck data */}
-                <CustomInput label={ "Text Data (CSV)"} placeholder={"Enter data..." } value={inputData} onChangeText={setInputData} 
-                        multiline={true} maxLength={100000} customStyle={{marginTop:40}} customFormStyle={{height: 120}} />
+                    <View style={{marginTop:40}}>
+                        <View style={{borderTopLeftRadius:style.rounded_md, borderTopRightRadius:style.rounded_md, backgroundColor:style.gray_300, height:50, padding:15}}>
+                            <Text style={{color:style.gray_600, fontWeight:'500'}}>Term, Translation, Notes (optional)</Text>
+                        </View>
+                        <CustomInput showLabel={false} placeholder={"Enter data..." } value={inputData} onChangeText={setInputData} 
+                            multiline={true} maxLength={100000} customFormStyle={{height:120, borderTopLeftRadius:0, borderTopRightRadius:0, borderTopWidth:0}} />
+                    </View>
 
                     {/* Print the errors of the CSV data input */}
                     <Text style={{color:style.red_500, fontWeight:"400", position: "relative", left:5, top:10}}>
                         { dataError }
                     </Text>
                 
-                {/* Share Data Button */}
-                <CustomButton onPress={shareData} customStyle={{width:40, height:40}}>
-                    <Icon name={"share"} width={12} height={10} color={style.white} />
-                </CustomButton>
+                {/* Button Container */}
+                <View style={{flexDirection:'row', gap:5}}>
+                    {/* Copy Text Button */}
+                    <CustomButton onPress={copyData} customStyle={{flexDirection:'row', gap:5, backgroundColor:style.gray_200}}> 
+                        <Text style={{color:style.gray_500, fontSize:style.text_xs, fontWeight:'500'}}>Copy data</Text>
+                        <Icon name={"copy"} size={15} color={style.gray_500} />
+                    </CustomButton>
+
+                    {/* Share Data Button */}
+                    <CustomButton onPress={shareData} customStyle={{flexDirection:'row', gap:5, height:35}}>
+                        <Text style={{color:style.white, fontSize:style.text_xs, fontWeight:'600'}}>Share</Text>
+                        <Icon name={"share"} width={12} height={10} color={style.white} />
+                    </CustomButton>
+                </View>
 
                 {/* User warning to use semicolon instead of commas*/}
                 <Text style={{color:style.gray_400, fontWeight:"500", margin:5, marginTop:20}}>

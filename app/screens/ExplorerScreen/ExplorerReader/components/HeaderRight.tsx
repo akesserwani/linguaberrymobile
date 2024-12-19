@@ -8,6 +8,7 @@ import { wordStoryData } from "../../ExplorerHome/ExplorerData";
 import { convertLangFiletoJSON } from "@/app/data/Functions";
 
 import ViewWordModal from "@/app/screens/components/ViewWordModal";
+import ViewSentences from "@/app/screens/components/ViewSentences";
 import React from "react";
 
 const HeaderRight = ({title, currentLang}) => {
@@ -17,6 +18,9 @@ const HeaderRight = ({title, currentLang}) => {
 
 
     const [viewWords, toggleViewWords] = useState(false);
+    const [viewSentences, toggleViewSentences] = useState(false);
+
+
 
     const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
     const iconRef = useRef(null); // Ref to capture the position of the icon
@@ -25,6 +29,7 @@ const HeaderRight = ({title, currentLang}) => {
     const [wordData, setWordData] = useState({});
     let filteredData;
 
+    //function to open view words
     const toggleViewWordsFunc = () =>{
         //close the dropdown/modal 
         setClick(false)
@@ -42,6 +47,19 @@ const HeaderRight = ({title, currentLang}) => {
         toggleViewWords(true);
     }
 
+    //function to open view sentences
+    const toggleViewSentencesFun = () =>{
+        //close the dropdown/modal 
+        setClick(false)
+
+        //toggle the view words modal
+        toggleViewSentences(true);
+    }
+
+
+
+
+
 
     //Set dropdown based on position of the target ref
     const handleOpenDropdown = () => {
@@ -57,13 +75,6 @@ const HeaderRight = ({title, currentLang}) => {
     return ( 
         <>
 
-            {/* Toggle Word Data Modal If View words is triggered */}
-            { viewWords &&
-            <ViewWordModal onClose={()=>toggleViewWords(false)} 
-                            json={true} 
-                            dataProp={wordData} 
-                            modalTitle={title} />
-            }
 
             {/* This is the header button that renders - vertical dots */}
             <TouchableOpacity ref={iconRef} onPress={handleOpenDropdown} style={{marginRight:30, width:30, height: 40, alignItems:'center', justifyContent:'center'}} activeOpacity={0.7}>
@@ -87,9 +98,34 @@ const HeaderRight = ({title, currentLang}) => {
                                     View Words 
                                 </Text>
                             </TouchableOpacity>     
+
+                            {/* View sentences button */}
+                            <TouchableOpacity onPress={toggleViewSentencesFun} activeOpacity={0.7}>
+                                <Text style={{color:style.gray_500}}>
+                                    View Sentences 
+                                </Text>
+                            </TouchableOpacity>     
+
                     </View>    
                 </TouchableOpacity>
             </Modal>
+
+            {/* Associated Modals */}
+            { viewSentences && 
+                <ViewSentences onClose={()=>toggleViewSentences(false)} 
+                               modalTitle={title} />
+            }
+            
+
+            {/* Toggle Word Data Modal If View words is triggered */}
+            { viewWords &&
+                <ViewWordModal onClose={()=>toggleViewWords(false)} 
+                                json={true} 
+                                dataProp={wordData} 
+                                modalTitle={title} />
+            }
+
+            
 
         </>
      );

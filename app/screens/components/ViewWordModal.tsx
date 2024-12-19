@@ -135,19 +135,21 @@ const ViewWordModal = ({onClose, modalTitle, json=false, entryId = null, dataPro
                         } activeOpacity={0.7} 
                           style={[styles.item, {borderBottomWidth: index === wordData.length - 1 ? 0 : style.border_sm}]}>
 
-                            <Text style={{ color: style.gray_400, fontSize: style.text_md }}> 
-                                {index + 1}
-                            </Text> 
+                            <View style={{  height: 60, justifyContent: 'flex-start' }}>
+                                <Text style={{ color: style.gray_400, fontSize: style.text_md }}> 
+                                    {index + 1}
+                                </Text> 
+                            </View>
 
                             {/* Container for Term */}
-                            <View style={{ width: '40%', height: 60, justifyContent: 'center' }}>
+                            <View style={{ width: '40%', height: 60, justifyContent: 'flex-start' }}>
                                 <Text style={{ color: style.gray_500, fontSize: style.text_md }}> 
                                     { item.term } 
                                 </Text>
                             </View>
 
                             {/* Container for Translation */}
-                            <View style={{ width: '40%', height: 60, justifyContent: 'center' }}>
+                            <View style={{ width: '40%', height: 60, justifyContent: 'flex-start' }}>
                                 <Text style={{ color: style.gray_400, fontSize: style.text_md }}> 
                                     { item.translation } 
                                 </Text>

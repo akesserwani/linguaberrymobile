@@ -100,55 +100,58 @@ export const formatDate = (dbDate) => {
 };
 
 //CSV FUNCTIONS
-// CSV FUNCTIONS
 export const ObjectToCSV = (data) => {
     // Define the headers we want to include
     const headers = ['term', 'translation', 'notes'];
-    const headerRow = headers.join(',');
 
     // If data is empty or undefined, return just the header row
     if (!data || !data.length) {
-        return headerRow;
+        return '';
+    }
+
+    // Filter out rows that are empty or have no valid term and translation
+    const filteredData = data.filter(row => row.term && row.translation);
+
+    if (!filteredData.length) {
+        return ''; // Return an empty string if no valid rows exist
     }
 
     // Map each row to CSV format, including only term, translation, notes
-    const rows = data.map(row => {
+    const rows = filteredData.map(row => {
         return headers.map(header => {
             const value = row[header];
             // Escape double quotes by doubling them, and wrap values containing commas or quotes in double quotes
             return typeof value === 'string' && (value.includes(',') || value.includes('"'))
                 ? `"${value.replace(/"/g, '""')}"`
-                : value;
+                : value || ''; // Ensure empty fields are represented as empty strings
         }).join(',');
     });
 
-    // Join headers and rows with newlines
-    return [headerRow, ...rows].join('\n');
+    // Join rows with newlines
+    return rows.join('\n');
 };
 
 
 export const CSVToObject = (data) => {
     // Split the CSV data into rows
     const rows = data.trim().split('\n');
-    
-    // Define the headers we want to extract
-    const headers = rows[0].split(',').filter(header => 
-        ['term', 'translation', 'notes'].includes(header)
-    );
 
-    // Map the remaining rows to objects, including only term, translation, notes
-    const result = rows.slice(1).map(row => {
+    // Define the default headers in the expected order
+    const defaultHeaders = ['term', 'translation', 'notes'];
+
+    // Map the rows to objects using the default header order
+    const result = rows.map(row => {
         const values = row.split(',');
 
         // Create an object for each row
         const object = {};
-        headers.forEach((header, index) => {
+        defaultHeaders.forEach((header, index) => {
             const value = values[index] ? values[index].replace(/^"|"$/g, '').replace(/""/g, '"') : '';
             object[header] = header === 'notes' && !value ? 'none' : value; // Set "none" if notes is empty
         });
 
         return object;
-    });
+    }).filter(obj => obj.term && obj.translation); // Filter out rows without a valid term or translation
 
     return result;
 };
@@ -159,15 +162,9 @@ export const validateCSVFormat = (csvData) => {
     const rows = csvData.trim().split('\n');
 
     if (rows.length < 1) {
-        return { valid: false, error: "CSV file must contain headers." };
+        return { valid: false, error: "CSV file must contain data." };
     }
 
-    // Validate headers
-    const headers = rows[0].split(',').map(header => header.trim().toLowerCase());
-    const expectedHeaders = ['term', 'translation', 'notes'];
-    if (JSON.stringify(headers) !== JSON.stringify(expectedHeaders)) {
-        return { valid: false, error: `CSV headers must be: ${expectedHeaders.join(', ')}` };
-    }
 
     // Track terms to check for duplicates
     const terms = new Set();
