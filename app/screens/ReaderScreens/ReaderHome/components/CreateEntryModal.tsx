@@ -14,6 +14,7 @@ import { CurrentLangContext } from '@/app/data/CurrentLangContext.tsx';
 
 //import data functions
 import { newEntry } from '../../DataReader';
+import React from 'react';
 
 const CreateEntryModal = ({onClose, refresh, scrollToBottom}) => {
 
@@ -32,30 +33,31 @@ const CreateEntryModal = ({onClose, refresh, scrollToBottom}) => {
 
     //function to create a new deck
     const createEntry = () =>{
-        newEntry(formInput, currentLang);
+        if (formInput.trim() !== ""){
+            newEntry(formInput, currentLang);
+            //function to refresh to deck
+            refresh();
 
-        //function to refresh to deck
-        refresh();
+            //function to scroll to the bottom
+            scrollToBottom(); 
 
-        //function to scroll to the bottom
-        scrollToBottom(); 
+            //close the modal
+            onClose();
 
-        //close the modal
-        onClose();
-        
+        }        
     }
     
     
     
     return ( 
         <>
-            <CustomModal title='New Entry' onClose={onClose} overrideStyle={{width: dynamicWidth, height: 330 }}>
+            <CustomModal title='New Story' onClose={onClose} overrideStyle={{width: dynamicWidth, height: 330 }}>
                 {/* Input form here */}
-                <CustomInput label={ "Entry name"} placeholder={"Type entry name..." } value={formInput} onChangeText={setFormInput} maxLength={50}/>
+                <CustomInput label={ "Story name"} placeholder={"Type story name..." } value={formInput} onChangeText={setFormInput} maxLength={50}/>
 
                 {/* Submit button */}
                 <CustomButton onPress={createEntry} customStyle={{marginTop: 40, height:45}}>
-                    <Text style={{color:style.white, fontSize: style.text_md}}>Create Entry</Text>
+                    <Text style={{color:style.white, fontSize: style.text_md}}>Create Story</Text>
                 </CustomButton>
 
             </CustomModal>

@@ -16,6 +16,7 @@ import * as style from '@/assets/styles/styles'
 
 import React from 'react';
 
+import { Platform } from 'react-native';
 
 const BookmarkDropdown = ({onTagSelect, currentTag = null, filter=true}) => {
 
@@ -66,12 +67,28 @@ const BookmarkDropdown = ({onTagSelect, currentTag = null, filter=true}) => {
     const handleOpenDropdown = () => {
         if (iconRef.current) {
             iconRef.current.measure((fx, fy, width, height, px, py) => {
-                setDropdownPosition({ top: py + height + 5, left: px, width }); // Adjust position and width dynamically
+                // Base top calculation
+                let adjustedTop = py + height;
+    
+                // Add platform-specific adjustments
+                if (Platform.OS === 'android') {
+                    adjustedTop -= 20; // Adjust for Android if needed
+                } else {
+                    adjustedTop += 5;
+                }
+    
+                // Update dropdown position
+                setDropdownPosition({ 
+                    top: adjustedTop, 
+                    left: px, 
+                    width 
+                });
+    
                 openDropdown(true);
             });
         }
     };
-
+    
     const selectTagFunc = (tag) => {
         //function to select the tag
         //call it in the callback function
@@ -156,7 +173,7 @@ const BookmarkDropdown = ({onTagSelect, currentTag = null, filter=true}) => {
     return ( 
         <>
         {/* Tag Dropdown Button */}
-        <View ref={iconRef} >
+        <View ref={iconRef} collapsable={false}>
             <CustomButton onPress={handleOpenDropdown} customStyle={styles.tagDropdown}>
                 <View style={{flexDirection: 'row', gap: 7}}>           
                     <Text style={{color:style.gray_500}}>

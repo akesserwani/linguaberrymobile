@@ -70,6 +70,8 @@ const ReaderStory = ({route}) => {
         updateEntry(entryId, titleForm, contentsForm);
     }, [contentsForm]);
 
+
+
     //Finally, handle form input changes to update titleForm and contentsForm:
     const handleTitleChange = (text) => {
         setTitleForm(text);

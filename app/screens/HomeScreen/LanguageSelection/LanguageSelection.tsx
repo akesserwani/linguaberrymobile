@@ -25,6 +25,7 @@ import { getLangStorage, addLangStorage, deleteLangStorage, setCurrentLangStorag
 import AddLanguageModal from './AddLanguageModal';
 import EditLanguageModal from './EditLanguageModal';
 
+import { Platform } from 'react-native';
 
 const LanguageSelection = () => {
 
@@ -155,8 +156,13 @@ const LanguageSelection = () => {
     const handleOpenDropdown = () => {
         if (dropdownRef.current) {
             dropdownRef.current.measure((fx, fy, width, height, px, py) => {
+
                 // Ensure fallback values to avoid NaN
-                const safeTop = py + height + 5 || 100; // Default to 100 if NaN
+                const baseTop = py + height + 5 || 100; // Default to 100 if NaN
+
+                // Adjust top based on the platform
+                const safeTop = Platform.OS === 'ios' ? baseTop : baseTop - 25; // Adjust for Android
+
                 const safeLeft = px || 30; // Default to 30 if NaN
                 const safeWidth = width || 150; // Default width
     
@@ -177,7 +183,7 @@ const LanguageSelection = () => {
 
             {/* BUTTON */}
             {/* Main Dropdown Button  */}
-            <View ref={dropdownRef}>
+            <View ref={dropdownRef} collapsable={false}>
                 <CustomButton customStyle={[styles.dropdownBtn, { width: windowWidth > 700 ? 250 : null }]} onPress={handleOpenDropdown}>
                     {/* Current Language */}
                     <Text style={{ fontSize: style.text_md, fontWeight: "500", color:style.gray_500 }}> { currentLang } </Text>

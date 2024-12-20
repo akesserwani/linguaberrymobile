@@ -1,13 +1,12 @@
 
 import './gesture-handler'
 
+import { StatusBar } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 //import styles
 import {  useFonts, Nunito_400Regular, Nunito_300Light, Nunito_600SemiBold, Nunito_700Bold } from '@expo-google-fonts/nunito';
-//import styles from style file 
-import * as styles from '@/assets/styles/styles'
 
 //import router
 import Router from './screens/Navigation/router';
@@ -33,11 +32,16 @@ export default function App() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
+        <StatusBar backgroundColor="white"/>
+
         <SafeAreaProvider>
-            <SafeAreaView style={{ flex: 1, backgroundColor:styles.white }}>
+            <SafeAreaView style={{ flex: 1, backgroundColor:"#FFFFFF" }}>
               <Router />
             </SafeAreaView>
         </SafeAreaProvider>
+
+        
+
       </GestureHandlerRootView>
 
   );

@@ -126,7 +126,7 @@ const Card = ({wordData, setWordData, currentLang, deckId, frontFirst}) => {
 
                     <Text style={{color:style.gray_600, fontSize: style.text_md, fontWeight: '600', marginTop: 20}}>Notes: </Text>
                     <Text style={{color:style.gray_500, fontSize: style.text_md, fontWeight: '500', marginTop: 20}}>
-                        { wordData.etymology }
+                        { wordData.notes }
 
                     </Text>
                 </ScrollView>

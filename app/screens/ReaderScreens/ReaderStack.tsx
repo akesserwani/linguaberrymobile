@@ -36,7 +36,7 @@ const ReaderStack = () => {
                     }} />
             <Stack.Screen name="ReaderViewer" component={ ReaderViewer }
                 options= {{
-                title: 'View Entry',
+                title: 'View Story',
                 headerTitleAlign: 'center',
                 headerTitleStyle: {
                     color: style.gray_500,

@@ -331,8 +331,6 @@ const PracticeSentence = () => {
                                                           writingDirection: getTextDirection(isRTL, !frontFirst)
                                         }}/>
 
-                                    {/* Make button to remove a sentence */}
-                                    <Text>Remove from queue</Text>   
                                 </View>
 
                             ) : (
@@ -355,7 +353,7 @@ const PracticeSentence = () => {
                 <View style={{paddingHorizontal: responsiveHorizontalPadding, flex: 1,
                             flexDirection:'row', justifyContent:'space-between', alignItems:'center', alignContent:'center'}}>
                     {/* Skip Text Button  */}
-                    <TouchableOpacity activeOpacity={0.7} onPress={checkButton}>
+                    <TouchableOpacity activeOpacity={0.7} onPress={answerCorrect}>
                         <Text style={{color:style.blue_500, fontWeight:'500', fontSize:style.text_md}}>Skip</Text>
                     </TouchableOpacity>
 

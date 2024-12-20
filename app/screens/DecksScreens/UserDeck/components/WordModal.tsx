@@ -36,7 +36,7 @@ const WordModal = ({onClose, deckId, wordData, deckName}) => {
     //get form data for the translation
     const [formTransl, setFormTransl] = useState(wordData.translation);
     //get form data for etymology
-    const [formEty, setFormEty] = useState(wordData.etymology);
+    const [formEty, setFormEty] = useState(wordData.notes);
 
 
     //function to get the value of starred and thus which star to render
@@ -80,7 +80,7 @@ const WordModal = ({onClose, deckId, wordData, deckName}) => {
             //refresh the data in word data
             wordData.term = cleanFormWord;
             wordData.translation = cleanFormTransl;
-            wordData.etymology = cleanFormEty;
+            wordData.notes = cleanFormEty;
         }
     }
 
@@ -192,7 +192,7 @@ const WordModal = ({onClose, deckId, wordData, deckName}) => {
                 { !editToggled ? (
                     //If edit is not toggled - show the text
                     <Text style={{color:style.gray_500, fontSize: style.text_lg, fontWeight: '300', marginTop: 5}}> 
-                        { wordData.etymology }
+                        { wordData.notes }
                     </Text>
                     ) : (
                         //if it is toggled, show the edit form

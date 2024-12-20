@@ -28,6 +28,7 @@ const ExplorerReader = ({route}) => {
 
     //current language
     const { currentLang } = useContext(CurrentLangContext);
+    
     //Check database to see if the function is RTL (right to left, returns true if it is, false if it is not)
     const isRTL = isLanguageRTL(currentLang);
 

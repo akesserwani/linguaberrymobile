@@ -65,7 +65,7 @@ const BookmarksList = () => {
 
         db.withTransactionSync(() => {
             const result = db.getAllSync(
-              `SELECT * FROM entry WHERE language_id = ? AND bookmarked = 1;`,
+              `SELECT * FROM story WHERE language_id = ? AND bookmarked = 1;`,
               [currentLang]
             );
             // Assign the fetched rows to the array

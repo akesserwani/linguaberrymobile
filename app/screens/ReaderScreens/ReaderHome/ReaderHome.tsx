@@ -138,7 +138,7 @@ const ReaderHome = ({ navigation }) => {
                 {/* Display no decks text if entryData is empty, else render everything  */}
                 {renderedData.length === 0 ? (
                     <Text style={{ color: style.gray_400, fontSize: style.text_md, fontWeight:'600', textAlign: 'center', marginTop: 80 }}>
-                        {activeTab === "All" ? "No entries" : "No Bookmarked entries"}
+                        {activeTab === "All" ? "No stories" : "No Bookmarked stories"}
                     </Text>
 
                     ) : (
@@ -162,7 +162,7 @@ const ReaderHome = ({ navigation }) => {
                                 {/* Title for Deck */}
                                 <View style={{ width: '60%', justifyContent: 'center' }}>
                                     <Text style={{ color: style.gray_500, fontWeight: '500', fontSize: style.text_md }}>
-                                        { limitLength(item.title, 20) } 
+                                        {item.title && item.title.trim() !== "" ? limitLength(item.title, 20) : "No Title"}
                                     </Text>
                                 </View>
                             </View>

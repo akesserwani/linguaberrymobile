@@ -12,6 +12,8 @@ import ViewWordModal from "@/app/screens/components/ViewWordModal";
 import React from "react";
 import ViewSentences from "@/app/screens/components/ViewSentences";
 
+import { Platform } from 'react-native';
+
 const HeaderRight = ({currentLang, entryId, entryTitle, setRefresh}) => {
 
     const [buttonClicked, setClick] = useState(false);
@@ -29,7 +31,18 @@ const HeaderRight = ({currentLang, entryId, entryTitle, setRefresh}) => {
     const handleOpenDropdown = () => {
         if (iconRef.current) {
             iconRef.current.measure((fx, fy, width, height, px, py) => {
-                setDropdownPosition({ top: py + height, left: px - 100 }); // Adjust position dynamically
+                // Base top position
+                const baseTop = py + height;
+    
+                // Platform-specific adjustments for top
+                const adjustedTop = Platform.OS === 'ios' ? baseTop : baseTop - 17; // Add offset for Android if needed
+    
+                // Set the adjusted top and left
+                setDropdownPosition({
+                    top: adjustedTop,
+                    left: px - 70, // Keep left unchanged
+                });
+    
                 setClick(true);
             });
         }
@@ -37,9 +50,11 @@ const HeaderRight = ({currentLang, entryId, entryTitle, setRefresh}) => {
     
     return (
         <>
-            <TouchableOpacity ref={iconRef} onPress={handleOpenDropdown} style={{marginRight:30, width:30, height: 40, alignItems:'center', justifyContent:'center'}} activeOpacity={0.7}>
+        <View ref={iconRef} collapsable={false}>
+            <TouchableOpacity onPress={handleOpenDropdown} style={{marginRight:30, width:30, height: 40, alignItems:'center', justifyContent:'center'}} activeOpacity={0.7}>
                 <Icon name={"ellipsis-vertical"} size={20} color={style.gray_500} />
             </TouchableOpacity>
+        </View>
 
             {/* Main Dropdown in the form of a modal */}
             <Modal transparent={true} visible={buttonClicked} onRequestClose={() => setClick(false)}>

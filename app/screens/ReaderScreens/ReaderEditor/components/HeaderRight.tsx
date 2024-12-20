@@ -9,6 +9,8 @@ import CustomAlert from "@/app/components/CustomAlert";
 import { deleteEntry } from "../../DataReader";
 import React from "react";
 
+import { Platform } from 'react-native';
+
 const HeaderRight = ({currentLang, entryId}) => {
 
     const [buttonClicked, setClick] = useState(false);
@@ -21,8 +23,8 @@ const HeaderRight = ({currentLang, entryId}) => {
 
         //Make alert to confirm the deletion
         CustomAlert(
-            `Are you sure you want to delete this entry?`, 
-            'This entire entry and all of its data will be permanently deleted.',  
+            `Are you sure you want to delete this story?`, 
+            'This entire story and all of its data will be permanently deleted.',  
             [
                 { text: 'No',  onPress: () => console.log('Delete canceled'), style: 'cancel', },
                 { text: 'Yes', onPress: () => {
@@ -44,19 +46,33 @@ const HeaderRight = ({currentLang, entryId}) => {
     const handleOpenDropdown = () => {
         if (iconRef.current) {
             iconRef.current.measure((fx, fy, width, height, px, py) => {
-                setDropdownPosition({ top: py + height, left: px - 100 }); // Adjust position dynamically
+                // Base top position
+                const baseTop = py + height;
+    
+                // Platform-specific adjustments for top
+                const adjustedTop = Platform.OS === 'ios' ? baseTop : baseTop - 17; // Add offset for Android if needed
+    
+                // Set the adjusted top and left
+                setDropdownPosition({
+                    top: adjustedTop,
+                    left: px - 70, // Keep left unchanged
+                });
+    
                 setClick(true);
             });
         }
     };
     
+    
 
     return (
         <>
-            <TouchableOpacity ref={iconRef} onPress={handleOpenDropdown} style={{marginRight:30, width:30, height: 40, alignItems:'center', justifyContent:'center'}} activeOpacity={0.7}>
-                <Icon name={"ellipsis-vertical"} size={20} color={style.gray_500} />
-            </TouchableOpacity>
 
+            <View ref={iconRef} collapsable={false}>
+                <TouchableOpacity onPress={handleOpenDropdown} style={{marginRight:30, width:30, height: 40, alignItems:'center', justifyContent:'center'}} activeOpacity={0.7}>
+                    <Icon name={"ellipsis-vertical"} size={20} color={style.gray_500} />
+                </TouchableOpacity>
+            </View>
             {/* Main Dropdown in the form of a modal */}
             <Modal transparent={true} visible={buttonClicked} onRequestClose={() => setClick(false)}>
                 {/* Invisible Overlay that can be clicked  */}
@@ -67,7 +83,7 @@ const HeaderRight = ({currentLang, entryId}) => {
                         <View style={[styles.dropdownBox, dropdownPosition]}>
                         {/* Edit Deck */}
                         <TouchableOpacity onPress={deleteEntryFunc} activeOpacity={0.7}>
-                            <Text style={{color:style.gray_500}}>Delete Entry</Text>
+                            <Text style={{color:style.gray_500}}>Delete Story</Text>
                         </TouchableOpacity>                    
                     </View>
                 </TouchableOpacity>

@@ -5,6 +5,8 @@ import Icon from '@expo/vector-icons/FontAwesome6'
 import * as style from '@/assets/styles/styles'
 import React from "react";
 
+import { Platform } from 'react-native';
+
 
 const HeaderRight = ({currentLang, deckId, mode, setMode, frontFirst, setFrontFirst, randomOrder, setRandom }) => {
 
@@ -45,7 +47,18 @@ const HeaderRight = ({currentLang, deckId, mode, setMode, frontFirst, setFrontFi
     const handleOpenDropdown = () => {
         if (iconRef.current) {
             iconRef.current.measure((fx, fy, width, height, px, py) => {
-                setDropdownPosition({ top: py + height, left: px - 100 }); // Adjust position dynamically
+                // Base top position
+                const baseTop = py + height;
+    
+                // Platform-specific adjustments for top
+                const adjustedTop = Platform.OS === 'ios' ? baseTop : baseTop - 17; // Add offset for Android if needed
+    
+                // Set the adjusted top and left
+                setDropdownPosition({
+                    top: adjustedTop,
+                    left: px - 70, // Keep left unchanged
+                });
+    
                 setClick(true);
             });
         }

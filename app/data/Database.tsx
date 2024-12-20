@@ -27,8 +27,8 @@ function openDatabase() {
       // db.runSync(`DROP TABLE IF EXISTS deck;`);
       // db.runSync(`DROP TABLE IF EXISTS word;`);
       // db.runSync(`DROP TABLE IF EXISTS tag;`);
-      // db.runSync(`DROP TABLE IF EXISTS entry_tag;`);
-      // db.runSync(`DROP TABLE IF EXISTS entry;`);
+      // db.runSync(`DROP TABLE IF EXISTS story;`);
+      // db.runSync(`DROP TABLE IF EXISTS story_tag;`);
       // db.runSync(`DROP TABLE IF EXISTS explorer;`);
   
       // Create tables
@@ -63,7 +63,7 @@ function openDatabase() {
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           term TEXT NOT NULL,
           translation TEXT NOT NULL,
-          etymology TEXT NOT NULL,
+          notes TEXT NOT NULL,
           tag TEXT,
           starred INTEGER NOT NULL,
           deck_id INTEGER,
@@ -85,7 +85,7 @@ function openDatabase() {
       );
 
       db.runSync(
-        `CREATE TABLE IF NOT EXISTS entry (
+        `CREATE TABLE IF NOT EXISTS story (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           title TEXT NOT NULL,
           contents TEXT NOT NULL,
@@ -100,7 +100,7 @@ function openDatabase() {
       );
 
       db.runSync(
-        `CREATE TABLE IF NOT EXISTS entry_tag (
+        `CREATE TABLE IF NOT EXISTS story_tag (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           name TEXT NOT NULL,
           language_id INTEGER,

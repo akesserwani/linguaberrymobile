@@ -6,7 +6,7 @@ import { db } from "@/app/data/Database";
 export const newEntry = (title, current_language) =>{
     db.withTransactionSync(() => {
         db.runSync(
-            `INSERT INTO entry (title, contents, word_data, translation_data, bookmarked, tag, language_id) 
+            `INSERT INTO story (title, contents, word_data, translation_data, bookmarked, tag, language_id) 
                 VALUES (?, ?, ?, ?, ?, ?, ?)`,
                 title, "", "", "", 0, "none", current_language);
     });
@@ -19,7 +19,7 @@ export const getEntriesByLanguage = (language_id) => {
     
     db.withTransactionSync(() => {
         entries = db.getAllSync(
-            `SELECT * FROM entry WHERE language_id = ?`,
+            `SELECT * FROM story WHERE language_id = ?`,
             language_id
         );
     });
@@ -33,7 +33,7 @@ export const getEntryContents = (entryId, languageId) => {
 
     db.withTransactionSync(() => {
         const result = db.getFirstSync(
-            `SELECT contents FROM entry WHERE id = ? AND language_id = ?`,
+            `SELECT contents FROM story WHERE id = ? AND language_id = ?`,
             entryId,
             languageId
         );
@@ -48,7 +48,7 @@ export const getEntryContents = (entryId, languageId) => {
 export const deleteEntry = (entryId, language_id) => {
     db.withTransactionSync(() => {
         db.runSync(
-            `DELETE FROM entry WHERE id = ? AND language_id = ?`,
+            `DELETE FROM story WHERE id = ? AND language_id = ?`,
             entryId,
             language_id
         );
@@ -59,7 +59,7 @@ export const deleteEntry = (entryId, language_id) => {
 export const updateEntry = (entryId, title, contents) => {
     db.withTransactionSync(() => {
         db.runSync(
-            `UPDATE entry SET title = ?, contents = ? WHERE id = ?`,
+            `UPDATE story SET title = ?, contents = ? WHERE id = ?`,
             title, contents, entryId
         );
     });
@@ -71,7 +71,7 @@ export const getSingleEntryData = (entryId, languageId) => {
 
     db.withTransactionSync(() => {
         const result = db.getFirstSync(
-            `SELECT * FROM entry WHERE id = ? AND language_id = ?`,
+            `SELECT * FROM story WHERE id = ? AND language_id = ?`,
             entryId,
             languageId
         );
@@ -92,7 +92,7 @@ export const getBookmarkedStatus = (currentLang, entryId) => {
   
     db.withTransactionSync(() => {
       const result = db.getFirstSync(
-        `SELECT bookmarked FROM entry WHERE language_id = ? AND id = ?;`,
+        `SELECT bookmarked FROM story WHERE language_id = ? AND id = ?;`,
         [currentLang, entryId]
       );
   
@@ -117,7 +117,7 @@ export const getBookmarkedStatus = (currentLang, entryId) => {
       // Update the database with the new bookmarked status
       db.withTransactionSync(() => {
         db.runSync(
-          `UPDATE entry SET bookmarked = ? WHERE language_id = ? AND id = ?;`,
+          `UPDATE story SET bookmarked = ? WHERE language_id = ? AND id = ?;`,
           [newStatus, currentLang, entryId]
         );
       });
@@ -128,7 +128,7 @@ export const getWordData = (entryId, currentLang) => {
 
     db.withTransactionSync(() => {
         const result = db.getFirstSync(
-            `SELECT word_data FROM entry WHERE id = ? AND language_id = ?`,
+            `SELECT word_data FROM story WHERE id = ? AND language_id = ?`,
             entryId, currentLang
         );
         wordData = result?.word_data ? JSON.parse(result.word_data) : []; // Parse the JSON string, or return an empty array if null
@@ -141,7 +141,7 @@ export const updateWordData = (newWordData, entryId, currentLang) => {
     try {
         db.withTransactionSync(() => {
             db.runSync(
-                `UPDATE entry SET word_data = ? WHERE id = ? AND language_id = ?`,
+                `UPDATE story SET word_data = ? WHERE id = ? AND language_id = ?`,
                 JSON.stringify(newWordData), // Convert the data to a JSON string
                 entryId,
                 currentLang
@@ -160,7 +160,7 @@ export const getTranslationData = (entryId, currentLang) => {
     try {
         db.withTransactionSync(() => {
             const result = db.getFirstSync(
-                `SELECT translation_data FROM entry WHERE id = ? AND language_id = ?`,
+                `SELECT translation_data FROM story WHERE id = ? AND language_id = ?`,
                 entryId,
                 currentLang
             );
@@ -181,7 +181,7 @@ export const updateTranslationData = (translationData, entryId, currentLang) => 
     try {
         db.withTransactionSync(() => {
             db.runSync(
-                `UPDATE entry SET translation_data = ? WHERE id = ? AND language_id = ?`,
+                `UPDATE story SET translation_data = ? WHERE id = ? AND language_id = ?`,
                 translationData, // Directly store the string
                 entryId,
                 currentLang
@@ -199,7 +199,7 @@ export const getAllReaderTags = (currentLang) =>{
     let data = [];
 
     db.withTransactionSync(() => {
-        const results = db.getAllSync(`SELECT id, name FROM entry_tag WHERE language_id = ?`, [currentLang]);
+        const results = db.getAllSync(`SELECT id, name FROM story_tag WHERE language_id = ?`, [currentLang]);
         data = results || []; // Fallback to an empty array if no results
     });
 
@@ -215,14 +215,14 @@ export const createNewTag = (name, currentLang) => {
     db.withTransactionSync(() => {
         // Check if the tag already exists
         const result = db.getFirstSync(
-            `SELECT id FROM entry_tag WHERE name = ? AND language_id = ?`, 
+            `SELECT id FROM story_tag WHERE name = ? AND language_id = ?`, 
             [name, currentLang]
         );
 
         // If the result is null, the tag does not exist, so create it
         if (!result) {
             db.runSync(
-                `INSERT INTO entry_tag (name, language_id) VALUES (?, ?)`, 
+                `INSERT INTO story_tag (name, language_id) VALUES (?, ?)`, 
                 [name, currentLang]
             );
             tagCreated = true; // Tag was created
@@ -240,7 +240,7 @@ export const deleteTagByName = (tagName, currentLang) => {
         db.withTransactionSync(() => {
             // Execute the delete query
             db.runSync(
-                `DELETE FROM entry_tag WHERE name = ? AND language_id = ?;`, 
+                `DELETE FROM story_tag WHERE name = ? AND language_id = ?;`, 
                 [tagName, currentLang]
             );
             console.log(`Tag "${tagName}" deleted successfully.`);
@@ -255,7 +255,7 @@ export const updateTagInStory = (newTag, entryId, currentLang) => {
     try {
         db.withTransactionSync(() => {
             db.runSync(
-                `UPDATE entry 
+                `UPDATE story 
                  SET tag = ? 
                  WHERE id = ? AND language_id = ?;`,
                 [newTag, entryId, currentLang]
@@ -275,7 +275,7 @@ export const getTagOfStory = (entryId, currentLang) => {
         db.withTransactionSync(() => {
             const result = db.getFirstSync(
                 `SELECT tag 
-                 FROM entry 
+                 FROM story 
                  WHERE id = ? AND language_id = ?;`,
                 [entryId, currentLang]
             );

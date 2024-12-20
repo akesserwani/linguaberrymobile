@@ -140,7 +140,7 @@ export const getWords = (currentLang, deckId) => {
     wordsList = results.map(word => ({
       term: word.term,
       translation: word.translation,
-      etymology: word.etymology,
+      notes: word.notes,
       starred: word.starred,
       tag: word.tag,
     }));
@@ -153,11 +153,11 @@ export const getWords = (currentLang, deckId) => {
 
 
 //CREATE WORD
-export const createNewWord = (  term, translation, etymology, tag, deckId, currentLang) => {
+export const createNewWord = (  term, translation, notes, tag, deckId, currentLang) => {
 
   db.withTransactionSync(() => {
-    db.runSync(`INSERT INTO word (term, translation, etymology, tag, starred, deck_id, language_id) VALUES (?, ?, ?, ?, ?, ?, ?);`, 
-      [term, translation, etymology, tag, false, deckId, currentLang]);
+    db.runSync(`INSERT INTO word (term, translation, notes, tag, starred, deck_id, language_id) VALUES (?, ?, ?, ?, ?, ?, ?);`, 
+      [term, translation, notes, tag, false, deckId, currentLang]);
   });
 
 }
@@ -177,7 +177,7 @@ export const createBulkWords = (words, deck_id, language_id) => {
         const { term, translation, notes } = word;
 
         db.runSync(
-          `INSERT INTO word (term, translation, etymology, tag, starred, deck_id, language_id)
+          `INSERT INTO word (term, translation, notes, tag, starred, deck_id, language_id)
            VALUES (?, ?, ?, ?, ?, ?, ?);`,
           [term, translation, notes, "None", 0, deck_id, language_id]
         );
@@ -211,7 +211,7 @@ export const createBulkWordsByDeckName = (deckName, words, language_id) => {
         const { term, translation, notes } = word;
 
         db.runSync(
-          `INSERT OR IGNORE INTO word (term, translation, etymology, tag, starred, deck_id, language_id)
+          `INSERT OR IGNORE INTO word (term, translation, notes, tag, starred, deck_id, language_id)
            VALUES (?, ?, ?, ?, ?, ?, ?);`,
           [term, translation, notes || "None", "None", 0, deck_id, language_id]
         );
@@ -227,12 +227,12 @@ export const createBulkWordsByDeckName = (deckName, words, language_id) => {
 
 
 //UPDATE WORD
-export const updateWord = (currentLang, deckId, originalTerm, newTerm, translation, etymology) => {
+export const updateWord = (currentLang, deckId, originalTerm, newTerm, translation, notes) => {
   
   db.withTransactionSync(() => {
-    db.runSync(`UPDATE word SET term = ?, translation = ?, etymology = ?
+    db.runSync(`UPDATE word SET term = ?, translation = ?, notes = ?
       WHERE term = ? AND deck_id = ? AND language_id = ?;`, 
-      [newTerm, translation, etymology, originalTerm, deckId, currentLang]);
+      [newTerm, translation, notes, originalTerm, deckId, currentLang]);
   });
 
 }
@@ -469,7 +469,7 @@ export const getWordsWithTag = (tag, deck_id, language_id) => {
       id: row.id,
       term: row.term,
       translation: row.translation,
-      etymology: row.etymology,
+      notes: row.notes,
       tag: row.tag,
       starred: row.starred,
     }));

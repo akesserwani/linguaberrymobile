@@ -3,7 +3,7 @@
     "name": "LinguaBerry",
     "slug": "LinguaBerry",
     "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "default",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
@@ -16,6 +16,7 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.app.linguaberry"
     },
+
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/splash.png",
@@ -23,6 +24,14 @@
       },
       "package": "com.app.linguaberry"
     },
+    "androidStatusBar":{
+      "backgroundColor": "white",
+      "translucent": false
+    },
+    "androidNavigationBar":{
+      "backgroundColor": "white"
+    },
+
     "web": {
       "bundler": "metro",
       "output": "static",

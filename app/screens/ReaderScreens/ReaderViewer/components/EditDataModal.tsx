@@ -170,7 +170,7 @@ const EditDataModal = ({onClose, entryId, setRefresh}) => {
         <CustomModal title="Edit Data" onClose={onClose} horizontalPadding={0} overrideStyle={{maxHeight:'70%'}}>
             {/* Main Content here */}
             <KeyboardAvoidingView behavior={'padding'} keyboardVerticalOffset={50} style={{maxHeight:'95%'}} >
-                <ScrollView contentContainerStyle={{ gap: 20, padding:25, flexDirection:'column' }}>
+                <ScrollView contentContainerStyle={{ gap: 20, padding:35, flexDirection:'column' }}>
 
                     {/* Bookmark Dropdown */}
                     <BookmarkDropdown onTagSelect={selectTag} currentTag={selectedTag} filter={false}/>
@@ -182,13 +182,13 @@ const EditDataModal = ({onClose, entryId, setRefresh}) => {
                     </CustomButton>
 
                     {/* Column 1 - Word Data */}
-                    <View style={{flexDirection:'column', gap:10, width: width > 800 ? '70%' : '100%', marginTop:20}}>
+                    <View style={{flexDirection:'column', gap:10, marginTop:20}}>
 
                         {/* Form Label */}
                         <Text style={{color:style.gray_500, fontSize: style.text_md, fontWeight: '500'}}> Word data: </Text>
 
                         {/* Word Data input form */}
-                        <View>
+                        <View style={{width:'100%'}}>
                             <View style={{borderTopLeftRadius:style.rounded_md, borderTopRightRadius:style.rounded_md, backgroundColor:style.gray_300, height:50, padding:15}}>
                                 <Text style={{color:style.gray_600, fontWeight:'500'}}>Term, Translation, Notes (optional)</Text>
                             </View>
@@ -225,8 +225,9 @@ const EditDataModal = ({onClose, entryId, setRefresh}) => {
                     </View>
 
                     {/* Column 2 - Translation Data */}
-                    <View style={{flexDirection:'column', gap:10, width: width > 800 ? '50%' : '100%'}}>
+                    <View style={{flexDirection:'column', gap:10, marginTop:20}}>
 
+                        
                         {/* Translation Data input form */}
                         <CustomInput showLabel={true} label={"Full Translation"} placeholder={"Write translation here..."} value={textTranslation} 
                                         onChangeText={setTextTranslation} maxLength={50000} multiline={true} customFormStyle={{height:120}}/>
