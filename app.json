@@ -14,7 +14,8 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.app.linguaberry"
+      "bundleIdentifier": "com.app.linguaberry",
+      "requireFullScreen": true
     },
 
     "android": {
