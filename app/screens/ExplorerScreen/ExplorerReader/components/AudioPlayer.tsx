@@ -151,14 +151,14 @@ const AudioPlayer = ({audioId, currentLang}) => {
 
             {/* Scrolling Button */}
             <Slider
-                style={{flex:1}}
+                style={{flex: 1, height: 40, width: '100%'}}
                 minimumValue={0}
                 step={1} // Smaller step for smoother transitions
                 maximumValue={audioSize}
                 minimumTrackTintColor={style.blue_400}
                 thumbTintColor={style.white}
                 maximumTrackTintColor={style.gray_400}
-                value={isDragging ? undefined : audioTime}
+                value={audioTime || 0} 
                 onValueChange={(value) => {
                     setIsDragging(true); // Set dragging to true
                     setAudioTime(value); // Update audio time while dragging
