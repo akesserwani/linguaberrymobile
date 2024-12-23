@@ -7,7 +7,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import Slider from '@react-native-community/slider';
 
 import { Audio } from 'expo-av';
-import { audioPaths } from './AudioData';
+import { audioPaths } from '../../../../../assets/data/AudioData';
 
 //styles
 import * as style from '@/assets/styles/styles'

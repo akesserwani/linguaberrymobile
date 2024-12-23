@@ -16,7 +16,7 @@ import { RTLlanguages } from '@/app/data/LangData';
 import { isLanguageRTL } from '../../HomeScreen/LanguageSelection/DataLanguages';
 
 //Database files from ExplorerData
-import { storyFiles, createStoryInstance, toggleBookmarkStory, getBookmarkedStatus } from '../ExplorerHome/ExplorerData';
+import { storyFiles, createStoryInstance, toggleBookmarkStory, getBookmarkedStatus } from '../../../../assets/data/ExplorerData';
 
 import TooltipComponent from './components/TooltipComponent';
 import HeaderRight from './components/HeaderRight';

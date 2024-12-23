@@ -16,7 +16,7 @@ import { getSingleEntryData } from "../ReaderScreens/DataReader";
 
 import { limitLength, matchSentences } from "@/app/data/Functions";
 
-import { storyFiles } from "../ExplorerScreen/ExplorerHome/ExplorerData";
+import { storyFiles } from "../../../assets/data/ExplorerData";
 
 const ViewSentences = ({onClose, modalTitle, entryId=null}) => {
 

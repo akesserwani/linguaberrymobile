@@ -19,8 +19,9 @@ const UpdateModal = () => {
     useEffect(() => {
       const fetchData = async () => {
         try {
-          const response = await fetch('http://linguaberry.com/api/update_modal');
+          const response = await fetch('https://test-api-lubb.onrender.com/message');
           const json = await response.json();
+          console.log(json)
 
           //set the showModal variable
           toggleModal(json.showModal)

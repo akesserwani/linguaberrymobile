@@ -4,7 +4,7 @@ import { TouchableOpacity, View, Text, StyleSheet, Modal } from "react-native";
 import Icon from '@expo/vector-icons/FontAwesome6'
 import * as style from '@/assets/styles/styles'
 
-import { wordStoryData } from "../../ExplorerHome/ExplorerData";
+import { wordStoryData } from "../../../../../assets/data/ExplorerData";
 import { convertLangFiletoJSON } from "@/app/data/Functions";
 
 import ViewWordModal from "@/app/screens/components/ViewWordModal";

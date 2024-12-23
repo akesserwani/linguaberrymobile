@@ -1,13 +1,15 @@
 import os
 import subprocess
 
-# Path to the folder containing the audio files
-input_folder = "/Users/alikesserwani/Desktop/audio"
 
 # FFmpeg command template
 ffmpeg_command = "ffmpeg -i \"{input}\" -b:a 16k -ar 16000 \"{output}\""
 
-def convert_audio_files(folder_path):
+def convert_audio_files(folder_path, language):
+
+    #make folder path dynamic based on the language
+    folder_path = folder_path + f"/{language}/audio"
+
     # Check if the folder exists
     if not os.path.exists(folder_path):
         print(f"Error: Folder '{folder_path}' does not exist.")
@@ -31,6 +33,10 @@ def convert_audio_files(folder_path):
 
     print("Conversion completed.")
 
-# Run the script
-if __name__ == "__main__":
-    convert_audio_files(input_folder)
+# Path to the folder containing the audio files
+input_folder = "/Users/alikesserwani/Desktop/linguaberrymobile/assets/data/stories"
+
+#make it loop through all the languages
+languages = ["Dutch", "French", "German", "Greek", "Hebrew", "Hindi", "Italian", "Korean", "Portuguese", "Russian", "Spanish", "Swedish", "Turkish"]
+for i in languages:
+    convert_audio_files(input_folder, i)

@@ -1,7 +1,6 @@
 
 //import all the data files
 import ArabicWords from '@/assets/data/vocabulary/Arabic_Words.json'
-import ChineseWords from '@/assets/data/vocabulary/Chinese_Words.json'
 import DutchWords from '@/assets/data/vocabulary/Dutch_Words.json'
 import FrenchWords from '@/assets/data/vocabulary/French_Words.json'
 import GermanWords from '@/assets/data/vocabulary/German_Words.json'
@@ -9,7 +8,6 @@ import GreekWords from '@/assets/data/vocabulary/Greek_Words.json'
 import HebrewWords from '@/assets/data/vocabulary/Hebrew_Words.json'
 import HindiWords from '@/assets/data/vocabulary/Hindi_Words.json'
 import ItalianWords from '@/assets/data/vocabulary/Italian_Words.json'
-import JapaneseWords from '@/assets/data/vocabulary/Japanese_Words.json'
 import KoreanWords from '@/assets/data/vocabulary/Korean_Words.json'
 import PortugueseWords from '@/assets/data/vocabulary/Portuguese_Words.json'
 import RussianWords from '@/assets/data/vocabulary/Russian_Words.json'
@@ -18,7 +16,6 @@ import SwedishWords from '@/assets/data/vocabulary/Swedish_Words.json'
 import TurkishWords from '@/assets/data/vocabulary/Turkish_Words.json'
 
 import ArabicStories from '@/assets/data/stories/Arabic/Arabic_stories.json'
-import ChineseStories from '@/assets/data/stories/Chinese/Chinese_stories.json'
 import DutchStories from'@/assets/data/stories/Dutch/Dutch_stories.json'
 import FrenchStories from '@/assets/data/stories/French/French_stories.json'
 import GermanStories from '@/assets/data/stories/German/German_stories.json'
@@ -26,7 +23,6 @@ import GreekStories from '@/assets/data/stories/Greek/Greek_stories.json'
 import HebrewStories from '@/assets/data/stories/Hebrew/Hebrew_stories.json'
 import HindiStories from '@/assets/data/stories/Hindi/Hindi_stories.json'
 import ItalianStories from '@/assets/data/stories/Italian/Italian_stories.json'
-import JapaneseStories from '@/assets/data/stories/Japanese/Japanese_stories.json'
 import KoreanStories from '@/assets/data/stories/Korean/Korean_stories.json'
 import PortugueseStories from '@/assets/data/stories/Portuguese/Portuguese_stories.json'
 import RussianStories from '@/assets/data/stories/Russian/Russian_stories.json'
@@ -35,7 +31,6 @@ import SwedishStories from '@/assets/data/stories/Swedish/Swedish_stories.json'
 import TurkishStories from '@/assets/data/stories/Turkish/Turkish_stories.json'
 
 import ArabicStoryData from '@/assets/data/stories/Arabic/Arabic_words.json'
-import ChineseStoryData from '@/assets/data/stories/Chinese/Chinese_words.json'
 import DutchStoryData from'@/assets/data/stories/Dutch/Dutch_words.json'
 import FrenchStoryData from '@/assets/data/stories/French/French_words.json'
 import GermanStoryData from '@/assets/data/stories/German/German_words.json'
@@ -43,7 +38,6 @@ import GreekStoryData from '@/assets/data/stories/Greek/Greek_words.json'
 import HebrewStoryData from '@/assets/data/stories/Hebrew/Hebrew_words.json'
 import HindiStoryData from '@/assets/data/stories/Hindi/Hindi_words.json'
 import ItalianStoryData from '@/assets/data/stories/Italian/Italian_words.json'
-import JapaneseStoryData from '@/assets/data/stories/Japanese/Japanese_words.json'
 import KoreanStoryData from '@/assets/data/stories/Korean/Korean_words.json'
 import PortugueseStoryData from '@/assets/data/stories/Portuguese/Portuguese_words.json'
 import RussianStoryData from '@/assets/data/stories/Russian/Russian_words.json'
@@ -56,7 +50,6 @@ import TurkishStoryData from '@/assets/data/stories/Turkish/Turkish_words.json'
 //Create an object that maps each language to a data file
 export const wordFiles = {
     Arabic: ArabicWords,
-    Chinese: ChineseWords,
     Dutch: DutchWords,
     French: FrenchWords,
     German: GermanWords,
@@ -64,7 +57,6 @@ export const wordFiles = {
     Hebrew: HebrewWords,
     Hindi: HindiWords,
     Italian: ItalianWords,
-    Japanese: JapaneseWords,
     Korean: KoreanWords,
     Portuguese: PortugueseWords,
     Russian: RussianWords,
@@ -75,7 +67,6 @@ export const wordFiles = {
 
 export const storyFiles = {
     Arabic: ArabicStories,
-    Chinese: ChineseStories,
     Dutch: DutchStories,
     French: FrenchStories,
     German: GermanStories,
@@ -83,7 +74,6 @@ export const storyFiles = {
     Hebrew: HebrewStories,
     Hindi: HindiStories,
     Italian: ItalianStories,
-    Japanese: JapaneseStories,
     Korean: KoreanStories,
     Portuguese: PortugueseStories,
     Russian: RussianStories,
@@ -94,7 +84,6 @@ export const storyFiles = {
 
 export const wordStoryData = {
     Arabic: ArabicStoryData,
-    Chinese: ChineseStoryData,
     Dutch: DutchStoryData,
     French: FrenchStoryData,
     German: GermanStoryData,
@@ -102,7 +91,6 @@ export const wordStoryData = {
     Hebrew: HebrewStoryData,
     Hindi: HindiStoryData,
     Italian: ItalianStoryData,
-    Japanese: JapaneseStoryData,
     Korean: KoreanStoryData,
     Portuguese: PortugueseStoryData,
     Russian: RussianStoryData,

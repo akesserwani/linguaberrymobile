@@ -129,7 +129,7 @@ const AddLanguageModal = ({ languagesSupported, userLanguages, addLanguage, onCl
                 {/* END CUSTOM LANGUAGE FUNCTIONALITY */}
 
                 {/* Individual Language Box, if trash icon pressed then it will render confirmation and delete */}
-                {Object.entries(languagesSupported).map(([language, codes]) => (
+                {languagesSupported.map((language) => (
                     //if language is in the usersLanguages - it will not render  
                     !userLanguages.includes(language) && (
                         <View key={language} style={{ flexDirection: "row", justifyContent: "space-between", paddingVertical: 10}}>

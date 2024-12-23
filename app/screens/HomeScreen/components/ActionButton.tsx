@@ -11,7 +11,7 @@ import CustomFab from "@/app/components/CustomFab";
 import CustomModal from "@/app/components/CustomModal";
 import CustomButton from "@/app/components/CustomButton";
 
-import { storyFiles } from "../../ExplorerScreen/ExplorerHome/ExplorerData";
+import { storyFiles } from "../../../../assets/data/ExplorerData";
 
 import { useNavigation} from "@react-navigation/native";
 

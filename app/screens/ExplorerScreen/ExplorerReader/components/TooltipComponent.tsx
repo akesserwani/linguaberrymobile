@@ -11,7 +11,7 @@ import { RTLlanguages } from '@/app/data/LangData';
 
 import AddWordToDeck from '@/app/screens/components/AddWordToDeck';
 
-import { storyFiles, wordStoryData, toggleHighlightedWord, getHighlightedWords } from '../../ExplorerHome/ExplorerData';
+import { storyFiles, wordStoryData, toggleHighlightedWord, getHighlightedWords } from '../../../../../assets/data/ExplorerData';
 
 const TooltipComponent = ({ title }) => {
 

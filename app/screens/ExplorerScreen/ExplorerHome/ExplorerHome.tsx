@@ -10,7 +10,7 @@ import * as style from '@/assets/styles/styles'
 import Icon from '@expo/vector-icons/FontAwesome6'
 
 //import data file
-import {wordFiles, storyFiles} from './ExplorerData';
+import {wordFiles, storyFiles} from '../../../../assets/data/ExplorerData';
 
 import CustomAlert from '@/app/components/CustomAlert';
 
