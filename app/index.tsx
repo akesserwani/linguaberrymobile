@@ -36,16 +36,14 @@ export default function App() {
         <StatusBar backgroundColor="white"/>
 
         <SafeAreaProvider>
-            <SafeAreaView style={{ flex: 1, backgroundColor:"#FFFFFF" }}>
-              <NavigationContainer>
-                <Router />
-              </NavigationContainer>
-            </SafeAreaView>
+          <NavigationContainer>
+              <SafeAreaView style={{ flex: 1, backgroundColor:"#FFFFFF" }}>
+                  <Router />
+              </SafeAreaView>
+            </NavigationContainer>
         </SafeAreaProvider>
 
-        
-
-      </GestureHandlerRootView>
+    </GestureHandlerRootView>
 
   );
 }

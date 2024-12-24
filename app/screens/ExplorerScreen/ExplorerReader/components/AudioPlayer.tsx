@@ -44,6 +44,11 @@ const AudioPlayer = ({audioId, currentLang}) => {
                 const audioUrl = audioPaths[currentLang][audioId];
 
                 if (audioUrl){
+
+                    await Audio.setAudioModeAsync({
+                        playsInSilentModeIOS: true,
+                      });
+                
                     const { sound } = await Audio.Sound.createAsync(
                         audioUrl
                     );    
