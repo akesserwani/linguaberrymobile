@@ -7,11 +7,13 @@ import { useFocusEffect } from '@react-navigation/native';
 import Slider from '@react-native-community/slider';
 
 import { Audio } from 'expo-av';
-import { audioPaths } from '../../../../../assets/data/AudioData';
+import { audioPaths } from '@/assets/data/AudioData';
 
 //styles
 import * as style from '@/assets/styles/styles'
 import Icon from '@expo/vector-icons/FontAwesome6';
+
+import { Platform } from 'react-native';
 
 
 const AudioPlayer = ({audioId, currentLang}) => {
@@ -28,11 +30,8 @@ const AudioPlayer = ({audioId, currentLang}) => {
     // Track whether the user is dragging
     const [isDragging, setIsDragging] = useState(false);
 
-
     //Play button toggled
     const [play, setPlay] = useState(false);
-
-
 
     //UseEffect to load the audio 
     useEffect(() => {
@@ -112,10 +111,38 @@ const AudioPlayer = ({audioId, currentLang}) => {
     //Rate and rate dropdown
     //rate dropdown toggled
     const [dropdown, toggleDropdown] = useState(false);
+
+    //dropdown position for the rate dropdown
+    const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
+    const dropdownRef = useRef(null); // Ref to capture the position of the icon
+    
     //rates available
     const [rateData, setRateData] = useState([0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2]);
     //Variable will render selected rate
     const [selectedRate, setRate] = useState(1.0);
+
+    //Set dropdown based on position of the target ref
+    const handleOpenDropdown = () => {
+        if (dropdownRef.current) {
+            dropdownRef.current.measure((fx, fy, width, height, px, py) => {
+                // Base top position
+                const baseTop = py + height;
+    
+                // Platform-specific adjustments for top
+                const adjustedTop = Platform.OS === 'ios' ? baseTop : baseTop - 17; // Add offset for Android if needed
+    
+                // Set the adjusted top and left
+                setDropdownPosition({
+                    top: adjustedTop,
+                    left: px - 70, // Keep left unchanged
+                });
+    
+                toggleDropdown(true);
+            });
+        }
+    };
+    
+
     const rateSelected = async (rate) =>{
         //update selected rate to show in the UI
         setRate(rate);
@@ -173,7 +200,7 @@ const AudioPlayer = ({audioId, currentLang}) => {
 
 
             {/* Speed - Text Button */}
-            <TouchableOpacity activeOpacity={0.7} onPress={()=>toggleDropdown(true)}>
+            <TouchableOpacity ref={dropdownRef} activeOpacity={0.7} onPress={handleOpenDropdown}>
                 <Text style={{color:style.gray_500, fontWeight:'500'}}>{selectedRate.toFixed(2)}x</Text>
             </TouchableOpacity>
 
@@ -196,7 +223,7 @@ const AudioPlayer = ({audioId, currentLang}) => {
                                 key={index} 
                                 activeOpacity={0.7}
                                 onPress={()=>rateSelected(rate)}>
-                                <Text style={{ color:style.gray_500, fontWeight:'500' }}>
+                                <Text style={{ color:style.gray_500, fontWeight:'500', fontSize:style.text_md }}>
                                     {rate.toFixed(2)}x
                                 </Text>
                             </TouchableOpacity>

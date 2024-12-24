@@ -235,7 +235,6 @@ const BookmarksList = () => {
 const styles = StyleSheet.create({
     tabContainer: {
         flexDirection: "row",
-        zIndex: -1,
     },
     
     tabText: {
@@ -262,7 +261,6 @@ const styles = StyleSheet.create({
         flex:1,
         flexDirection: 'column',
         gap: 20,
-        zIndex: -1,
 
     },
     item: {

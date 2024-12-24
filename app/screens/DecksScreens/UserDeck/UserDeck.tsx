@@ -355,7 +355,6 @@ const styles = StyleSheet.create({
 
     tabContainer: {
         flexDirection: "row",
-        zIndex: -1,
         marginTop: 20
     },
     
@@ -389,7 +388,6 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         flex: 1,
         gap: 10,
-        zIndex: -1,
 
     },
     item: {

@@ -49,16 +49,7 @@ const PracticeSentence = () => {
                 headerBackTitle: 'Back', // Reset the back button title (optional)
             });
     
-        } else {
-            // Show the tab bar again when leaving this screen
-            navigation.getParent()?.setOptions({
-                tabBarStyle: { 
-                    ...style.baseTabBarStyle, // Spread base styles here
-                    display: 'flex',
-                },
-            });
-    
-        }
+        } 
     }, [isFocused, navigation]);
                 
 

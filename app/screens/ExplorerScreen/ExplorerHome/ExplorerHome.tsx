@@ -16,6 +16,7 @@ import CustomAlert from '@/app/components/CustomAlert';
 
 //import components
 import ViewWordModal from '../../components/ViewWordModal';
+import React from 'react';
 
 const ExplorerHome = () => {
 
@@ -167,7 +168,7 @@ const ExplorerHome = () => {
         <View style={[styles.mainContainer, { paddingHorizontal: responsiveHorizontalPadding }]}>
 
             {/* White card container that holds the content */}
-            <View style={{ flex:1, backgroundColor:style.white, paddingTop:20, paddingRight:15, paddingLeft:15, borderColor:style.gray_200, borderWidth:style.border_sm, borderTopRightRadius:style.rounded_lg, borderTopLeftRadius:style.rounded_lg}}>
+            <View style={{ flex:1, backgroundColor:style.white, paddingTop:20, borderColor:style.gray_200, borderWidth:style.border_sm, borderTopRightRadius:style.rounded_lg, borderTopLeftRadius:style.rounded_lg}}>
                 {/* Top Container with Tabs - All and Bookmarks */}
                 <View style={styles.tabContainer}>
                     <TouchableOpacity onPress={() => setActiveTab('Words')} style={[styles.individualTab, activeTab === 'Words' && styles.activeTab]} activeOpacity={0.7}>
@@ -198,7 +199,7 @@ const ExplorerHome = () => {
                 </View>
 
                 {/* Container for The Rendered Content  */}
-                <View style={{ flexDirection: 'column', flex:1, paddingHorizontal:15}} >
+                <View style={{ flexDirection: 'column', flex:1, paddingHorizontal:25, backgroundColor:style.white}} >
 
                     {/* If there is no data, render the message here */}
                     { noData ? (
@@ -306,7 +307,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         flexDirection: 'column',
         gap: 20,
-        zIndex: -1,
 
     },
     item: {

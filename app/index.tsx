@@ -10,6 +10,7 @@ import {  useFonts, Nunito_400Regular, Nunito_300Light, Nunito_600SemiBold, Nuni
 
 //import router
 import Router from './screens/Navigation/router';
+import { NavigationContainer } from '@react-navigation/native';
 
 
 //Main Entry Point 
@@ -36,7 +37,9 @@ export default function App() {
 
         <SafeAreaProvider>
             <SafeAreaView style={{ flex: 1, backgroundColor:"#FFFFFF" }}>
-              <Router />
+              <NavigationContainer>
+                <Router />
+              </NavigationContainer>
             </SafeAreaView>
         </SafeAreaProvider>
 

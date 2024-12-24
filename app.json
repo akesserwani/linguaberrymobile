@@ -1,14 +1,15 @@
 {
   "expo": {
-    "name": "LinguaBerry",
-    "slug": "LinguaBerry",
+    "name": "linguaberry",
+    "slug": "linguaberrymobile",
     "version": "1.0.0",
     "orientation": "default",
+    "newArchEnabled": true,
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/splash.png",
+      "image": "./assets/images/logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -17,22 +18,20 @@
       "bundleIdentifier": "com.app.linguaberry",
       "requireFullScreen": true
     },
-
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/splash.png",
+        "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.app.linguaberry"
     },
-    "androidStatusBar":{
-      "backgroundColor": "white",
+    "androidStatusBar": {
+      "backgroundColor": "#ffffff",
       "translucent": false
     },
-    "androidNavigationBar":{
-      "backgroundColor": "white"
+    "androidNavigationBar": {
+      "backgroundColor": "#ffffff"
     },
-
     "web": {
       "bundler": "metro",
       "output": "static",
@@ -42,7 +41,8 @@
       "expo-router",
       "expo-font",
       "expo-av",
-      "expo-localization"
+      "expo-localization",
+      "expo-build-properties"
     ],
     "experiments": {
       "typedRoutes": true
