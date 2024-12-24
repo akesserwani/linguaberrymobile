@@ -192,6 +192,11 @@ const PracticeSentence = () => {
     useEffect(() => {
         const loadSounds = async () => {
             try {
+
+                await Audio.setAudioModeAsync({
+                    playsInSilentModeIOS: true,
+                });
+
                 // Load the correct sound
                 const { sound: loadedCorrectSound } = await Audio.Sound.createAsync(
                     require('@/assets/audio/correct.mp3')
