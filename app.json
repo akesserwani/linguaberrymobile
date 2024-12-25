@@ -20,7 +20,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/icon.png",
+        "foregroundImage": "./assets/images/adaptive_icon.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.app.linguaberry"
