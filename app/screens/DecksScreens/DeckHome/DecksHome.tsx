@@ -14,6 +14,7 @@ import CustomFab from '@/app/components/CustomFab';
 
 //Import Modal component to create a deck
 import CreateDeckModal from './components/CreateDeckModal';
+import ImportDeckModal from '../../components/ImportDeckModal';
 
 import * as style from '@/assets/styles/styles'
 
@@ -22,7 +23,6 @@ import React from 'react';
 
 
 const DecksHome = ({ navigation }) => {
-
 
     //current language
     const { currentLang } = useContext(CurrentLangContext);
@@ -76,6 +76,9 @@ const DecksHome = ({ navigation }) => {
     //LOGIC TO CREATE NEW DECK
     //variable to toggle the modal
     const [newDeckModal, setnewDeckModal] = useState(false);
+
+    //variable to open the import Web Modal
+    const [importWebModal, setImportWebModal] = useState(false);
 
 
     const flatListRef = useRef(null);
@@ -169,8 +172,15 @@ const DecksHome = ({ navigation }) => {
 
         {/* Modal to create a new deck */}
         { newDeckModal &&
-            <CreateDeckModal onClose={() => setnewDeckModal(false)} refresh={fetchDecks} scrollToBottom={scrollToBottom} />
+            <CreateDeckModal onClose={() => setnewDeckModal(false)} refresh={fetchDecks} scrollToBottom={scrollToBottom} setImportWeb={()=>setImportWebModal(true)} />
         }
+
+        {/* Import web modal */}
+        { importWebModal &&
+            <ImportDeckModal onClose={()=>setImportWebModal(false)} refresh={fetchDecks}/>
+
+        }
+        
 
         </>
     );

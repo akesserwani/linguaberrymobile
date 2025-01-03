@@ -1,7 +1,7 @@
 
 import { db } from "../../data/Database";
 
-
+import CustomAlert from "@/app/components/CustomAlert";
 
 //READ DECKS
 //create function to read data from the deck
@@ -191,13 +191,14 @@ export const createBulkWords = (words, deck_id, language_id) => {
 };
 
 
+
 export const createBulkWordsByDeckName = (deckName, words, language_id) => {
   try {
     db.withTransactionSync(() => {
       // Step 1: Get the deck ID by its name
       const result = db.getFirstSync(
-        `SELECT id FROM deck WHERE name = ? LIMIT 1;`,
-        [deckName]
+        `SELECT id FROM deck WHERE name = ? AND language_id = ? LIMIT 1;`,
+        [deckName, language_id]
       );
 
       if (result.length === 0) {
@@ -478,3 +479,49 @@ export const getWordsWithTag = (tag, deck_id, language_id) => {
   return words;
 };
 
+
+
+
+//this function will convert the data from the api into a readable format by the bulk word importer
+const parseTextToWords = (text) => {
+  return text
+    .split("\n") // Split lines
+    .map(line => {
+      const parts = line.split(","); // Split by comma
+      if (parts.length < 2) {
+        throw new Error(`Invalid format in line: "${line}"`);
+      }
+
+      return {
+        term: parts[0].trim(),
+        translation: parts[1].trim(),
+        notes: parts[2]?.trim() || "None", // Default to "None" if notes are missing
+      };
+    });
+};
+
+
+//this function will grab the data from the api and add it to the decks 
+export const addWebDataToDeck = (currentLang, data) =>{
+
+  //first make sure the deck name doesnt already exist
+  if (deckNameExist(data.title, currentLang)){
+    //render an alert to show that the deck name already exists in this language
+    CustomAlert("This deck name already exists.", "Rename the existing deck to add this deck.")
+    console.log(data.data)
+  } else{ 
+    //if it doesnt, create the deck
+    createNewDeck(data.title, currentLang);
+    //then add bulk words by deck name
+    const words = parseTextToWords(data.data);
+    createBulkWordsByDeckName(data.title, words, currentLang);
+    
+    //render a success alert
+    CustomAlert("Deck successfully added!")
+
+  }
+
+
+
+
+}

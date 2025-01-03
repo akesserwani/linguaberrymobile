@@ -22,6 +22,8 @@ import { getEntriesByLanguage } from '../DataReader';
 //import miscellanous functions
 import { formatDate, limitLength } from '@/app/data/Functions';
 import React from 'react';
+import ImportDeck from '../../components/ImportStoryModal';
+import ImportStoryModal from '../../components/ImportStoryModal';
 
 
 const ReaderHome = ({ navigation }) => {
@@ -88,6 +90,9 @@ const ReaderHome = ({ navigation }) => {
 
     //Reactive variable to toggle the entry creation modal
     const [newEntryModal, setnewEnryModal] = useState(false);
+
+    //modal for the Import Story function
+    const [importWebModal, setImportWeb] = useState(false);
 
     // Function to scroll to the bottom
     const flatListRef = useRef(null);
@@ -186,7 +191,13 @@ const ReaderHome = ({ navigation }) => {
 
         {/* Modal to create a new deck */}
         { newEntryModal &&
-            <CreateEntryModal onClose={() => setnewEnryModal(false)} refresh={fetchData} scrollToBottom={scrollToBottom}/>
+            <CreateEntryModal onClose={() => setnewEnryModal(false)} refresh={fetchData} scrollToBottom={scrollToBottom} setImportWeb={()=>setImportWeb(true)}/>
+        }
+
+        {/* Import story Modal */}
+        { importWebModal && 
+            <ImportStoryModal onClose={()=>setImportWeb(false)} refresh={fetchData}/>
+
         }
 
         </>

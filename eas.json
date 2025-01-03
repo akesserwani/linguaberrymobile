@@ -26,6 +26,12 @@
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "ios":{
+        "appleId": "alikesserwani23@gmail.com",
+        "ascAppId": "6739853181",
+        "appleTeamId": "8X2MJ8X39Q"
+      }
+    }
   }
 }

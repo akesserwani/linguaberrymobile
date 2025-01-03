@@ -1,0 +1,6 @@
+module Pods_linguaberry {
+  umbrella header "Pods-linguaberry-umbrella.h"
+
+  export *
+  module * { export * }
+}

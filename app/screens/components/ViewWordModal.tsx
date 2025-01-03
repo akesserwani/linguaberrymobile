@@ -44,6 +44,7 @@ const ViewWordModal = ({onClose, modalTitle, json=false, entryId = null, dataPro
         } else {
             //Else get the word data using the decks ID 
             const word_data = getWordData(entryId, currentLang);
+            
             setWordData(word_data);    
         }
     },[])

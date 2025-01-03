@@ -12,11 +12,12 @@ import * as style from '@/assets/styles/styles'
 //import data
 import { createNewDeck, deckNameExist } from '../../DataDecks';
 
+
 //import current language
 import { CurrentLangContext } from '@/app/data/CurrentLangContext.tsx';
 
 
-const CreateDeckModal = ({onClose, refresh, scrollToBottom}) => {
+const CreateDeckModal = ({onClose, refresh, scrollToBottom, setImportWeb}) => {
 
     //get the current language
     const { currentLang } = useContext(CurrentLangContext);
@@ -59,11 +60,19 @@ const CreateDeckModal = ({onClose, refresh, scrollToBottom}) => {
         }
     }
 
+    //toggle the import deck modal
+    const toggleImportDeck = () =>{
+        //close the current modal
+        onClose()
+
+        //open the toggle deck modal
+        setImportWeb()
+    }
+
 
     return ( 
         
-        <CustomModal title='New Deck' onClose={onClose} overrideStyle={{width: dynamicWidth, height: 330 }}>
-
+        <CustomModal title='New Deck' onClose={onClose} overrideStyle={{width: dynamicWidth }}>
 
             {/* Input form here */}
             <CustomInput label={ "Deck name"} placeholder={"Type deck name..." } value={formInput} onChangeText={setFormInput} maxLength={30}/>
@@ -73,12 +82,15 @@ const CreateDeckModal = ({onClose, refresh, scrollToBottom}) => {
                 <Text style={{color:style.red_500, fontWeight:"400", position: "relative", left:5, top:10}}>Deck name already exists</Text>
             }
 
-
             {/* Submit button */}
             <CustomButton onPress={createDeck} customStyle={{marginTop: 40, height:45}}>
                 <Text style={{color:style.white, fontSize: style.text_md}}>Create Deck</Text>
             </CustomButton>
 
+            {/* Import Deck button */}
+            <CustomButton onPress={toggleImportDeck} customStyle={{marginTop: 20, marginBottom:20, height:40, backgroundColor:style.blue_200}}>
+                <Text style={{color:style.blue_500, fontSize: style.text_sm, fontWeight:'500'}}>Import from Web</Text>
+            </CustomButton>
 
         </CustomModal>
 

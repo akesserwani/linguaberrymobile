@@ -288,3 +288,23 @@ export const getTagOfStory = (entryId, currentLang) => {
         return null; // Return null if an error occurs
     }
 };
+
+
+//Creating a new entry with full data
+//create a new reader entry
+export const newEntryFull = ( 
+    title, 
+    contents = "", 
+    word_data = "", 
+    translation_data = "", 
+    current_language 
+    ) => {
+        db.withTransactionSync(() => {
+            db.runSync(
+                `INSERT INTO story (title, contents, word_data, translation_data, bookmarked, tag, language_id) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?)`,
+                [title, contents, word_data, translation_data, 0, "none", current_language] // Pass parameters as an array
+            );
+        });
+};
+
