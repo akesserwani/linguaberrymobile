@@ -134,7 +134,7 @@ const AudioPlayer = ({audioId, currentLang}) => {
                 const baseTop = py + height;
     
                 // Platform-specific adjustments for top
-                const adjustedTop = Platform.OS === 'ios' ? baseTop : baseTop - 17; // Add offset for Android if needed
+                const adjustedTop = baseTop + 10 // Add offset for Android if needed
     
                 // Set the adjusted top and left
                 setDropdownPosition({
@@ -214,14 +214,14 @@ const AudioPlayer = ({audioId, currentLang}) => {
 
 
         {/* Select a rate via the dropdown */}
-        <Modal transparent={true} visible={dropdown} onRequestClose={() => toggleDropdown(false)}>
+        <Modal transparent={true} visible={dropdown} onRequestClose={() => toggleDropdown(false)} supportedOrientations={['portrait', 'landscape']}>
                 {/* Invisible Overlay that can be clicked  */}
                 <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} 
                                 onPress={() => {
                                     toggleDropdown(false);
                                 }}>
                     {/* Drop down itself */}
-                    <View style={styles.dropdown}>
+                    <View style={[styles.dropdown, dropdownPosition]}>
                         {/* Drop down contents here  */}
                         {rateData.map((rate, index) => (
                             <TouchableOpacity 

@@ -53,7 +53,7 @@ const UpdateModal = () => {
     const dynamicWidth = windowWidth < 800 ? '90%' : '80%';  // 90% for mobile, 80% for larger screens
     
     return ( 
-        <Modal transparent={true} visible={showModal} onRequestClose={() => toggleModal(false)}>
+        <Modal transparent={true} visible={showModal} onRequestClose={() => toggleModal(false)} supportedOrientations={['portrait', 'landscape']}>
             <View style={styles.modalOverlay} >
                 <View style={[styles.modalContainer, { width: dynamicWidth }]}>
                     {/* Logo image container */}

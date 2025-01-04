@@ -36,21 +36,6 @@ const PracticeSentence = () => {
     const isRTL = isLanguageRTL(currentLang);
 
     const { story, storyTranslation, title, stack, entryId } = route.params; 
-
-    //Functionality to hide the tabBar when it is on the page
-    const isFocused = useIsFocused();
-    useEffect(() => {
-        if (isFocused) {
-            // Hide the tab bar when this screen is focused
-            navigation.getParent()?.setOptions({
-                tabBarStyle: { display: 'none' },
-            });
-            navigation.setOptions({
-                headerBackTitle: 'Back', // Reset the back button title (optional)
-            });
-    
-        } 
-    }, [isFocused, navigation]);
                 
 
     //Data variable - this variable will contain the data
@@ -426,7 +411,7 @@ const PracticeSentence = () => {
         {/* End Modal */}
         {/* Render this modal at the end */}
         { completeModal &&        
-            <Modal transparent={true} >
+            <Modal transparent={true} supportedOrientations={['portrait', 'landscape']}>
                 {/* Backdrop with black opacity */}
                 <View style={styles.modalOverlay} >
                     {/* Main Content - White Div */}

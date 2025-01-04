@@ -49,41 +49,29 @@ const ReaderViewer = ({route}) => {
         });
         }, [navigation]);
 
-    //Functionality to hide the tabBar when it is on the page
-    const isFocused = useIsFocused();
-    useEffect(() => {
-        if (isFocused) {
-            // Hide the tab bar when this screen is focused
-            navigation.getParent()?.setOptions({
-                tabBarStyle: { display: 'none' },
-            });
-        } else {
-            // Show the tab bar again when leaving this screen
-            navigation.getParent()?.setOptions({
-                tabBarStyle: { 
-                    ...style.baseTabBarStyle, // Spread base styles here
-                    display: 'flex',
-                },
-            });
-        }
-    }, [isFocused, navigation]);
 
     //reactive variable to get all the entry data
     const [entryData, setEntryData] = useState(null);
+    const [isLoading, setIsLoading] = useState(true); // Track loading state
 
     useFocusEffect(
         useCallback(() => {
-            const fetchEntryData = () => {
-                const data = getSingleEntryData(entryId, currentLang);
-                // Set the retrieved data into the state
-                setEntryData(data);
-                // console.log("Loaded entry data:", data); 
-            };
-        // Call the function
-        fetchEntryData();
-        }, [entryId, currentLang, refresh]) // Re-run effect if entryId or currentLang changes
-    )
-
+          const fetchEntryData = async () => {
+            try {
+              setIsLoading(true); // Start loading
+              const data = await getSingleEntryData(entryId, currentLang); // Fetch the data
+              setEntryData(data); // Set the data to state
+            } catch (error) {
+              console.error('Error fetching data:', error);
+            } finally {
+              setIsLoading(false); // End loading
+            }
+          };
+    
+          fetchEntryData();
+        }, [entryId, currentLang])
+      );
+    
 
     //Bookmark functionality here
     const [isBookmarked, setBookmarked] = useState(getBookmarkedStatus(currentLang, entryId));
@@ -167,7 +155,7 @@ const ReaderViewer = ({route}) => {
                             </Text>
                             </>
                         ) : (
-                            <Text style={{color:style.gray_500, fontSize:style.text_md, fontWeight:'500', borderWidth:1}}>
+                            <Text style={{color:style.gray_500, fontSize:style.text_md, fontWeight:'500'}}>
                                 Loading...
                             </Text>
                         )}
@@ -219,8 +207,6 @@ const ReaderViewer = ({route}) => {
 
         </View>
 
-        {/* Bottom footer that adds top border */}
-        <View style={style.baseFooterStyle} />
 
         </>
      );

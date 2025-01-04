@@ -157,7 +157,7 @@ const TooltipComponent = ({ title }) => {
 
             {/* BOTTOM POPUP */}
             {/* Bottom Popup for the Word Data */}
-            <Modal transparent={true} visible={bottomPopup} onRequestClose={() => setPopup(false)} >
+            <Modal transparent={true} visible={bottomPopup} onRequestClose={() => setPopup(false)} supportedOrientations={['portrait', 'landscape']}>
                 {/* Opaque overlay will be clickable to dimiss the modal  */}
                 <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} 
                                 onPress={() => {
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
     modalOverlay: {
         flex: 1,
         justifyContent: 'flex-end',
-        backgroundColor: 'rgba(0, 0, 0, 0.2)', // Semi-transparent overlay
+        backgroundColor: 'rgba(0, 0, 0, 0.1)', // Semi-transparent overlay
 
     },
     modalContent: {

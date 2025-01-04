@@ -1,8 +1,8 @@
 
 import './gesture-handler'
 
-import { StatusBar } from 'react-native';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { StatusBar, StyleSheet  } from 'react-native';
+import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 //import styles
@@ -15,8 +15,8 @@ import { NavigationContainer } from '@react-navigation/native';
 
 //Main Entry Point 
 export default function App() {
-
-
+  const insets = useSafeAreaInsets(); // Get safe area insets
+  
   //load the fonts
   let [fontsLoaded] = useFonts({
     Nunito_300Light,
@@ -29,22 +29,26 @@ export default function App() {
   }
 
 
-  
-
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-        <StatusBar backgroundColor="#ffffff"/>
 
-        <SafeAreaProvider>
-          <NavigationContainer>
-              <SafeAreaView style={{ flex: 1, backgroundColor:"#ffffff" }}>
-                  <Router />
+        <GestureHandlerRootView style={{ flex: 1, backgroundColor: '#ffffff' }}>
+        <StatusBar backgroundColor="#ffffff" barStyle='dark-content'></StatusBar>
+            <SafeAreaProvider >
+                  <SafeAreaView style={styles.safeArea}>
+                  <NavigationContainer>
+                        <Router />
+                  </NavigationContainer>
               </SafeAreaView>
-            </NavigationContainer>
-        </SafeAreaProvider>
-
-    </GestureHandlerRootView>
+          </SafeAreaProvider>
+      </GestureHandlerRootView>
 
   );
 }
 
+const styles = StyleSheet.create({
+
+  safeArea: {
+    flex:1,
+    backgroundColor:'white'
+  },
+});

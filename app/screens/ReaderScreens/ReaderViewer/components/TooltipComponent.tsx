@@ -34,14 +34,29 @@ const TooltipComponent = ({ entryId, contents, refresh }) => {
         
     const [visibleTooltip, setVisibleTooltip] = useState(null);
 
-    // Split the contents into words
-    const words = contents.split(' ');
-
+    const processText = (contents) => {
+        return contents
+          .split(/\n+/) // Split into paragraphs
+          .flatMap(paragraph => [
+            ...paragraph
+              .trim()
+              .split(/\s+/) // Split each paragraph into words
+              .map(word => word.trim())
+              .filter(word => word !== ""), // Remove empty words
+            "\n" // Add a newline marker after each paragraph
+          ])
+          .filter((word, index, array) => !(word === "\n" && index === array.length - 1)); // Remove trailing "\n"
+      };
+            
+    // Example usage to generate the `words` array
+    const words = processText(contents);
+      
     // Set the selected word
     const [selectedWord, setWord] = useState("");
 
     // Modal state
     const [bottomPopup, setPopup] = useState(false);
+
 
     // Get the translation for the selected word
     const getTranslation = (input) => {
@@ -103,23 +118,23 @@ const TooltipComponent = ({ entryId, contents, refresh }) => {
         <>
 
             {/* Render the Text */}
-            <View style={{ flexWrap: 'wrap', flexDirection: 'row', marginBottom:50, direction:isRTL ? 'rtl' : 'ltr' }}>
-                {words.map((word, index) => (
-                    <View key={index} style={styles.wordContainer}>
-                        {/* Individual Word */}
-                        <TouchableOpacity
-                            activeOpacity={0.7}
+            <View style={{ flexDirection: isRTL ? 'row-reverse' : 'row', flexWrap: 'wrap', marginBottom: 50 }}>
+                {/* Render the Text */}
+                <Text style={{ flexWrap: 'wrap', flexDirection: 'row', direction: isRTL ? 'rtl' : 'ltr' }}>
+                    {words.map((word, index) => (
+                        <Text
+                            key={index}
+                            style={[styles.word, visibleTooltip === index && styles.highlightedWordWrapper]}
                             onPress={() => {
                                 setVisibleTooltip(index);
-                                setWord(word);
+                                setWord(cleanString(word));
                                 setPopup(true);
+                                console.log(word)
                             }}>
-                            <View style={[visibleTooltip === index && styles.highlightedWordWrapper]}>
-                                <Text style={styles.word}>{word}</Text>
-                            </View>
-                        </TouchableOpacity>
-                    </View>
-                ))}
+                            {word + " "}
+                        </Text>
+                    ))}
+                </Text>
             </View>
 
 
@@ -135,10 +150,10 @@ const TooltipComponent = ({ entryId, contents, refresh }) => {
             }
 
             {/* Bottom Popup for the Word Data */}
-            <Modal transparent={true} visible={bottomPopup} onRequestClose={() => setPopup(false)} >
+            <Modal transparent={true} visible={bottomPopup} onRequestClose={() => setPopup(false)} supportedOrientations={['portrait', 'landscape']}>
 
                 {/* Opaque overlay will be clickable to dimiss the modal  */}
-                <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} 
+                <TouchableOpacity style={styles.modalOverlay} activeOpacity={0.7} 
                                 onPress={() => {
                                     setPopup(false);
                                     setWord("");
@@ -211,7 +226,7 @@ const styles = StyleSheet.create({
     modalOverlay: {
         flex: 1,
         justifyContent: 'flex-end',
-        backgroundColor: 'rgba(0, 0, 0, 0.2)', // Semi-transparent overlay
+        backgroundColor: 'rgba(0, 0, 0, 0.1)', // Semi-transparent overlay
 
     },
     modalContent: {

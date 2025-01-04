@@ -2,8 +2,8 @@
 
 //Link for the api
 export const apiLink = (code) =>{
-  const link = `http://127.0.0.1:8000/creator/${code}/user_data_json`
-  // const link = `https://linguaberry.com/creator/${code}/user_data_json`;
+  // const link = `http://127.0.0.1:8000/creator/${code}/user_data_json`
+  const link = `https://linguaberry.com/creator/${code}/user_data_json`;
   return link
 }
 

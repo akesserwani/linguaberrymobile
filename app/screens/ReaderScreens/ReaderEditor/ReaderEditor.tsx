@@ -28,27 +28,17 @@ const ReaderStory = ({route}) => {
 
     //Navigation bar data
     //HeaderRight dropdown has only 1 function - DELETE ENTRY
-    useLayoutEffect(() => {
-        navigation.setOptions({
-            // Set custom text for the back button          
-            headerBackTitle: 'View',
-            headerRight: () => (
-                <HeaderRight currentLang={currentLang} entryId={entryId} />
-                ),
+    // useLayoutEffect(() => {
+    //     navigation.setOptions({
+    //         // Set custom text for the back button          
+    //         headerBackTitle: 'View',
+    //         headerRight: () => (
+    //             <HeaderRight currentLang={currentLang} entryId={entryId} />
+    //             ),
             
-        });
-        }, [navigation]);
+    //     });
+    //     }, [navigation]);
     
-    //Functionality to hide the tabBar when it is on the page
-    const isFocused = useIsFocused();
-    useEffect(() => {
-        if (isFocused) {
-            // Hide the tab bar when this screen is focused
-            navigation.getParent()?.setOptions({
-                tabBarStyle: { display: 'none' },
-            });
-        } 
-    }, [isFocused, navigation]);
 
     //reactive variable for titleForm
     //load it with the entryTitle that was passed via the navigator
@@ -124,8 +114,6 @@ const ReaderStory = ({route}) => {
             </ScrollView>
         </KeyboardAvoidingView>
     </View>
-    {/* Bottom footer that adds top border */}
-    <View style={style.baseFooterStyle} />
     </>
      );
 }

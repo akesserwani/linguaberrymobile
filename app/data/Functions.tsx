@@ -108,10 +108,10 @@ export const ObjectToCSV = (data) => {
     if (!data || !data.length) {
         return '';
     }
-
+    console.log(data);
     // Filter out rows that are empty or have no valid term and translation
     const filteredData = data.filter(row => row.term && row.translation);
-
+    
     if (!filteredData.length) {
         return ''; // Return an empty string if no valid rows exist
     }

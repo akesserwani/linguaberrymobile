@@ -161,7 +161,7 @@ const LanguageSelection = () => {
                 const baseTop = py + height + 5 || 100; // Default to 100 if NaN
 
                 // Adjust top based on the platform
-                const safeTop = Platform.OS === 'ios' ? baseTop : baseTop - 25; // Adjust for Android
+                const safeTop = Platform.OS === 'ios' ? baseTop : baseTop - 5; // Adjust for Android
 
                 const safeLeft = px || 30; // Default to 30 if NaN
                 const safeWidth = width || 150; // Default width
@@ -195,7 +195,7 @@ const LanguageSelection = () => {
 
             {/* DROPDOWN */}
             {/* Dropdown to view users added languages */}
-            <Modal transparent={true} visible={dropdownOpen} onRequestClose={() => openDropdown(false)}>
+            <Modal transparent={true} visible={dropdownOpen} onRequestClose={() => openDropdown(false)} supportedOrientations={['portrait', 'landscape']}>
                 {/* Invisible Overlay that can be clicked  */}
                 <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} 
                                 onPress={() => {

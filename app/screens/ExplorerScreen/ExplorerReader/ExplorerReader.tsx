@@ -51,25 +51,6 @@ const ExplorerReader = ({route}) => {
         });
     }, [navigation]);
 
-
-    //Functionality to hide the tabBar when it is on the page
-    const isFocused = useIsFocused();
-    useEffect(() => {
-        if (isFocused) {
-            // Hide the tab bar when this screen is focused
-            navigation.getParent()?.setOptions({
-                tabBarStyle: { display: 'none' },
-            });
-        } else {
-            // Show the tab bar again when leaving this screen
-            navigation.getParent()?.setOptions({
-                tabBarStyle: { 
-                    ...style.baseTabBarStyle, // Spread base styles here
-                    display: 'flex',
-                },
-            });
-        }
-    }, [isFocused, navigation]);
     
 
     //use the JSON to get the story from the file 
@@ -244,9 +225,6 @@ const ExplorerReader = ({route}) => {
 
             </ScrollView>
         </View>
-
-        {/* Bottom footer that adds top border */}
-        <View style={style.baseFooterStyle} />
 
         </>
      );

@@ -52,25 +52,6 @@ const Study = () => {
         });
         }, [navigation]);
     
-        //Functionality to hide the tabBar when it is on the page
-        const isFocused = useIsFocused();
-        useEffect(() => {
-            if (isFocused) {
-                // Hide the tab bar when this screen is focused
-                navigation.getParent()?.setOptions({
-                    tabBarStyle: { display: 'none' },
-                });
-            } else {
-                // Show the tab bar again when leaving this screen
-                navigation.getParent()?.setOptions({
-                    tabBarStyle: { 
-                        ...style.baseTabBarStyle, // Spread base styles here
-                        display: 'flex',
-                    },
-                });
-            }
-        }, [isFocused, navigation]);
-
     //Reactive variable for selected tag that will be sent over to the TagSelection component
     const [selectedTag, selectTag] = useState("None");
 
@@ -474,13 +455,9 @@ const Study = () => {
 
         </View>
 
-        {/* Bottom footer that adds top border */}
-        <View style={style.baseFooterStyle} />
-
-
         {/* Completion Modal for the spaced repition */}
         { modalComplete &&
-            <Modal transparent={true} >
+            <Modal transparent={true} supportedOrientations={['portrait', 'landscape']}>
                 {/* Backdrop with black opacity */}
                 <View style={styles.modalOverlay} >
                     {/* Main Content - White Div */}

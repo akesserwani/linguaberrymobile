@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "linguaberry",
+    "name": "LinguaBerry",
     "slug": "linguaberrymobile",
     "version": "1.0.0",
     "orientation": "default",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",

@@ -116,7 +116,7 @@ const Onboarding = () => {
 
 
     {/* Drop down with the languages */}
-    <Modal transparent={true} visible={dropdown} onRequestClose={() => openDropdown(false)}>
+    <Modal transparent={true} visible={dropdown} onRequestClose={() => openDropdown(false)} supportedOrientations={['portrait', 'landscape']}>
         {/* Invisible Overlay that can be clicked  */}
         <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} 
                         onPress={() => {

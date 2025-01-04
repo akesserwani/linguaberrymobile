@@ -72,7 +72,7 @@ const BookmarkDropdown = ({onTagSelect, currentTag = null, filter=true}) => {
     
                 // Add platform-specific adjustments
                 if (Platform.OS === 'android') {
-                    adjustedTop -= 20; // Adjust for Android if needed
+                    adjustedTop; // Adjust for Android if needed
                 } else {
                     adjustedTop += 5;
                 }
@@ -186,7 +186,7 @@ const BookmarkDropdown = ({onTagSelect, currentTag = null, filter=true}) => {
         </View>
 
         {/* Dropdown Modal */}
-        <Modal transparent={true} visible={dropdownOpen} onRequestClose={() => openDropdown(false)}>
+        <Modal transparent={true} visible={dropdownOpen} onRequestClose={() => openDropdown(false)} supportedOrientations={['portrait', 'landscape']}>
                 {/* Invisible Overlay that can be clicked  */}
                 <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} 
                             onPress={() => {

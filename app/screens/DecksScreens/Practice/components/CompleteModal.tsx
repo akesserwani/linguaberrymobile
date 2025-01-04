@@ -28,7 +28,7 @@ const CompleteModal = ({deckId, deckName, onClose}) => {
     }
 
     return ( 
-        <Modal transparent={true} >
+        <Modal transparent={true} supportedOrientations={['portrait', 'landscape']}>
             {/* Backdrop with black opacity */}
             <View style={styles.modalOverlay} >
                 {/* Main Content - White Div */}

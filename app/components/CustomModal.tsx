@@ -22,7 +22,7 @@ const CustomModal = ({title="My Modal", onClose, children, overrideStyle ={}, ho
 
 
     return ( 
-        <Modal transparent={true} >
+        <Modal transparent={true} supportedOrientations={['portrait', 'landscape']} >
             {/* Backdrop with black opacity */}
             <View style={styles.modalOverlay} >
 

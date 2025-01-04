@@ -159,7 +159,7 @@ const ReaderHome = ({ navigation }) => {
                             style={[styles.itemCard, { marginBottom: 10 }]} activeOpacity={0.7}>
                             <View style={{ flexDirection: 'row', gap: 15 }}>
                                 {/* Index Number for the Card */}
-                                <View style={{ width: '10%',justifyContent: 'center' }}>
+                                <View style={{ width: 'auto',justifyContent: 'center' }}>
                                     <Text style={{ color: style.gray_300, fontSize: style.text_md }}>
                                     {index + 1}
                                     </Text>

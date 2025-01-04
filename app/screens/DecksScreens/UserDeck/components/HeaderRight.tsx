@@ -35,7 +35,7 @@ const HeaderRight = ({currentLang, deckId, deckName, refreshDeck, refreshWords }
                 const baseTop = py + height;
     
                 // Platform-specific adjustments for top
-                const adjustedTop = Platform.OS === 'ios' ? baseTop : baseTop - 20; // Add offset for Android if needed
+                const adjustedTop = Platform.OS === 'ios' ? baseTop : baseTop - 5; // Add offset for Android if needed
     
                 // Set the adjusted top and left
                 setDropdownPosition({
@@ -60,7 +60,7 @@ const HeaderRight = ({currentLang, deckId, deckName, refreshDeck, refreshWords }
 
 
             {/* Main Dropdown in the form of a modal */}
-            <Modal transparent={true} visible={buttonClicked} onRequestClose={() => setClick(false)}>
+            <Modal transparent={true} visible={buttonClicked} onRequestClose={() => setClick(false)} supportedOrientations={['portrait', 'landscape']}>
                 {/* Invisible Overlay that can be clicked  */}
                 <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} 
                             onPress={() => {

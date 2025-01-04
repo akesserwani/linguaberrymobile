@@ -27,6 +27,9 @@ const HeaderRight = ({currentLang, entryId, entryTitle, setRefresh}) => {
 
     const [editDataModal, setEditDataModal] = useState(false);
 
+    const navigation = useNavigation();
+
+
     //Set dropdown based on position of the target ref
     const handleOpenDropdown = () => {
         if (iconRef.current) {
@@ -35,7 +38,7 @@ const HeaderRight = ({currentLang, entryId, entryTitle, setRefresh}) => {
                 const baseTop = py + height;
     
                 // Platform-specific adjustments for top
-                const adjustedTop = Platform.OS === 'ios' ? baseTop : baseTop - 17; // Add offset for Android if needed
+                const adjustedTop = Platform.OS === 'ios' ? baseTop : baseTop - 5; // Add offset for Android if needed
     
                 // Set the adjusted top and left
                 setDropdownPosition({
@@ -48,6 +51,32 @@ const HeaderRight = ({currentLang, entryId, entryTitle, setRefresh}) => {
         }
     };
     
+    //delete story functionality
+    const deleteEntryFunc = () =>{
+
+        //Make alert to confirm the deletion
+        CustomAlert(
+            `Are you sure you want to delete this story?`, 
+            'This entire story and all of its data will be permanently deleted.',  
+            [
+                { text: 'No',  onPress: () => console.log('Delete canceled'), style: 'cancel', },
+                { text: 'Yes', onPress: () => {
+                    //delete via database
+                    deleteEntry(entryId, currentLang);
+
+                    
+                    //Redirect to the ReaderHome view
+                    navigation.navigate('ReaderHome'); 
+                        
+                    }
+                }
+            ],
+            { cancelable: false } // Prevent dismissing the alert by tapping outside
+        );
+
+    }
+
+
     return (
         <>
         <View ref={iconRef} collapsable={false}>
@@ -57,7 +86,7 @@ const HeaderRight = ({currentLang, entryId, entryTitle, setRefresh}) => {
         </View>
 
             {/* Main Dropdown in the form of a modal */}
-            <Modal transparent={true} visible={buttonClicked} onRequestClose={() => setClick(false)}>
+            <Modal transparent={true} visible={buttonClicked} onRequestClose={() => setClick(false)} supportedOrientations={['portrait', 'landscape']}>
                 {/* Invisible Overlay that can be clicked  */}
                 <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} 
                                 onPress={() => {
@@ -87,7 +116,13 @@ const HeaderRight = ({currentLang, entryId, entryTitle, setRefresh}) => {
                             setEditDataModal(true);
                         }} activeOpacity={0.7}>
                             <Text style={{color:style.gray_500}}>Edit Data</Text>
+                        </TouchableOpacity>      
+
+                        <TouchableOpacity onPress={deleteEntryFunc} 
+                            activeOpacity={0.7}>
+                            <Text style={{color:style.gray_500}}>Delete Story</Text>
                         </TouchableOpacity>                    
+                                      
                     </View>
                 </TouchableOpacity>
             </Modal>
