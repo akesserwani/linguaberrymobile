@@ -3,12 +3,15 @@
 
 //base baseTabBarStyle for the Bottom Tab Bar
 export const baseTabBarStyle = {
-    height: 75,
+    height: 120,
     padding: 5,
     paddingLeft: 10,
     paddingRight: 10,
+    paddingTop:15,
     borderTopWidth: 1.5,
     borderTopColor: '#e5e7eb',
+    backgroundColor:'white',
+    alignItems:'center'
 };
 
 

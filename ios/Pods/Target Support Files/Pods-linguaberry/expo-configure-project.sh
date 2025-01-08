@@ -45,7 +45,7 @@ with_node \
   --no-warnings \
   --eval "require(require.resolve('expo-modules-autolinking', { paths: [require.resolve('expo/package.json')] }))(process.argv.slice(1))" \
   generate-modules-provider  \
-  --target "/Users/alikesserwani/Desktop/linguaberrymobile/ios/Pods/Target Support Files/Pods-linguaberry/ExpoModulesProvider.swift" \
-  --entitlement "/Users/alikesserwani/Desktop/linguaberrymobile/ios/linguaberry/linguaberry.entitlements" \
+  --target "/Users/alikesserwani/Desktop/LinguaBerry/linguaberrymobile/ios/Pods/Target Support Files/Pods-linguaberry/ExpoModulesProvider.swift" \
+  --entitlement "/Users/alikesserwani/Desktop/LinguaBerry/linguaberrymobile/ios/linguaberry/linguaberry.entitlements" \
   --platform "apple" \
   --packages "expo" "expo-asset" "expo-av" "expo-clipboard" "expo-constants" "expo-dev-launcher" "expo-dev-menu" "expo-file-system" "expo-font" "expo-keep-awake" "expo-linking" "expo-localization" "expo-router" "expo-screen-orientation" "expo-splash-screen" "expo-sqlite" "expo-system-ui" "expo-web-browser"

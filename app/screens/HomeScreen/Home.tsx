@@ -59,7 +59,7 @@ const Home = () => {
         <WelcomeModal />
 
         {/* Update modal - will render if triggered via the API */}
-        <UpdateModal />
+        {/* <UpdateModal /> */}
 
         {/* Practice Buttons */}
         <ActionButton />

@@ -1,6 +1,6 @@
 
-import { Text, View, StyleSheet, TouchableOpacity, KeyboardAvoidingView } from "react-native";
-import { useState, useEffect } from "react";
+import { Text, View, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Modal, Platform, FlatList} from "react-native";
+import { useState, useEffect, useRef } from "react";
 
 {/* Custom Components */}
 import CustomButton from "@/app/components/CustomButton";
@@ -21,6 +21,8 @@ const TagDropdown = ({currentLang, deck_id, onTagSelect}) => {
 
     const [dropdownOpen, openDropdown] = useState(false);
 
+    const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0 });
+    const iconRef = useRef(null); // Ref to capture the position of the icon
 
     //Toggle edit
     const [editVar, toggleEdit] = useState(false);
@@ -123,89 +125,151 @@ const TagDropdown = ({currentLang, deck_id, onTagSelect}) => {
         setTagExists(false);
     }
 
+    // Set dropdown based on position of the target ref
+    const handleOpenDropdown = () => {
+        if (iconRef.current) {
+            iconRef.current.measure((fx, fy, width, height, px, py) => {
+                // Base top calculation
+                let adjustedTop = py + height;
+    
+                // Add platform-specific adjustments
+                if (Platform.OS === 'android') {
+                    adjustedTop; // Adjust for Android if needed
+                } else {
+                    adjustedTop += 5;
+                }
+    
+                // Update dropdown position
+                setDropdownPosition({ 
+                    top: adjustedTop, 
+                    left: px, 
+                    width 
+                });
+    
+                openDropdown(true);
+            });
+        }
+    };
+    
 
     return ( 
         <>
         {/* Tag Dropdown Button */}
-        <CustomButton onPress={() => openDropdown(!dropdownOpen)} customStyle={styles.tagDropdown}>
-            <View style={{flexDirection: 'row', gap: 7}}>           
-                <Text style={{color:style.gray_500}}>
-                    {selectedTag === null ? "Filter by tag" : selectedTag}
-                </Text>
-                <Icon name={"tag"} size={15} color={style.gray_500} style={{marginTop: 2}}/>
-            </View>
-            <Icon name={dropdownOpen ? "caret-down" : "caret-up"} size={15} color={style.gray_500}/>
-        </CustomButton>
-
-        {/* Dropdown content */}
-        {dropdownOpen && (
-            <View style={styles.dropdownBox}>
-                <ScrollView contentContainerStyle={{paddingRight:10}}>
-
-                    {/* If there are no tags - do not render */}
-                    {  tagData.length !== 0 && (
-                        // {/* Render show all button */}
-                        <TouchableOpacity onPress={()=>selectTagFunc(null)} activeOpacity={0.7} style={{padding:10, marginTop:10, flexDirection:'row', justifyContent:'space-between', alignItems:'center'}}>
-                            {/* Name of the Tag */}
-                            <Text style={{color:style.gray_400, fontSize:style.text_md, fontWeight:'400'}}> Show All </Text>
-                        </TouchableOpacity>
-                    )
-                    }
-
-                    { tagData.map((tag, index) => (
-                        // {/* Container with tags */}
-                        <TouchableOpacity onPress={()=>selectTagFunc(tag.name)} key={tag.id} activeOpacity={0.7} style={{padding:10, marginTop:10, flexDirection:'row', justifyContent:'space-between', alignItems:'center'}}>
-                            {/* Name of the Tag */}
-                            <Text style={{color:style.gray_500, fontSize:style.text_md, fontWeight:'400'}}> { tag.name } </Text>
-
-                            {/* Number of words */}
-                            { !editVar ? (
-                                //Show number of words if editVar is false
-                                <Text style={{color:style.gray_500, fontSize:style.text_xs, fontWeight:'500' }}>
-                                    ({getWordsWithTag(tag.name, deck_id, currentLang).length})
-                                </Text>
-
-                                ):(
-                                    //If edit var is true, show option to delete tag
-                                    // {/* Trash Icon */}
-                                    <CustomButton onPress={ ()=>deleteTagFunc(tag.name) } customStyle={{backgroundColor: style.red_100, height:40, width:30}}>
-                                        <Icon name={"trash"} width={10} color={style.red_500}/>
-                                    </CustomButton>
-                                )
-                            }
-
-
-                        </TouchableOpacity>
-                    )) }
-                </ScrollView>
-
-                {/* <hr> line break */}
-                {/* Do not show it if there is no data */}
-                { tagData.length > 0 && (
-                    <View style={{ borderBottomColor: style.gray_200, borderBottomWidth: 1 }} />
-                )}
-
-                {/* Button Views */}
-                <View style={{flexDirection:'row', justifyContent:'space-between'}}>    
-                    {/* Add Button */}            
-                    <CustomButton onPress={()=>openTagModal(true)} customStyle={null}>
-                        <Text style={{color:style.white}}>Add</Text>
-                    </CustomButton>
-
-                    
-                {/* Edit Button */}
-                {  tagData.length !== 0 && (
-                    //Dont render edit button if there are no tags
-                    <CustomButton onPress={()=>toggleEdit(!editVar)} customStyle={{backgroundColor:style.gray_200}}>
-                        <Text style={{color:style.gray_500}}>
-                            {editVar ? "Done" : "Edit"}
-                        </Text>
-                    </CustomButton>
-                )}
-
+        <View ref={iconRef} collapsable={false}>
+            <CustomButton onPress={handleOpenDropdown} customStyle={styles.tagDropdown}>
+                <View style={{flexDirection: 'row', gap: 7}}>           
+                    <Text style={{color:style.gray_500}}>
+                        {selectedTag === null ? "Filter by tag" : selectedTag}
+                    </Text>
+                    <Icon name={"tag"} size={15} color={style.gray_500} style={{marginTop: 2}}/>
                 </View>
-            </View>
-         )}
+                <Icon name={dropdownOpen ? "caret-down" : "caret-up"} size={15} color={style.gray_500}/>
+            </CustomButton>
+        </View>
+
+
+        {/* Dropdown Modal */}
+        <Modal transparent={true} visible={dropdownOpen} onRequestClose={() => openDropdown(false)} supportedOrientations={['portrait', 'landscape']}>
+                {/* Invisible Overlay that can be clicked  */}
+                <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} 
+                            onPress={() => {
+                                openDropdown(false);
+                            }}>
+                    {/* Dropdown content */}
+                    <View style={[styles.dropdownBox, dropdownPosition]}>
+
+                        <FlatList data={tagData} // Data array
+                            keyExtractor={(item, index) => item.id?.toString() || index.toString()} // Unique key for each item
+                            contentContainerStyle={{ paddingRight: 10 }}
+                            ListHeaderComponent={
+                                tagData.length !== 0 && (
+                                    <TouchableOpacity
+                                        onPress={() => selectTagFunc(null)}
+                                        activeOpacity={0.7}
+                                        style={{
+                                            padding: 10,
+                                            marginTop: 10,
+                                            flexDirection: 'row',
+                                            justifyContent: 'space-between',
+                                            alignItems: 'center',
+                                        }}>
+                                        {/* Name of the Tag */}
+                                        <Text style={{ color: style.gray_400, fontSize: style.text_md, fontWeight: '400' }}>
+                                            Show All
+                                        </Text>
+                                    </TouchableOpacity>
+                                )}
+                            renderItem={({ item }) => (
+                                <TouchableOpacity onPress={() => selectTagFunc(item.name)} activeOpacity={0.7} style={{
+                                        padding: 10,
+                                        marginTop: 10,
+                                        flexDirection: 'row',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center',
+                                    }}>
+                                    {/* Name of the Tag */}
+                                    <Text style={{ color: style.gray_500, fontSize: style.text_md, fontWeight: '400' }}>
+                                        {item.name}
+                                    </Text>
+
+                                    {/* Number of words */}
+                                    {!editVar ? (
+                                        <Text style={{ color: style.gray_500, fontSize: style.text_xs, fontWeight: '500' }}>
+                                            ({getWordsWithTag(item.name, deck_id, currentLang).length})
+                                        </Text>
+                                    ) : (
+                                        // If edit var is true, show option to delete tag
+                                        <CustomButton
+                                            onPress={() => deleteTagFunc(item.name)}
+                                            customStyle={{ backgroundColor: style.red_100, height: 40, width: 30 }}>
+                                            <Icon name={"trash"} width={10} color={style.red_500} />
+                                        </CustomButton>
+                                    )}
+                                </TouchableOpacity>
+                            )}
+                            ListEmptyComponent={
+                                <Text style={{ textAlign: 'center', color: style.gray_400 }}>
+                                    No tags available.
+                                </Text>
+                            }/>
+
+                    {/* <hr> line break */}
+                    {/* Do not show it if there is no data */}
+                    { tagData.length > 0 && (
+                        <View style={{ borderBottomColor: style.gray_200, borderBottomWidth: 1 }} />
+                    )}
+
+                    {/* Button Views */}
+                    <View style={{flexDirection:'row', justifyContent:'space-between'}}>    
+                        {/* Add Button */}            
+                        <CustomButton onPress={()=>{
+                            //close the dropdown
+                            openDropdown(false);
+                            //open the tag modal
+                            //wait if on ios 
+                            setTimeout (() => openTagModal(true), Platform.OS ==="ios" ? 200 : 0);
+
+                        }} customStyle={null}>
+                            <Text style={{color:style.white}}>Add</Text>
+                        </CustomButton>
+
+                        
+                    {/* Edit Button */}
+                    {  tagData.length !== 0 && (
+                        //Dont render edit button if there are no tags
+                        <CustomButton onPress={()=>toggleEdit(!editVar)} customStyle={{backgroundColor:style.gray_200}}>
+                            <Text style={{color:style.gray_500}}>
+                                {editVar ? "Done" : "Edit"}
+                            </Text>
+                        </CustomButton>
+                    )}
+
+                    </View>
+                </View>
+            </TouchableOpacity>
+        </Modal>
+
+
 
          {/* Create Tag Modal */}
          { tagModal &&
@@ -262,6 +326,10 @@ const styles = StyleSheet.create({
 
         flexDirection:"column",
         gap: 20,
+    },
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0, 0, 0, 0)',
     },
 
     

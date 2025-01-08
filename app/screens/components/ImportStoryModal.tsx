@@ -15,7 +15,7 @@ import React from 'react';
 
 import { CurrentLangContext } from '@/app/data/CurrentLangContext.tsx';
 import { addWebDataToDeck } from '../DecksScreens/DataDecks';
-import { apiLink } from '@/app/data/LangData';
+import { apiLink, apiKey } from '@/app/data/LangData';
 
 import { newEntryFull } from "../ReaderScreens/DataReader";
 
@@ -71,8 +71,6 @@ const ImportStoryModal = ({onClose, refresh}) => {
 
 
     try {
-
-        const apiKey = "3cc22320-678d-43ca-8614-ca1fd458ce02"; 
         const response = await fetch(apiLink(formInput), {
             method: "GET",
             headers: {

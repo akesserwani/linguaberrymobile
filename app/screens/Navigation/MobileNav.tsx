@@ -19,6 +19,7 @@ const Tab = createBottomTabNavigator();
 
 
 
+
 const MobileNav = () => {
 
     return ( 
@@ -30,9 +31,11 @@ const MobileNav = () => {
         //indiviual item style
         tabBarItemStyle: {
             justifyContent: 'center',  
+            alignContent:'center',
             alignItems: 'center',        
             borderRadius: 15,
             padding:5,
+            maxWidth:150
         },
         tabBarActiveBackgroundColor: style.blue_100,
         }}
@@ -47,9 +50,9 @@ const MobileNav = () => {
                                     style={{ width:150, height:40 }}/>
                         ),
                         headerStyle: {
-                            height: 65,
+                            height: 100,
                             borderBottomWidth:1,
-                            borderBottomColor: style.gray_200
+                            borderBottomColor: style.gray_200,
                         },
                         headerLeftContainerStyle: {
                             padding: 15,
@@ -57,7 +60,7 @@ const MobileNav = () => {
                         tabBarIcon: ({color}) => <Icon name="house" size={20} color={color} />,
                         //have no header title
                         headerTitle: "",
-                        tabBarLabelStyle: { fontWeight: '500', fontSize:style.text_sm }
+                        tabBarLabelStyle: { fontWeight: '500', fontSize:style.text_sm },
                     }}/>
 
         {/* Decks Screen   */}     
