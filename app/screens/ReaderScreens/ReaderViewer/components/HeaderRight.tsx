@@ -97,7 +97,7 @@ const HeaderRight = ({currentLang, entryId, entryTitle, setRefresh}) => {
                         {/* View Word Modal */}
                         <TouchableOpacity onPress={()=>{
                             setClick(false);
-                            setViewWordModal(true);
+                            setTimeout (() => setViewWordModal(true), Platform.OS ==="ios" ? 200 : 0);
                         }} activeOpacity={0.7}>
                             <Text style={{color:style.gray_500}}>View Words</Text>
                         </TouchableOpacity>   
@@ -105,15 +105,18 @@ const HeaderRight = ({currentLang, entryId, entryTitle, setRefresh}) => {
                         {/* View Sentnece Modal */}
                         <TouchableOpacity onPress={()=>{
                             setClick(false);
-                            setViewSentenceModal(true);
+                            //open view sentence
+                            setTimeout (() => setViewSentenceModal(true), Platform.OS ==="ios" ? 200 : 0);
                         }} activeOpacity={0.7}>
                             <Text style={{color:style.gray_500}}>View Sentences</Text>
                         </TouchableOpacity>   
 
                         {/* Edit Data Modal */}
                         <TouchableOpacity onPress={()=>{
+                            //close dropdown
                             setClick(false);
-                            setEditDataModal(true);
+                            //open edit data
+                            setTimeout (() => setEditDataModal(true), Platform.OS ==="ios" ? 200 : 0);
                         }} activeOpacity={0.7}>
                             <Text style={{color:style.gray_500}}>Edit Data</Text>
                         </TouchableOpacity>      

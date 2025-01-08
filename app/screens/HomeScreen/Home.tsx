@@ -50,6 +50,9 @@ const Home = () => {
                 {/* Main Content Here */}
 
                 <BookmarksList />
+                
+                {/* Practice Buttons */}
+                <ActionButton />
 
             </View>
         </View>
@@ -60,10 +63,6 @@ const Home = () => {
 
         {/* Update modal - will render if triggered via the API */}
         {/* <UpdateModal /> */}
-
-        {/* Practice Buttons */}
-        <ActionButton />
-
         </>
 
       );

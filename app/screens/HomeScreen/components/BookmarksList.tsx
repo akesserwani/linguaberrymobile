@@ -164,7 +164,7 @@ const BookmarksList = () => {
 
 
     return ( 
-        <View style={{flex:1}}>
+        <View style={{flex:1, backgroundColor:'white'}}>
             <View style={styles.tabContainer}>
 
                 <TouchableOpacity onPress={() => setActiveTab('Decks')} style={[styles.individualTab, activeTab === 'Decks' && styles.activeTab]} activeOpacity={0.7}>

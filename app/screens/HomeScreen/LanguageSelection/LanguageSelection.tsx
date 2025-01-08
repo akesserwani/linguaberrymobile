@@ -62,18 +62,26 @@ const LanguageSelection = () => {
     const [editModalOpen, openEditModal] = useState(false);
     //functionality to open Edit Modal
     const toggleEditModal = () =>{
-        openEditModal(true);
         //close dropdown
         openDropdown(false);
+
+        //open the tag modal
+        //wait if on ios 
+        setTimeout (() => openEditModal(true), Platform.OS ==="ios" ? 200 : 0);
+        
     }
 
     //function to open add modal 
     const [addModalOpen, openAddModal] = useState(false);
     //functionality to open Edit Modal
     const toggleAddModal = () =>{
-        openAddModal(true);
         //close dropdown
         openDropdown(false);
+
+        //open the tag modal
+        //wait if on ios 
+        setTimeout (() => openAddModal(true), Platform.OS ==="ios" ? 200 : 0);
+        
     }
 
 

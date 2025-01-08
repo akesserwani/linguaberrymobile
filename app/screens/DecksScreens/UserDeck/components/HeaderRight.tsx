@@ -1,12 +1,11 @@
 
 import { useState, useEffect, useRef } from "react";
-import { TouchableOpacity, View, Text, StyleSheet, Modal } from "react-native";
+import { TouchableOpacity, View, Text, StyleSheet, Modal, Platform } from "react-native";
 import Icon from '@expo/vector-icons/FontAwesome6'
 import * as style from '@/assets/styles/styles'
 
 import EditDeckModal from "./EditDeckModal";
 import React from "react";
-import { Platform } from 'react-native';
 
 const HeaderRight = ({currentLang, deckId, deckName, refreshDeck, refreshWords }) => {
 
@@ -19,11 +18,12 @@ const HeaderRight = ({currentLang, deckId, deckName, refreshDeck, refreshWords }
     const [modalActive, openModal] = useState(false);
     
     const openModalFunc = () =>{
-        //open the modal
-        openModal(true);
-
-        //close dropdown
+        //close the dropdown
         setClick(false);
+
+        //open the Edit Deck modal
+        setTimeout (() => openModal(true), Platform.OS ==="ios" ? 200 : 0);
+   
     }
 
 

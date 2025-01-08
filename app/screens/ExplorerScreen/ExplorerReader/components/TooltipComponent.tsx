@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Text, View, TouchableOpacity, Modal, StyleSheet } from 'react-native';
+import { Text, View, TouchableOpacity, Modal, StyleSheet, Platform } from 'react-native';
 import * as style from '@/assets/styles/styles';
 import Icon from '@expo/vector-icons/FontAwesome6';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -189,10 +189,11 @@ const TooltipComponent = ({ title }) => {
 
                                 {/* Button to add word to deck  */}
                                 <TouchableOpacity style={{marginRight:20, marginTop: 5}} onPress={()=>{
-                                    //toggle the modal
-                                    toggleAddWord(true);
                                     //close the bottom popup to allow the modal to open
                                     setPopup(false);
+                                    //toggle the modal
+                                    setTimeout (() => toggleAddWord(true), Platform.OS ==="ios" ? 200 : 0);
+                                    
                                 }
                                 } activeOpacity={0.7}>
                                     <Icon name={'plus'} size={28} color={style.gray_400} />

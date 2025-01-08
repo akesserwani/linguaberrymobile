@@ -23,6 +23,7 @@ const CustomInput = ({showLabel = true, label = "My Form", placeholder, value, o
             {/* Form */}
             <TextInput style={[styles.form, customFormStyle]} 
                         placeholder= { placeholder }
+                        placeholderTextColor={'#9ca3af'}
                         value={ value } 
                         onChangeText={ onChangeText }
                         autoCorrect={ false }

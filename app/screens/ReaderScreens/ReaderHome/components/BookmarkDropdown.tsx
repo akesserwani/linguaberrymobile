@@ -1,5 +1,5 @@
 import { useFocusEffect } from '@react-navigation/native';
-import { View, Text, TouchableOpacity, StyleSheet, useWindowDimensions, FlatList, Modal, KeyboardAvoidingView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Platform, FlatList, Modal, KeyboardAvoidingView } from 'react-native';
 import { useContext, useState, useEffect, useRef, useCallback } from 'react';
 
 //data for context
@@ -16,7 +16,6 @@ import * as style from '@/assets/styles/styles'
 
 import React from 'react';
 
-import { Platform } from 'react-native';
 
 const BookmarkDropdown = ({onTagSelect, currentTag = null, filter=true}) => {
 
@@ -108,8 +107,11 @@ const BookmarkDropdown = ({onTagSelect, currentTag = null, filter=true}) => {
     const openTagCreation = () =>{
         //close the dropdown
         openDropdown(false);
+        
         //open the modal
-        openTagModal(true);
+        setTimeout (() => openTagModal(true), Platform.OS ==="ios" ? 200 : 0);
+        
+        
     }
 
     //function to close the tag modal

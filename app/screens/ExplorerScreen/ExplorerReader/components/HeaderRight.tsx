@@ -46,7 +46,7 @@ const HeaderRight = ({title, currentLang}) => {
         } 
 
         //toggle the view words modal
-        toggleViewWords(true);
+        setTimeout (() => toggleViewWords(true), Platform.OS ==="ios" ? 200 : 0);
     }
 
     //function to open view sentences
@@ -54,8 +54,9 @@ const HeaderRight = ({title, currentLang}) => {
         //close the dropdown/modal 
         setClick(false)
 
-        //toggle the view words modal
-        toggleViewSentences(true);
+        //toggle the view sentences modal
+        setTimeout (() => toggleViewSentences(true), Platform.OS ==="ios" ? 200 : 0);
+
     }
 
 

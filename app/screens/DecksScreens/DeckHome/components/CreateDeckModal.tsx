@@ -1,5 +1,5 @@
 
-import { View, Text, TouchableOpacity, StyleSheet, useWindowDimensions, KeyboardAvoidingView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, useWindowDimensions, Platform } from 'react-native';
 import { useContext, useState } from 'react';
 
 import CustomModal from '@/app/components/CustomModal';
@@ -66,7 +66,7 @@ const CreateDeckModal = ({onClose, refresh, scrollToBottom, setImportWeb}) => {
         onClose()
 
         //open the toggle deck modal
-        setImportWeb()
+        setTimeout (() => setImportWeb(), Platform.OS ==="ios" ? 200 : 0);
     }
 
 
