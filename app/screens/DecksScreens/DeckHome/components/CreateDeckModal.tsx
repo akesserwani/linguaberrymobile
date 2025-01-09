@@ -53,7 +53,7 @@ const CreateDeckModal = ({onClose, refresh, scrollToBottom, setImportWeb}) => {
             refresh();
 
             //function to scroll to the bottom
-            scrollToBottom(); 
+            // scrollToBottom(); 
 
             //close the modal
             onClose();

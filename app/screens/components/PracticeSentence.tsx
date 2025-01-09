@@ -46,7 +46,6 @@ const PracticeSentence = () => {
 
     //current data 
     const [currentSentence, setCurrentSentence] = useState(sentenceData[currentIndex]);
-    console.log(currentSentence)
 
     //Variables 
     //define a variable for the input text
@@ -69,10 +68,23 @@ const PracticeSentence = () => {
     //variable to toggle the modal when the practice is complete
     const [completeModal, toggleCompleteModal] = useState(false);
 
+
+    //this useEffect will reset everything if a user toggles - frontFirst
+    useEffect(() => {
+        //rematch setnence data 
+        setSentenceData(matchSentences(story, storyTranslation))
+        //reset current index to 0
+        setCurrentIndex(0);
+        //reset current sentence
+        setCurrentSentence(sentenceData[currentIndex]);
+    }, [frontFirst]);
+    
+    
     //This variable will update the rendered data when it is changed
     useEffect(() => {
         setCurrentSentence(sentenceData[currentIndex]);
     }, [sentenceData, currentIndex]);
+
 
     //Render the finish modal if the data has been loaded (isMounted = true)
     //Then if the data is less than 1
@@ -80,6 +92,8 @@ const PracticeSentence = () => {
         if (sentenceData.length < 1) {
             //toggle end modal
             toggleCompleteModal(true);
+
+            //update the database to have practiced this story 
         }  
     }, [sentenceData]);
 
@@ -334,7 +348,7 @@ const PracticeSentence = () => {
                 <View style={{paddingHorizontal: responsiveHorizontalPadding, flex: 1,
                             flexDirection:'row', justifyContent:'space-between', alignItems:'center', alignContent:'center'}}>
                     {/* Skip Text Button  */}
-                    <TouchableOpacity activeOpacity={0.7} onPress={answerCorrect}>
+                    <TouchableOpacity activeOpacity={0.7} onPress={checkButton}>
                         <Text style={{color:style.blue_500, fontWeight:'500', fontSize:style.text_md}}>Skip</Text>
                     </TouchableOpacity>
 

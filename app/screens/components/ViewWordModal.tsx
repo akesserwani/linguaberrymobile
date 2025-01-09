@@ -84,7 +84,6 @@ const ViewWordModal = ({onClose, modalTitle, json=false, entryId = null, dataPro
 
             {/* Content Area */}
             <View style={styles.contentContainer}>
-
                 {/* Top container above the labels */}
                 {/* Button here to add entire data to deck */}
                 <View style={{flexDirection:'row', justifyContent:'space-between', alignContent:'center', paddingHorizontal:25, paddingVertical:15, backgroundColor:style.gray_100 }}>         
@@ -99,12 +98,15 @@ const ViewWordModal = ({onClose, modalTitle, json=false, entryId = null, dataPro
 
                     {/* number of words on the left */}
                     <Text style={{color:style.gray_400, fontWeight:'600', margin:15, marginRight:30}}>{ wordData.length } words</Text>
-
                 </View>
 
+                {/* Tap word to add to deck */}
+                <View style={{paddingHorizontal:30, paddingVertical:15, backgroundColor:style.gray_100, flexDirection:'row', gap:2}}>
+                    <Text style={{ color: style.gray_500, fontSize: style.text_md, fontWeight:'400' }}>* Tap word to add to deck</Text>
+                </View>
 
                 {/* Top bar with labels */}
-                <View style={{flexDirection:'row', backgroundColor: style.gray_100 ,borderBottomWidth: style.border_md, gap:20, borderColor: style.gray_200, paddingHorizontal:15, paddingVertical:20, justifyContent:'center' }}>
+                <View style={{flexDirection:'row', backgroundColor: style.gray_100 ,borderBottomWidth: style.border_md, gap:20, borderColor: style.gray_200, paddingVertical:20, justifyContent:'center' }}>
                     <View style={{width: '40%', justifyContent: 'center'}}>
                         <Text style={{ color: style.gray_600, fontSize: style.text_md, fontWeight:'600' }}>Term</Text> 
                     </View>

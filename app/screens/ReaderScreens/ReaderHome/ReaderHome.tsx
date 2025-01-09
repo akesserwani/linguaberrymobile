@@ -44,6 +44,9 @@ const ReaderHome = ({ navigation }) => {
     //selected tag
     const [selectedTag, selectTag] = useState(null);
 
+    //created first
+    const [createdFirst, toggleCreatedFirst] = useState(true);
+
     //rendered data
     //this is the data that is rendered in the dropdown
     const [ renderedData, setRenderedData ] = useState([])
@@ -149,9 +152,18 @@ const ReaderHome = ({ navigation }) => {
                     ) : (
                         <FlatList
                         ref={flatListRef}
-                        data={renderedData}
+                        data={renderedData.reverse()}
                         keyExtractor={(item, index) => item.id.toString()}
                         contentContainerStyle={{ paddingBottom: 150, paddingTop:20, paddingRight:10 }} 
+                        ListHeaderComponent={
+                            //this text will appear on top prompting the user whether to render decks by created first or created last
+                            <TouchableOpacity style={{paddingVertical:10, paddingHorizontal:5, marginBottom:5}} onPress={()=>toggleCreatedFirst(!createdFirst)}>
+                                <Text style={{color:style.blue_500, fontWeight:'500', fontSize:style.text_sm}}>
+                                    {createdFirst ? 'Oldest' : 'Newest'} First
+                                </Text>
+                            </TouchableOpacity>
+                        }                        
+
                         renderItem={({ item, index }) => (
                         //Individual Box being rendered
 

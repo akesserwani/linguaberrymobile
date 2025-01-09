@@ -38,6 +38,9 @@ const DecksHome = ({ navigation }) => {
     // bookmarked deck data
     const [bookmarkedDeckData, setBookmarkedDeckData] = useState([]);
 
+    //created first
+    const [createdFirst, toggleCreatedFirst] = useState(true);
+
     //rendered data
     //this is the data that is rendered in the dropdown
     const [ renderedData, setRenderedData ] = useState([])
@@ -97,6 +100,7 @@ const DecksHome = ({ navigation }) => {
     return ( 
         <>
         <View style={[styles.mainContainer, { paddingHorizontal: responsiveHorizontalPadding }]}>
+
             {/* Top Container with Tabs - All and Bookmarks */}
             <View style={styles.tabContainer}>
                 <TouchableOpacity onPress={() => setActiveTab('All')} style={[styles.individualTab, activeTab === 'All' && styles.activeTab]} activeOpacity={0.7}>
@@ -119,7 +123,6 @@ const DecksHome = ({ navigation }) => {
 
             {/* Container for Individual Decks rendered as cards  */}
             <View style={{ flexDirection: 'column', flex:1 }} >
-
                 {/* Display no decks text if deckData is empty, else render everything  */}
                 {renderedData.length === 0 ? (
                     <Text style={{ color: style.gray_400, fontSize: style.text_md, fontWeight:'600', textAlign: 'center', marginTop: 80 }}>
@@ -129,9 +132,17 @@ const DecksHome = ({ navigation }) => {
                     ) : (
                         <FlatList
                             ref={flatListRef}
-                            data={renderedData}
+                            data={renderedData.reverse()}
                             keyExtractor={(item, index) => item.id.toString()}
                             contentContainerStyle={{ paddingBottom: 150, paddingTop:20, paddingRight:10 }} 
+                            ListHeaderComponent={
+                                //this text will appear on top prompting the user whether to render decks by created first or created last
+                                <TouchableOpacity style={{paddingVertical:10, paddingHorizontal:5, marginBottom:5}} onPress={()=>toggleCreatedFirst(!createdFirst)}>
+                                    <Text style={{color:style.blue_500, fontWeight:'500', fontSize:style.text_sm}}>
+                                        {createdFirst ? 'Oldest' : 'Newest'} First
+                                    </Text>
+                                </TouchableOpacity>
+                              }                        
                             renderItem={({ item, index }) => (
                             //Individual Box being rendered
                             <TouchableOpacity onPress={() => navigation.navigate("UserDeck", { deckName: item.name, deckId: item.id })}

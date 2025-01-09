@@ -345,12 +345,9 @@ const Study = () => {
     //responsive padding
     const responsiveHorizontalPadding = width < 600 ? 40 : width < 1000 ? 100 : 200;
 
-    //Width logic
-    //get window width
-    const windowWidth = useWindowDimensions().width;
 
     //if width is mobile < 800, make the width 90%, else make it 80%
-    const dynamicWidth = windowWidth < 800 ? '90%' : '80%';  // 90% for mobile, 80% for larger screens
+    const dynamicWidth = width < 800 ? '90%' : '80%';  // 90% for mobile, 80% for larger screens
 
     return ( 
         <>
