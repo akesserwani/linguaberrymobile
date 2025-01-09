@@ -503,24 +503,27 @@ const parseTextToWords = (text) => {
 
 //this function will grab the data from the api and add it to the decks 
 export const addWebDataToDeck = (currentLang, data) =>{
+  try {
+      //first make sure the deck name doesnt already exist
+      if (deckNameExist(data.title, currentLang)){
+        //render an alert to show that the deck name already exists in this language
+        CustomAlert("This deck name already exists.", "Rename the existing deck to add this deck.")
+        console.log(data.data)
+      } else{ 
+        //if it doesnt, create the deck
+        createNewDeck(data.title, currentLang);
+        //then add bulk words by deck name
+        const words = parseTextToWords(data.data);
+        createBulkWordsByDeckName(data.title, words, currentLang);
+        
+        //render a success alert
+        CustomAlert("Deck successfully added!")
 
-  //first make sure the deck name doesnt already exist
-  if (deckNameExist(data.title, currentLang)){
-    //render an alert to show that the deck name already exists in this language
-    CustomAlert("This deck name already exists.", "Rename the existing deck to add this deck.")
-    console.log(data.data)
-  } else{ 
-    //if it doesnt, create the deck
-    createNewDeck(data.title, currentLang);
-    //then add bulk words by deck name
-    const words = parseTextToWords(data.data);
-    createBulkWordsByDeckName(data.title, words, currentLang);
-    
-    //render a success alert
-    CustomAlert("Deck successfully added!")
-
-  }
-
+    }
+  } catch (error){
+        //render an error alert
+        CustomAlert("Error! This deck could not be added.")
+      }
 
 
 

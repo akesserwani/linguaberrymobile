@@ -160,7 +160,7 @@ const ExplorerHome = () => {
     //responsive variable for container padding
     //if width is less than 600 then padding is 40, if between 600 and 1000 then padding is 100, 1k+, padding is 200
     //40 < 100 < 200
-    const responsiveHorizontalPadding = width < 600 ? 20 : width < 1000 ? 100 : 200;
+    const responsiveHorizontalPadding = width < 600 ? 20 : width < 1000 ? 100 : 120;
 
     return ( 
         <>

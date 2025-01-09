@@ -21,7 +21,6 @@ const BookmarkDropdown = ({onTagSelect, currentTag = null, filter=true}) => {
 
     //current language
     const { currentLang } = useContext(CurrentLangContext);
-    
 
     const [dropdownOpen, openDropdown] = useState(false);
 
@@ -49,6 +48,7 @@ const BookmarkDropdown = ({onTagSelect, currentTag = null, filter=true}) => {
     //useEffect to get all the tag data 
     const getTagData = () =>{
         //call the function
+        console.log(currentLang)
         const data = getAllReaderTags(currentLang);
         //set the data to the function
         setTagData(data);
@@ -58,8 +58,12 @@ const BookmarkDropdown = ({onTagSelect, currentTag = null, filter=true}) => {
     useFocusEffect(
         useCallback(() => {
             getTagData();
-        }, [tagModal]) // Add any dependencies if needed
+        }, [tagModal, currentLang]) // Add any dependencies if needed
     );
+
+    // useEffect(()=>{
+    //     getTagData();
+    // },[currentLang])
         
     
     // Set dropdown based on position of the target ref

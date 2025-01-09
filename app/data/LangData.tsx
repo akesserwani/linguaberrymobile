@@ -7,7 +7,7 @@ export const apiLink = (code) =>{
   return link
 }
 
-export const apiKey = "3cc22320-678d-43ca-8614-ca1fd458ce02";
+export const apiKey = "6c8c4520-2fd6-41f2-b5df-d723c063efb8";
 
 //load in Json Array for language arrays 
 

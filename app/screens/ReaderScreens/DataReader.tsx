@@ -1,5 +1,7 @@
 import { db } from "@/app/data/Database";
 
+import CustomAlert from "@/app/components/CustomAlert";
+
 //Functions for the reader 
 
 //create a new reader entry
@@ -326,14 +328,20 @@ export const newEntryFull = (
     translation_data = "", 
     current_language 
     ) => {
-        const formattedWordData = formatWordDataFromWeb(word_data);
 
-        db.withTransactionSync(() => {
-            db.runSync(
-                `INSERT INTO story (title, contents, word_data, translation_data, bookmarked, tag, language_id) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?)`,
-                [title, contents, formattedWordData, translation_data, 0, "none", current_language] // Pass parameters as an array
-            );
-        });
+        try{
+            const formattedWordData = formatWordDataFromWeb(word_data);
+
+            db.withTransactionSync(() => {
+                db.runSync(
+                    `INSERT INTO story (title, contents, word_data, translation_data, bookmarked, tag, language_id) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?)`,
+                    [title, contents, formattedWordData, translation_data, 0, "none", current_language] // Pass parameters as an array
+                );
+            });
+        }
+        catch (error) {
+            CustomAlert("Error! This story could not be added.")
+        }
 };
 

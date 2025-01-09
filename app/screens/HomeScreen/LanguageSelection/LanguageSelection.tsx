@@ -192,7 +192,7 @@ const LanguageSelection = () => {
             {/* BUTTON */}
             {/* Main Dropdown Button  */}
             <View ref={dropdownRef} collapsable={false}>
-                <CustomButton customStyle={[styles.dropdownBtn, { width: windowWidth > 700 ? 250 : null }]} onPress={handleOpenDropdown}>
+                <CustomButton customStyle={[styles.dropdownBtn]} onPress={handleOpenDropdown}>
                     {/* Current Language */}
                     <Text style={{ fontSize: style.text_md, fontWeight: "500", color:style.gray_500 }}> { currentLang } </Text>
                     {/* Dropdown Icon */}
@@ -306,8 +306,8 @@ const styles = StyleSheet.create({
     dropdownBtn: {
         backgroundColor: style.white,
         borderColor: style.gray_200,
-        borderWidth: style.border_sm,
-        borderRadius: style.rounded_md,
+        borderWidth: style.border_md,
+        borderRadius: 12,
     
         height: 50,
         flexDirection: "row",

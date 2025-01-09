@@ -77,7 +77,6 @@ const ImportDeck = ({onClose, refresh}) => {
             },
         });
 
-
         if (!response.ok) {
             const errorData = await response.json();
             const errorMessage = errorData.message || "Code not found or invalid.";
@@ -86,6 +85,7 @@ const ImportDeck = ({onClose, refresh}) => {
         }
 
         const compressedData = await response.text(); // Fetch as plain text if compressed
+
         const cleanedData = compressedData.replace(/^"(.*)"$/, '$1'); // Remove surrounding quotes if present
 
         //decompress the data

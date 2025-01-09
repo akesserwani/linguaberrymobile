@@ -31,8 +31,7 @@ const CustomButton = ({ children, onPress, customStyle }) => {
         onPressOut={handlePressOut}  // Trigger scale back to normal
         onPress={onPress}  // Handle the actual button press
         style={[styles.button, customStyle]}  // Merge default and custom styles
-        activeOpacity={0.7}  // Optional opacity change when pressed
-      >
+        activeOpacity={0.7}>
         {children}
       </TouchableOpacity>
     </Animated.View>

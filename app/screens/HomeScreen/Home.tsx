@@ -19,18 +19,21 @@ const Home = () => {
 
     //While the width of the screen is mobile < 800, will render mobile features
     //If the width is > 800, render for larger screens
-    const windowWidth = useWindowDimensions().width;
+    const width = useWindowDimensions().width;
 
+    //responsive variable for container padding
+    //if width is less than 600 then padding is 20, if between 600 and 1000 then padding is 100, 1k+, padding is 200
+    //padding: 40 < 100 < 200
+    //width: 600 < 1000 < x 
+    const responsiveHorizontalPadding = width < 600 ? 20 : width < 1000 ? 100 : 120;
 
     return (
         <>
 
-        <View style={{ flex: 1, backgroundColor: style.slate_100, paddingTop: 25, paddingLeft: 25, paddingRight: 25, flexDirection:'column', gap:20 }}>
+        <View style={{ flex: 1, backgroundColor: style.slate_100, paddingTop: 25, paddingHorizontal:responsiveHorizontalPadding, flexDirection:'column', gap:20 }}>
 
             {/* Drop down for language selection, only render out of main container if in mobile view < 800 */}
-            { windowWidth < 700 &&
-                <LanguageSelection />
-              }
+              <LanguageSelection />
 
             {/* Main White Container for Content */}
             <View style={styles.main_container}>
@@ -41,10 +44,6 @@ const Home = () => {
                       <Icon name={'bookmark'} solid={true} size={15} color={style.gray_500} />
                       <Text style={{fontSize: style.text_lg, fontWeight: "600", color:style.gray_500}}>Bookmarks</Text>
                     </View>
-                    {/* Dropdown if screen > 800 label */}
-                    { windowWidth > 700 &&
-                        <LanguageSelection />
-                    }
                 </View>
 
                 {/* Main Content Here */}
@@ -52,7 +51,7 @@ const Home = () => {
                 <BookmarksList />
                 
                 {/* Practice Buttons */}
-                <ActionButton />
+                {/* <ActionButton /> */}
 
             </View>
         </View>
