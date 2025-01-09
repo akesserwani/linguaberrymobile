@@ -3,7 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import ReaderHome from './ReaderHome/ReaderHome'
 import ReaderEditor from './ReaderEditor/ReaderEditor';
 import ReaderViewer from './ReaderViewer/ReaderView';
-import PracticeSentence from '@/app/screens/components/PracticeSentence';
+import PracticeSentence from '@/app/screens/components/PracticeSentences/PracticeSentence';
 
 import * as style from '@/assets/styles/styles'
 

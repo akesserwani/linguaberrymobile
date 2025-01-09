@@ -20,7 +20,9 @@ import CustomInput from '@/app/components/CustomInput';
 import { shuffleArray, matchSentences } from '@/app/data/Functions';
 import React from 'react';
 
-import { isLanguageRTL } from '../HomeScreen/LanguageSelection/DataLanguages';
+import { isLanguageRTL } from '../../HomeScreen/LanguageSelection/DataLanguages';
+import { isRTLChar } from '@/app/data/LangData';
+
 
 
 const PracticeSentence = () => {
@@ -245,14 +247,21 @@ const PracticeSentence = () => {
 
     //indicator for text alignment
     //front first false is target language , RTL true is Arabic/Hebrew/RTL language
-    const getTextDirection = (isRTL, frontFirst) => {
-        if (isRTL && !frontFirst) return 'rtl';
+    const getTextDirection = (text) => {
+
+        //check to see if the main text is rtl
+        const isRTL = isRTLChar(text)
+
+        if (isRTL) return 'rtl';
         if (!isRTL) return 'ltr';
         return 'ltr';
     };
 
-    const getTextAlignment = (isRTL, frontFirst) => {
-        if (isRTL && !frontFirst) return 'right';
+    const getTextAlignment = (text) => {
+
+        const isRTL = isRTLChar(text)
+
+        if (isRTL) return 'right';
         if (!isRTL) return 'left';
         return 'left';
     };
@@ -282,7 +291,7 @@ const PracticeSentence = () => {
                             
                             {/* Button here to toggle language to translate to */}
                             <CustomButton onPress={()=>setFrontFirst(!frontFirst)} customStyle={null}>
-                                <Text style={{color:style.white}}>Translate to { frontFirst ? 'English' : currentLang }</Text>
+                                <Text style={{color:style.white}}>Translate to { frontFirst ? currentLang : 'English' }</Text>
                             </CustomButton>
 
                             {/* Current Index - Progress Count */}
@@ -303,19 +312,23 @@ const PracticeSentence = () => {
                                     </Text>          
 
                                     {/* Text to Translate - from the data */}
-                                    <Text style={{color:style.gray_600, fontSize:style.text_md, fontWeight:'400', marginLeft:5,
-                                        textAlign: getTextAlignment(isRTL, frontFirst), // Align text based on direction
-                                        writingDirection: getTextDirection(isRTL, frontFirst), // Ensure proper
-                                    }}>
-                                        {
-                                            //Check if frontFirst is true
-                                            frontFirst ? (
-                                                currentSentence.mainSentence // Show `term` if `frontFirst` is true
-                                            ) : (
-                                                currentSentence.translationSentence// Show `translation` if `frontFirst` is false
-                                            )
-                                        }
-                                    </Text>          
+                                    { frontFirst ? (
+                                        <Text style={{color:style.gray_600, fontSize:style.text_md, fontWeight:'400', marginLeft:5,
+                                            textAlign: getTextAlignment(currentSentence.mainSentence), // Align text based on direction
+                                            writingDirection: getTextDirection(currentSentence.mainSentence), // Ensure proper
+                                        }}>
+                                            {currentSentence.mainSentence}
+                                        </Text>         
+                                    ) : (
+                                        // {/* Text to Translate - from the data */}
+                                        <Text style={{color:style.gray_600, fontSize:style.text_md, fontWeight:'400', marginLeft:5,
+                                            textAlign: getTextAlignment(currentSentence.translationSentence), // Align text based on direction
+                                            writingDirection: getTextDirection(currentSentence.translationSentence), // Ensure proper
+                                        }}>
+                                            {currentSentence.translationSentence}
+                                        </Text>   
+                                    )}
+
 
                                     {/* Input Form */}
                                     <CustomInput showLabel={false} placeholder={"Begin translating here..."} value={userInput} onChangeText={setUserInput}
