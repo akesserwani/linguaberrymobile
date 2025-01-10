@@ -42,6 +42,11 @@ const HeaderRight = ({title, currentLang}) => {
             //convert the data into a readeble format for the ViewWordModal
             filteredData = jsonWordData[title];
             filteredData = convertLangFiletoJSON(filteredData);
+
+            // Remove all objects with numeric values
+            filteredData = filteredData.filter(item =>
+                !Object.values(item).some(value => /\d/.test(value))
+            );
             setWordData(filteredData);
         } 
 

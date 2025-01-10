@@ -1,5 +1,5 @@
 import { useFocusEffect } from '@react-navigation/native';
-import { View, Text, TouchableOpacity, StyleSheet, Platform, FlatList, Modal, KeyboardAvoidingView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Platform, FlatList, Modal, KeyboardAvoidingView, useWindowDimensions } from 'react-native';
 import { useContext, useState, useEffect, useRef, useCallback } from 'react';
 
 //data for context
@@ -174,6 +174,11 @@ const BookmarkDropdown = ({onTagSelect, currentTag = null, filter=true}) => {
         );
     }
     
+    // Get screen width dynamically
+    const { width } = useWindowDimensions();
+
+    //make responsive width for the modal size 
+    const dynamicWidth = width < 800 ? '80%' : '50%';  // 80% for mobile, 50% for larger screens
 
 
     return ( 
@@ -265,7 +270,7 @@ const BookmarkDropdown = ({onTagSelect, currentTag = null, filter=true}) => {
 
     {/* Create Tag Modal */}
     { tagModal &&
-        <CustomModal onClose={closeTagModal} title="New Tag" overrideStyle={null}>
+        <CustomModal onClose={closeTagModal} title="New Tag" overrideStyle={{width: dynamicWidth }}>
             <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={100}  >
             {/* Form to input tag name  */}
                 <CustomInput label={"Tag Name"} placeholder={"Type name here"} value={createTagInput} onChangeText={setTagInput}

@@ -261,6 +261,7 @@ const styles = StyleSheet.create({
         flex:1,
         flexDirection: 'column',
         gap: 20,
+        backgroundColor:'white'
 
     },
     item: {

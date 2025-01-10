@@ -18,6 +18,8 @@ import CustomAlert from '@/app/components/CustomAlert';
 import ViewWordModal from '../../components/ViewWordModal';
 import React from 'react';
 
+import ExplorerFilter from './components/Filter';
+
 const ExplorerHome = () => {
 
     //current language
@@ -41,6 +43,8 @@ const ExplorerHome = () => {
     //word data - this data will be converted into a format that will be fed to ViewWordModal
     const [wordData, setWordData] = useState(null);
       
+    //selected Level - is passed and set in components/Filter.tsx
+    const [selectedLevel, setLevel] = useState("All");
 
     //no data trigger
     const [noData, setNoData] = useState(false);
@@ -73,9 +77,12 @@ const ExplorerHome = () => {
                 const json = storyFiles[currentLang]; // Access stories for the current language
                 if (json) {
                     const transformedData = json
-                        .filter((item) => item.fiction) // Filter only fiction stories
+                        .filter((item) => 
+                            item.fiction && (selectedLevel === "All" || item.level === selectedLevel.toLowerCase())
+                        ) 
                         .map((item) => ({
                             title: item.title, // Extract the title
+                            level: item.level //extract the level
                         }));
                     setData(transformedData);
                 } else {
@@ -88,9 +95,12 @@ const ExplorerHome = () => {
                 const json = storyFiles[currentLang]; // Access stories for the current language
                 if (json) {
                     const transformedData = json
-                        .filter((item) => !item.fiction) // Filter only nonfiction stories
+                        .filter((item) => 
+                            !item.fiction && (selectedLevel === "All" || item.level === selectedLevel.toLowerCase()) 
+                        ) 
                         .map((item) => ({
                             title: item.title, // Extract the title
+                            level: item.level //extract the level
                         }));
                     setData(transformedData);
                 } else {
@@ -101,7 +111,7 @@ const ExplorerHome = () => {
         };
     
         loadData();
-    }, [currentLang, activeTab]); // Re-run whenever `currentLang` changes
+    }, [currentLang, activeTab, selectedLevel]); // Re-run whenever `currentLang` changes
     
 
     //This function will transform the structures so that it may be passed to the ViewWordModal
@@ -154,8 +164,17 @@ const ExplorerHome = () => {
         }
     };
 
+    //get color of a story based on level
+    const getColorLevel = (level) => {
+        const levelColors = {
+            beginner: "#10b981",
+            intermediate: "#f59e0b",
+            advanced: "#ef4444"
+        };
     
-
+        return levelColors[level] || "default_color"; // Use a default if level is not found
+    };
+        
 
     //responsive variable for container padding
     //if width is less than 600 then padding is 40, if between 600 and 1000 then padding is 100, 1k+, padding is 200
@@ -166,6 +185,9 @@ const ExplorerHome = () => {
         <>
         
         <View style={[styles.mainContainer, { paddingHorizontal: responsiveHorizontalPadding }]}>
+
+            {/* Dropdown filter */}
+            <ExplorerFilter selectedLevel={selectedLevel} setLevel={setLevel} getColorLevel={getColorLevel}/>
 
             {/* White card container that holds the content */}
             <View style={{ flex:1, backgroundColor:style.white, paddingTop:20, borderColor:style.gray_200, borderWidth:style.border_sm, borderTopRightRadius:style.rounded_lg, borderTopLeftRadius:style.rounded_lg}}>
@@ -224,12 +246,14 @@ const ExplorerHome = () => {
                                         ]} activeOpacity={0.7}>
                                         <View style={{ flexDirection: 'row', gap: 15, alignItems: 'center' }}>
                                             {/* Index Number for the Card */}
-                                            <Text style={{ color: style.gray_300, fontSize: style.text_md }}>
-                                                {index + 1}
-                                            </Text>
+                                            <View style={{ width: 'auto',justifyContent: 'center' }}>
+                                                <Text style={{ color: style.gray_300, fontSize: style.text_md }}>
+                                                    {index + 1}
+                                                </Text>
+                                            </View>
 
                                             {/* Title for Deck */}
-                                            <View style={{ width: activeTab === "Words" ? '65%' : '90%' }}>
+                                            <View style={{ width: activeTab === "Words" ? '65%' : '80%', justifyContent:'center' }}>
                                                 <Text style={{ color: style.gray_500, fontWeight: '500', fontSize: style.text_md }}>
                                                     {item.title.trim()}
                                                 </Text>
@@ -241,6 +265,11 @@ const ExplorerHome = () => {
                                             <Text style={{ color: style.gray_400, fontWeight: '400' }}>
                                                 {item.wordCount} words
                                             </Text>
+                                        }
+
+                                        {/* Level dot - only for stories */}
+                                        { activeTab !== "Words" && 
+                                            <Icon name={'chart-simple'} solid={true} size={15} color={getColorLevel(item.level)} />
                                         }
 
                                     </TouchableOpacity>
@@ -269,6 +298,8 @@ const ExplorerHome = () => {
 const styles = StyleSheet.create({
     mainContainer: {
         flex: 1,
+        flexDirection:'column',
+        gap:20,
         backgroundColor: style.slate_100,
         paddingTop: 30,
         

@@ -64,8 +64,8 @@ export const matchSentences = (mainText, translationText) => {
 export const convertLangFiletoJSON = (data) => {
     return Object.entries(data).map(([key, value]) => ({
         notes: "none", // Add a default value for notes
-        term: value,
-        translation: key,
+        term: value.toLowerCase(),
+        translation: key.toLowerCase(),
     }));
 };
 

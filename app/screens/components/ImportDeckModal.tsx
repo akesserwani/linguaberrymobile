@@ -59,6 +59,7 @@ const ImportDeck = ({onClose, refresh}) => {
     //make sure form not empty
     if (!formInput.trim() || !formInput.trim().startsWith('D')) {
         setError("Please enter a valid code.");
+        CustomAlert("Please enter a valid code.");
         return;
     }
 
@@ -124,6 +125,7 @@ const ImportDeck = ({onClose, refresh}) => {
     
     } catch (err) {
         setError(err.message); // Set error message for UI
+        CustomAlert("Code not found.");
     
     }
 

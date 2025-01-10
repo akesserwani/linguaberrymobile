@@ -138,7 +138,7 @@ const DecksHome = ({ navigation }) => {
                             ListHeaderComponent={
                                 //this text will appear on top prompting the user whether to render decks by created first or created last
                                 <TouchableOpacity style={{paddingVertical:10, paddingHorizontal:5, marginBottom:5}} onPress={()=>toggleCreatedFirst(!createdFirst)}>
-                                    <Text style={{color:style.blue_500, fontWeight:'500', fontSize:style.text_sm}}>
+                                    <Text style={{color:style.blue_500, fontWeight:'400', fontSize:style.text_sm}}>
                                         {createdFirst ? 'Oldest' : 'Newest'} First
                                     </Text>
                                 </TouchableOpacity>
