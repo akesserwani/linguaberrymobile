@@ -2,7 +2,7 @@
   "expo": {
     "name": "LinguaBerry",
     "slug": "linguaberrymobile",
-    "version": "1.1.5",
+    "version": "1.1.6",
     "orientation": "default",
     "newArchEnabled": false,
     "icon": "./assets/images/icon.png",
