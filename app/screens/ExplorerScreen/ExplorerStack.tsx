@@ -1,5 +1,11 @@
 
 import { createStackNavigator } from '@react-navigation/stack';
+
+import { useEffect, useContext } from 'react';
+import { CurrentLangContext } from '@/app/data/CurrentLangContext.tsx';
+
+import { CommonActions, useNavigation } from '@react-navigation/native';
+
 import ExplorerHome from './ExplorerHome/ExplorerHome';
 import ExplorerReader from './ExplorerReader/ExplorerReader';
 import PracticeSentence from '@/app/screens/components/PracticeSentences/PracticeSentence';
@@ -10,6 +16,22 @@ const Stack = createStackNavigator();
 
 
 const ReaderStack = () => {
+
+    //current language
+    const { currentLang } = useContext(CurrentLangContext);
+
+    const navigation = useNavigation();
+
+    // Reset the stack to DecksHome whenever the language changes
+    useEffect(() => {
+        navigation.dispatch(
+        CommonActions.reset({
+            index: 0, // Focus on the first screen in the stack
+            routes: [{ name: "ExplorerHome" }], // Reset to DecksHome
+        })
+        );
+    }, [currentLang]);
+    
     return ( 
         <Stack.Navigator
             screenOptions={{
