@@ -20,6 +20,11 @@ const ExplorerFilter = ({selectedLevel, setLevel, getColorLevel}) => {
 
     //data variable for the levels
     const levels = ["All", "Beginner", "Intermediate", "Advanced"]
+    const description = {
+        "Beginner": "(A1 - A2)",
+        "Intermediate": "(B1 - B2)",
+        "Advanced": "(C1 - C2)"
+    }
 
     //function to select a level
     const selectLevel = (level) =>{
@@ -61,7 +66,7 @@ const ExplorerFilter = ({selectedLevel, setLevel, getColorLevel}) => {
             <View ref={dropdownRef} collapsable={false}>
                 <CustomButton customStyle={[styles.dropdownBtn]} onPress={handleOpenDropdown}>
                     {/* Current Language */}
-                    <Text style={{ fontSize: style.text_md, fontWeight: "500", color:style.gray_500 }}> { selectedLevel } </Text>
+                    <Text style={{ fontSize: style.text_md, fontWeight: "500", color:style.gray_500 }}> { selectedLevel }</Text>
                     {/* Dropdown Icon */}
                     <Icon name={dropdownOpen ? "caret-up" : "caret-down"} size={15} color={style.gray_500}/>
                 </CustomButton>
@@ -94,7 +99,7 @@ const ExplorerFilter = ({selectedLevel, setLevel, getColorLevel}) => {
                                     activeOpacity={0.7}>
                                         {/* Text */}
                                         <Text style={{fontSize: style.text_md, fontWeight: "500", color: style.gray_500}}>
-                                            {item}
+                                            {item} {description[item]}
                                         </Text>
 
                                         {/* Level Indicator */}

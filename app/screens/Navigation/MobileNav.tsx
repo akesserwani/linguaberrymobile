@@ -56,7 +56,7 @@ const MobileNav = () => {
                                     style={{ width:150, height:40 }}/>
                         ),
                         headerStyle: {
-                            height: 100,
+                            height: 120,
                             borderBottomWidth:1,
                             borderBottomColor: style.gray_200,
                         },

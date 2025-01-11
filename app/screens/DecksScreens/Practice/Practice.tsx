@@ -49,6 +49,25 @@ const Practice = () => {
     //Random Variable
     const [randomOrder, setRandom] = useState(false);
 
+    //functionality to hide the navbar
+    const isFocused = useIsFocused();
+    useEffect(() => {
+        if (isFocused) {
+            // Hide the tab bar when this screen is focused
+            navigation.getParent()?.setOptions({
+                tabBarStyle: { display: 'none' },
+            });
+        } else {
+            // Show the tab bar again when leaving this screen
+            navigation.getParent()?.setOptions({
+                tabBarStyle: { 
+                    ...style.baseTabBarStyle, // Spread base styles here
+                    display: 'flex',
+                },
+            });
+        }
+    }, [isFocused, navigation]);
+    
     //Navigation bar data
     useLayoutEffect(() => {
         navigation.setOptions({

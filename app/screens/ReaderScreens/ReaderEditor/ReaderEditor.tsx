@@ -4,7 +4,6 @@ import { useContext, useLayoutEffect, useState, useEffect, useRef } from 'react'
 import { useNavigation, useRoute, useIsFocused } from '@react-navigation/native';
 //data for context
 import { CurrentLangContext } from '@/app/data/CurrentLangContext.tsx';
-import { isLanguageRTL } from '../../HomeScreen/LanguageSelection/DataLanguages';
 
 import * as style from '@/assets/styles/styles'
 
@@ -13,31 +12,44 @@ import HeaderRight from './components/HeaderRight';
 
 import { updateEntry, getEntryContents } from '../DataReader';
 import React from 'react';
+import { isRTLChar } from '@/app/data/LangData';
 
-const ReaderStory = ({route}) => {
+const ReaderEditor = ({route}) => {
 
     //current language
     const { currentLang } = useContext(CurrentLangContext);
-    //Check to see direction of language
-    const isRTL = isLanguageRTL(currentLang);
+
+    //reactive variable for the language direction
+    //can be changed via the keyboard 
+    const [isRTL, changeRTL] = useState(false);
+
 
     //get the data from the navigator
     const { entryTitle, entryId } = route.params;
     const navigation = useNavigation();
 
+    //functionality to hide the navbar
+    const isFocused = useIsFocused();
+    useEffect(() => {
+        if (isFocused) {
+            // Hide the tab bar when this screen is focused
+            navigation.getParent()?.setOptions({
+                tabBarStyle: { display: 'none' },
+            });
+        } 
+    }, [isFocused, navigation]);
 
     //Navigation bar data
-    //HeaderRight dropdown has only 1 function - DELETE ENTRY
-    // useLayoutEffect(() => {
-    //     navigation.setOptions({
-    //         // Set custom text for the back button          
-    //         headerBackTitle: 'View',
-    //         headerRight: () => (
-    //             <HeaderRight currentLang={currentLang} entryId={entryId} />
-    //             ),
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            // Set custom text for the back button          
+            headerBackTitle: 'View',
+            headerRight: () => (
+                <HeaderRight isRTL={isRTL} changeRTL={changeRTL}/>
+                ),
             
-    //     });
-    //     }, [navigation]);
+        });
+        }, [navigation]);
     
 
     //reactive variable for titleForm
@@ -45,19 +57,38 @@ const ReaderStory = ({route}) => {
     const [titleForm, setTitleForm] = useState(entryTitle) 
 
     //reactive variable for contents
-    //load it with database fetch function from DataReader.tsx 
-    const entryContents = getEntryContents(entryId, currentLang);
-    const [contentsForm, setContentsForm] = useState(entryContents);
+    const [contentsForm, setContentsForm] = useState({});
+
+    // Track initialization phase
+    const [isInitialized, setIsInitialized] = useState(false);
+
+    //useEffect to load the initial data in 
+    useEffect(()=>{
+        //load it with database fetch function from DataReader.tsx 
+        const entryContents = getEntryContents(entryId, currentLang);
+
+        setContentsForm(entryContents);
+
+        //override rtl data if language is detected
+        changeRTL(isRTLChar(entryContents))
+        // Mark initialization as complete
+        setIsInitialized(true);
+
+    }, [])
 
     //Make functionality to auto save everytime a change is made to titleForm or contentsForm
     useEffect(() => {
-        if (titleForm !== entryTitle) { // Only update if there's a change
+        if (isInitialized && titleForm !== entryTitle) { // Only update if there's a change
             updateEntry(entryId, titleForm, contentsForm);
         }
+        
     }, [titleForm]);
 
     useEffect(() => {
-        updateEntry(entryId, titleForm, contentsForm);
+        if (isInitialized) {
+            updateEntry(entryId, titleForm, contentsForm);
+        }
+
     }, [contentsForm]);
 
 
@@ -86,7 +117,7 @@ const ReaderStory = ({route}) => {
             <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{paddingRight:10, paddingBottom:100}}>
 
                 {/* title form - can be edited */}
-                <TextInput  style={[ styles.titleContainer, {writingDirection: isRTL ? 'rtl' : 'ltr', paddingHorizontal: responsiveHorizontalPadding + 10} ]}
+                <TextInput  style={[ styles.titleContainer, {textAlign: isRTL ? 'right' : 'left', paddingHorizontal: responsiveHorizontalPadding + 10} ]}
                             placeholder= { "Enter title..." }
                             value={ titleForm } 
                             onChangeText={ handleTitleChange }
@@ -99,7 +130,7 @@ const ReaderStory = ({route}) => {
 
                     {/* Main body data here */}
                     <TextInput  style={{fontSize:style.text_lg, color: style.gray_500, fontWeight:'500', width:'100%', flexWrap:'wrap', paddingBottom:100,
-                        writingDirection: isRTL ? 'rtl' : 'ltr', padding:10
+                        padding:10, textAlign: isRTL ? 'right' : 'left'
                     }}
                                 placeholder= { "Start writing here..." }
                                 value={ contentsForm } 
@@ -142,4 +173,4 @@ const styles = StyleSheet.create({
     
 });
 
-export default ReaderStory;
+export default ReaderEditor;

@@ -10,6 +10,8 @@ import Icon from '@expo/vector-icons/FontAwesome6'
 
 import CustomFab from '@/app/components/CustomFab';
 import CustomButton from '@/app/components/CustomButton';
+import CustomAlert from '@/app/components/CustomAlert';
+import TooltipComponent from './components/TooltipComponent';
 
 //improt data from database
 import { getSingleEntryData, getBookmarkedStatus, toggleBookmark} from '../DataReader';
@@ -19,22 +21,38 @@ import HeaderRight from './components/HeaderRight';
 //import misc functions
 import { limitLength, formatDate } from '@/app/data/Functions';
 import { ScrollView } from 'react-native-gesture-handler';
-import TooltipComponent from './components/TooltipComponent';
-import { isLanguageRTL } from '../../HomeScreen/LanguageSelection/DataLanguages';
 import React from 'react';
-import CustomAlert from '@/app/components/CustomAlert';
+
+import { isRTLChar } from '@/app/data/LangData';
 
 const ReaderViewer = ({route}) => {
 
     //current language
     const { currentLang } = useContext(CurrentLangContext);
-    //Check database to see if the function is RTL (right to left, returns true if it is, false if it is not)
-    const isRTL = isLanguageRTL(currentLang);
 
     //get the data from the navigator
     const { entryTitle, entryId } = route.params;
     const navigation = useNavigation();
 
+    //functionality to hide the navbar
+    const isFocused = useIsFocused();
+    useEffect(() => {
+        if (isFocused) {
+            // Hide the tab bar when this screen is focused
+            navigation.getParent()?.setOptions({
+                tabBarStyle: { display: 'none' },
+            });
+        } else {
+            // Show the tab bar again when leaving this screen
+            navigation.getParent()?.setOptions({
+                tabBarStyle: { 
+                    ...style.baseTabBarStyle, // Spread base styles here
+                    display: 'flex',
+                },
+            });
+        }
+    }, [isFocused, navigation]);
+    
     //Navigation bar data
     //To View/Edit Data
     const [refresh, setRefresh] = useState(false);
@@ -61,6 +79,7 @@ const ReaderViewer = ({route}) => {
               setIsLoading(true); // Start loading
               const data = await getSingleEntryData(entryId, currentLang); // Fetch the data
               setEntryData(data); // Set the data to state
+
             } catch (error) {
               console.error('Error fetching data:', error);
             } finally {
@@ -140,8 +159,8 @@ const ReaderViewer = ({route}) => {
                             {/* Title Text */}
                             <View>
                                 <Text style={{color:style.gray_600, fontSize:style.text_lg, fontWeight:'600',
-                                    textAlign: isRTL ? 'right' : 'left', // Align text
-                                    writingDirection: isRTL ? 'rtl' : 'ltr', // Set writing direction                                            
+                                    textAlign: isRTLChar(entryData.title) ? 'right' : 'left', // Align text
+                                    writingDirection: isRTLChar(entryData.title) ? 'rtl' : 'ltr', // Set writing direction                                            
                                 }}>
                                     {entryData.title}
                                 </Text>
@@ -149,7 +168,7 @@ const ReaderViewer = ({route}) => {
                             
                             {/* Date */}
                             <Text style={{color:style.gray_400, fontSize:style.text_sm, fontWeight:'400', marginTop:10,
-                                textAlign: isRTL ? 'right' : 'left', // Align text
+                                textAlign: isRTLChar(entryData.title)  ? 'right' : 'left', // Align text
                             }}>
                                 Created on {formatDate(entryData.created_at)}
                             </Text>
@@ -203,7 +222,7 @@ const ReaderViewer = ({route}) => {
                 </ScrollView>
 
             {/* Fab button to go back to the editor */}
-            <CustomFab icon='pen' onPress={()=>navigation.navigate("ReaderEditor", { entryTitle: entryTitle, entryId: entryId })}/>
+            <CustomFab icon='pen' onPress={()=>navigation.navigate("ReaderEditor", { entryTitle: entryData.title, entryId: entryId })}/>
 
         </View>
 

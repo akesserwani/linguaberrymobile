@@ -11,7 +11,7 @@ import React from "react";
 
 import { Platform } from 'react-native';
 
-const HeaderRight = ({currentLang, entryId}) => {
+const HeaderRight = ({isRTL, changeRTL}) => {
 
     const [buttonClicked, setClick] = useState(false);
     const navigation = useNavigation();
@@ -41,6 +41,18 @@ const HeaderRight = ({currentLang, entryId}) => {
         }
     };
     
+
+    //function to toggle the rtl
+    const toggleRTL = () =>{
+        //close the modal
+        setClick(false);
+
+        //toggle the rtl variable
+        changeRTL((prevState) => {
+            const newState = !prevState;
+            return newState;
+        });
+    }
     
 
     return (
@@ -51,6 +63,7 @@ const HeaderRight = ({currentLang, entryId}) => {
                     <Icon name={"ellipsis-vertical"} size={20} color={style.gray_500} />
                 </TouchableOpacity>
             </View>
+
             {/* Main Dropdown in the form of a modal */}
             <Modal transparent={true} visible={buttonClicked} onRequestClose={() => setClick(false)} supportedOrientations={['portrait', 'landscape']}>
                 {/* Invisible Overlay that can be clicked  */}
@@ -59,10 +72,12 @@ const HeaderRight = ({currentLang, entryId}) => {
                                     setClick(false);
                                 }}>
                         <View style={[styles.dropdownBox, dropdownPosition]}>
-                        {/* Edit Deck */}
-                        <TouchableOpacity onPress={()=>{}} activeOpacity={0.7}>
-                            <Text style={{color:style.gray_500}}>Delete Story</Text>
-                        </TouchableOpacity>                    
+                            {/* Edit Deck */}
+                            <TouchableOpacity onPress={toggleRTL} activeOpacity={0.7}>
+                                <Text style={{color:style.gray_500}}>
+                                   Keyboard Direction
+                                </Text>
+                            </TouchableOpacity>                    
                     </View>
                 </TouchableOpacity>
             </Modal>
@@ -78,7 +93,6 @@ const styles = StyleSheet.create({
         right: 20,
         padding: 15,
 
-        height:50,
         zIndex: 99,
 
         borderWidth: 1,

@@ -274,3 +274,28 @@ export const toggleBookmarkStory = (storyName, currentLang) => {
         return false; // Return false in case of an error
     }
 };
+
+
+//storybookmarks 
+// Function to get all stories with bookmark = true for the given language
+export const getExplorerBookmarks = (currentLang) => {
+    try {
+        let bookmarkedStories = [];
+
+        db.withTransactionSync(() => {
+            // Retrieve all stories and their bookmarked statuses for the given language
+            const results = db.getAllSync(
+                `SELECT story_name FROM explorer WHERE language_id = ? AND bookmarked = 1;`,
+                [currentLang]
+            );
+
+            // Map the results into an array of story names
+            bookmarkedStories = results.map(({ story_name }) => story_name);
+        });
+
+        return bookmarkedStories; // Return the array of bookmarked story names
+    } catch (error) {
+        console.error("Error retrieving bookmarked stories:", error.message);
+        return []; // Return an empty array in case of an error
+    }
+};

@@ -31,6 +31,19 @@ const PracticeSentence = () => {
     const route = useRoute();
     const navigation = useNavigation();
 
+    //functionality to hide the navbar
+    const isFocused = useIsFocused();
+    useEffect(() => {
+        if (isFocused) {
+            // Hide the tab bar when this screen is focused
+            navigation.getParent()?.setOptions({
+                tabBarStyle: { display: 'none' },
+            });
+        } 
+    }, [isFocused, navigation]);
+
+
+
     //current language
     const { currentLang } = useContext(CurrentLangContext);
 

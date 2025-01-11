@@ -5,8 +5,7 @@ import Icon from '@expo/vector-icons/FontAwesome6';
 import { ScrollView } from 'react-native-gesture-handler';
 
 import { CurrentLangContext } from '@/app/data/CurrentLangContext.tsx';
-import { RTLlanguages } from '@/app/data/LangData';
-import { isLanguageRTL } from '@/app/screens/HomeScreen/LanguageSelection/DataLanguages';
+import { isRTLChar } from '@/app/data/LangData';
 //database functions
 import { getWordData } from '../../DataReader';
 
@@ -17,7 +16,7 @@ const TooltipComponent = ({ entryId, contents, refresh }) => {
     //current language
     const { currentLang } = useContext(CurrentLangContext);
     //Check to see direction of language
-    const isRTL = isLanguageRTL(currentLang);
+    const [isRTL, setRTL] = useState(false);
 
     //function to get the word_data from the database
     const [entryData, setEntryData] = useState(null);
@@ -25,6 +24,10 @@ const TooltipComponent = ({ entryId, contents, refresh }) => {
     useEffect(()=>{
         const word_data = getWordData(entryId, currentLang);
         setEntryData(word_data);
+
+        //set the rtl based on contents
+        setRTL(isRTLChar(contents));
+
     },[refresh])
 
     //function to clean the string

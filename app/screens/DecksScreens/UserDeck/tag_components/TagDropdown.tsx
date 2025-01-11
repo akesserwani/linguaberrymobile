@@ -1,5 +1,5 @@
 
-import { Text, View, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Modal, Platform, FlatList} from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Modal, Platform, FlatList, useWindowDimensions} from "react-native";
 import { useState, useEffect, useRef } from "react";
 
 {/* Custom Components */}
@@ -151,6 +151,12 @@ const TagDropdown = ({currentLang, deck_id, onTagSelect}) => {
         }
     };
     
+    // Get screen width dynamically
+    const { width } = useWindowDimensions();
+
+    //make responsive width for the modal size 
+    const dynamicWidth = width < 800 ? '80%' : '50%';  // 80% for mobile, 50% for larger screens
+
 
     return ( 
         <>
@@ -228,7 +234,7 @@ const TagDropdown = ({currentLang, deck_id, onTagSelect}) => {
                                 </TouchableOpacity>
                             )}
                             ListEmptyComponent={
-                                <Text style={{ textAlign: 'center', color: style.gray_400 }}>
+                                <Text style={{ textAlign: 'center', color: style.gray_400, marginTop:20 }}>
                                     No tags available.
                                 </Text>
                             }/>
@@ -273,7 +279,7 @@ const TagDropdown = ({currentLang, deck_id, onTagSelect}) => {
 
          {/* Create Tag Modal */}
          { tagModal &&
-         <CustomModal onClose={closeTagModal} title="New Tag" overrideStyle={null}>
+         <CustomModal onClose={closeTagModal} title="New Tag" overrideStyle={{width:dynamicWidth}}>
             <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={100}  >
             {/* Form to input tag name  */}
                 <CustomInput label={"Tag Name"} placeholder={"Type name here"} value={createTagInput} onChangeText={setTagInput}

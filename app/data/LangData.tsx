@@ -21,3 +21,5 @@ export const isRTLChar = (text) => {
 
   return rtlPattern.test(text);
 };
+
+

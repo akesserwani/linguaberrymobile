@@ -1,5 +1,5 @@
 import { useFocusEffect } from '@react-navigation/native';
-import { View, Text, TouchableOpacity, StyleSheet, useWindowDimensions, FlatList, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, useWindowDimensions, FlatList, ScrollView } from 'react-native';
 import { useContext, useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigation } from '@react-navigation/native';
 
@@ -10,7 +10,7 @@ import * as style from '@/assets/styles/styles'
 import Icon from '@expo/vector-icons/FontAwesome6'
 
 //import data file
-import {wordFiles, storyFiles} from '../../../../assets/data/ExplorerData';
+import {wordFiles, storyFiles, getExplorerBookmarks} from '../../../../assets/data/ExplorerData';
 
 import CustomAlert from '@/app/components/CustomAlert';
 
@@ -108,6 +108,8 @@ const ExplorerHome = () => {
                     setNoData(true);
                 }
             }
+
+
         };
     
         loadData();
@@ -191,44 +193,50 @@ const ExplorerHome = () => {
 
             {/* White card container that holds the content */}
             <View style={{ flex:1, backgroundColor:style.white, paddingTop:20, borderColor:style.gray_200, borderWidth:style.border_sm, borderTopRightRadius:style.rounded_lg, borderTopLeftRadius:style.rounded_lg}}>
-                {/* Top Container with Tabs - All and Bookmarks */}
-                <View style={styles.tabContainer}>
-                    <TouchableOpacity onPress={() => setActiveTab('Words')} style={[styles.individualTab, activeTab === 'Words' && styles.activeTab]} activeOpacity={0.7}>
-                        {/*Icon */}
-                        <Icon name={'table-list'} solid={true} size={20} color={style.gray_400} style={[activeTab === 'Words' && styles.activeTab]}/>
-                        {/* Text */}
-                        <Text style={[styles.tabText, activeTab === 'Words' && styles.activeTab]} >
-                            Decks
-                        </Text>
-                    </TouchableOpacity>
+                    {/* Top Container with Tabs - All and Bookmarks */}
+                    <View style={styles.tabContainer}>
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{paddingHorizontal:25, flex:1, justifyContent:'center'}}>
+                            <TouchableOpacity onPress={() => setActiveTab('Words')} style={[styles.individualTab, activeTab === 'Words' && styles.activeTab]} activeOpacity={0.7}>
+                                {/*Icon */}
+                                <Icon name={'table-list'} solid={true} size={20} color={style.gray_400} style={[activeTab === 'Words' && styles.activeTab]}/>
+                                {/* Text */}
+                                <Text style={[styles.tabText, activeTab === 'Words' && styles.activeTab]} >
+                                    Decks
+                                </Text>
+                            </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => setActiveTab('Fiction')} style={[styles.individualTab, activeTab === 'Fiction' && styles.activeTab]} activeOpacity={0.7}>
-                        {/*Icon */}
-                        <Icon name={'wand-sparkles'} solid={true} size={20} color={style.gray_400} style={[activeTab === 'Fiction' && styles.activeTab]}/>
+                            <TouchableOpacity onPress={() => setActiveTab('Fiction')} style={[styles.individualTab, activeTab === 'Fiction' && styles.activeTab]} activeOpacity={0.7}>
+                                {/*Icon */}
+                                <Icon name={'wand-sparkles'} solid={true} size={20} color={style.gray_400} style={[activeTab === 'Fiction' && styles.activeTab]}/>
 
-                        <Text style={[styles.tabText, activeTab === 'Fiction' && styles.activeTab]} >
-                            Fiction
-                        </Text>
-                    </TouchableOpacity>
+                                <Text style={[styles.tabText, activeTab === 'Fiction' && styles.activeTab]} >
+                                    Fiction
+                                </Text>
+                            </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => setActiveTab('Nonfiction')} style={[styles.individualTab, activeTab === 'Nonfiction' && styles.activeTab]} activeOpacity={0.7}>
-                        {/*Icon */}
-                        <Icon name={'landmark-dome'} solid={true} size={20} color={style.gray_400} style={[activeTab === 'Nonfiction' && styles.activeTab]}/>
-                        <Text style={[styles.tabText, activeTab === 'Nonfiction' && styles.activeTab]} >
-                            Non-fiction
-                        </Text>
-                    </TouchableOpacity>
-                </View>
+                            <TouchableOpacity onPress={() => setActiveTab('Nonfiction')} style={[styles.individualTab, activeTab === 'Nonfiction' && styles.activeTab]} activeOpacity={0.7}>
+                                {/*Icon */}
+                                <Icon name={'landmark-dome'} solid={true} size={20} color={style.gray_400} style={[activeTab === 'Nonfiction' && styles.activeTab]}/>
+                                <Text style={[styles.tabText, activeTab === 'Nonfiction' && styles.activeTab]} >
+                                    Non-fiction
+                                </Text>
+                            </TouchableOpacity>
 
+                            <TouchableOpacity onPress={() => setActiveTab('Nonfiction')} style={[styles.individualTab, activeTab === 'Nonfiction' && styles.activeTab]} activeOpacity={0.7}>
+                                {/*Icon */}
+                                <Icon name={'landmark-dome'} solid={true} size={20} color={style.gray_400} style={[activeTab === 'Nonfiction' && styles.activeTab]}/>
+                                <Text style={[styles.tabText, activeTab === 'Nonfiction' && styles.activeTab]} >
+                                    Religion
+                                </Text>
+                            </TouchableOpacity>
+                        </ScrollView>
+
+                    </View>
                 {/* Container for The Rendered Content  */}
                 <View style={{ flexDirection: 'column', flex:1, paddingHorizontal:25, backgroundColor:style.white}} >
 
                     {/* If there is no data, render the message here */}
-                    { noData ? (
-                        <Text style={{ color: style.gray_400, fontSize: style.text_md, fontWeight:'600', textAlign: 'center', marginTop: 40 }}>
-                            No Data
-                        </Text>
-                    ) : (
+                    { data && data.length > 0 ? (
                         // {/* If language is detected, generate the flatlist */}
                         <FlatList data={data}
                                 keyExtractor={(item, index) => index.toString()}
@@ -253,7 +261,7 @@ const ExplorerHome = () => {
                                             </View>
 
                                             {/* Title for Deck */}
-                                            <View style={{ width: activeTab === "Words" ? '65%' : '80%', justifyContent:'center' }}>
+                                            <View style={{ width: activeTab === "Words" ? '65%' : '70%', justifyContent:'center' }}>
                                                 <Text style={{ color: style.gray_500, fontWeight: '500', fontSize: style.text_md }}>
                                                     {item.title.trim()}
                                                 </Text>
@@ -267,14 +275,29 @@ const ExplorerHome = () => {
                                             </Text>
                                         }
 
-                                        {/* Level dot - only for stories */}
-                                        { activeTab !== "Words" && 
-                                            <Icon name={'chart-simple'} solid={true} size={15} color={getColorLevel(item.level)} />
-                                        }
+                                        {/* Data only for stories */}
+                                        <View style={{flexDirection:'row', gap:15, width:50, justifyContent:'flex-end'}}>
+                                            {/* Bookmark icon - only for stories */}
+                                            {/* Level dot - only for stories */}
+                                            { (activeTab !== "Words" && getExplorerBookmarks(currentLang).includes(item.title.trim())) && 
+                                                <Icon name={'bookmark'} solid={true} size={15} color={style.red_500} />
+                                            }
+
+
+                                            {/* Level dot - only for stories */}
+                                            { activeTab !== "Words" && 
+                                                <Icon name={'chart-simple'} solid={true} size={15} color={getColorLevel(item.level)} />
+                                            }
+                                        </View>
 
                                     </TouchableOpacity>
                                 )}
                             />
+
+                        ) : (
+                            <Text style={{ color: style.gray_400, fontSize: style.text_md, fontWeight:'600', textAlign: 'center', marginTop: 60 }}>
+                                No Data
+                            </Text>
                         )}
 
                 </View>
@@ -308,8 +331,7 @@ const styles = StyleSheet.create({
     tabContainer: {
         flexDirection: "row",
         alignItems: 'center',
-        justifyContent: 'center',
-
+        alignContent:'center',
     },
     
     tabText: {
@@ -322,7 +344,8 @@ const styles = StyleSheet.create({
     },
 
     individualTab:{
-        width:"30%",
+        flex:1,
+        paddingHorizontal:10,
         borderBottomWidth: 3,
         borderBottomColor: style.gray_200,
         alignItems: 'center'

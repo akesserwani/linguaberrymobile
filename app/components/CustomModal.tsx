@@ -1,5 +1,5 @@
 
-import { Modal, Text, View, StyleSheet, useWindowDimensions, KeyboardAvoidingView } from "react-native";
+import { Modal, Text, View, StyleSheet, useWindowDimensions, TouchableWithoutFeedback } from "react-native";
 import * as style from '@/assets/styles/styles'
 
 //Import styles
@@ -23,33 +23,31 @@ const CustomModal = ({title="My Modal", onClose, children, overrideStyle ={}, ho
 
     return ( 
         <Modal transparent={true} supportedOrientations={['portrait', 'landscape']} >
-            {/* Backdrop with black opacity */}
-            <View style={styles.modalOverlay} >
-
-
+            {/* TouchableWithoutFeedback for backdrop click */}
+            <TouchableWithoutFeedback onPress={onClose}>
+                <View style={styles.modalOverlay}>
                     {/* Main Content - White Div */}
-                    <View style={[styles.modalContainer, { width: dynamicWidth }, overrideStyle ]}>
+                    <View style={[styles.modalContainer, { width: dynamicWidth }, overrideStyle]} onStartShouldSetResponder={() => true}>
                         {/* Top Bar with Title and exit button */}
-                        <View style ={styles.topBar}>
+                        <View style={styles.topBar}>
                             {/* Modal Title */}
-                            <Text style={{ fontSize: style.text_md, color: style.gray_600, margin: 5, fontWeight:"500" }}>
-                                { title }
+                            <Text style={{ fontSize: style.text_md, color: style.gray_600, margin: 5, fontWeight: "500" }}>
+                                {title}
                             </Text>
                             
                             {/* Button to Close */}
-                            <CustomButton onPress={onClose} customStyle={{ borderRadius: 10, backgroundColor: style.gray_300, paddingVertical: 10, paddingHorizontal: 12}}>
-                                <Icon name={"xmark"} size={15} color={style.gray_500}/>
+                            <CustomButton onPress={onClose} customStyle={{ borderRadius: 10, backgroundColor: style.gray_300, paddingVertical: 10, paddingHorizontal: 12 }}>
+                                <Icon name={"xmark"} size={15} color={style.gray_500} />
                             </CustomButton>
                         </View>
 
-
                         {/* Main Content Below - Children Content Here */}
-                        <View style={{ paddingHorizontal: horizontalPadding, paddingTop:topPadding, alignSelf:"stretch" }}>
-                            { children }
+                        <View style={{ paddingHorizontal: horizontalPadding, paddingTop: topPadding, alignSelf: "stretch" }}>
+                            {children}
                         </View>
                     </View>
-
-            </View>
+                </View>
+            </TouchableWithoutFeedback>
         </Modal>
      );
 }
