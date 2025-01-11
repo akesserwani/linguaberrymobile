@@ -38,7 +38,7 @@ const Home = () => {
             {/* Main White Container for Content */}
             <View style={styles.main_container}>
                 {/* Top Horizontal Container with Bookmarks label and Drop Down (only if screen > 800)*/}
-                <View style={{ flexDirection: 'row', paddingVertical:20, marginTop:10, justifyContent:'space-between' }}>
+                <View style={{ flexDirection: 'row', paddingVertical:20, paddingHorizontal:40, marginTop:10, justifyContent:'space-between' }}>
                     {/* Bookmarks label */}
                     <View style={{flexDirection: "row", alignItems: "center", justifyContent: "center", gap:10}}>
                       <Icon name={'bookmark'} solid={true} size={15} color={style.gray_500} />
@@ -72,15 +72,12 @@ const styles = StyleSheet.create({
       flex: 1,
       flexDirection: 'column',
       gap: 5,
-      backgroundColor: style.white, 
+      backgroundColor: 'white', 
       borderTopRightRadius: 20,
       borderTopLeftRadius: 20,
       borderWidth: style.border_sm,
       borderBottomWidth: 0,
       borderColor: style.gray_200,
-
-      //add padding to contents in container
-      paddingHorizontal: 50,
     },
 });
   

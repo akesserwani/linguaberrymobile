@@ -235,6 +235,7 @@ const BookmarksList = () => {
 const styles = StyleSheet.create({
     tabContainer: {
         flexDirection: "row",
+        paddingHorizontal:40
     },
     
     tabText: {
@@ -266,7 +267,7 @@ const styles = StyleSheet.create({
     },
     item: {
         paddingVertical: 3,
-        paddingHorizontal:4,
+        paddingHorizontal:40,
         borderBottomWidth: 1,
         borderBottomColor: style.gray_200, 
         flexDirection:'row',
