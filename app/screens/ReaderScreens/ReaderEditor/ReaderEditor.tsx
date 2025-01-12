@@ -21,7 +21,16 @@ const ReaderEditor = ({route}) => {
 
     //reactive variable for the language direction
     //can be changed via the keyboard 
-    const [isRTL, changeRTL] = useState(false);
+    const [direction, setDirection] = useState('ltr'); // Default direction is Left-to-Right
+
+    // Function to detect RTL characters
+    const detectDirection = (text) => {
+        if (isRTLChar(text)) {
+            setDirection('rtl'); // Switch to Right-to-Left
+        } else {
+            setDirection('ltr'); // Default to Left-to-Right
+        }
+    };
 
 
     //get the data from the navigator
@@ -39,17 +48,17 @@ const ReaderEditor = ({route}) => {
         } 
     }, [isFocused, navigation]);
 
-    //Navigation bar data
-    useLayoutEffect(() => {
-        navigation.setOptions({
-            // Set custom text for the back button          
-            headerBackTitle: 'View',
-            headerRight: () => (
-                <HeaderRight isRTL={isRTL} changeRTL={changeRTL}/>
-                ),
+    // //Navigation bar data
+    // useLayoutEffect(() => {
+    //     navigation.setOptions({
+    //         // Set custom text for the back button          
+    //         headerBackTitle: 'View',
+    //         headerRight: () => (
+    //             <HeaderRight/>
+    //             ),
             
-        });
-        }, [navigation]);
+    //     });
+    //     }, [navigation]);
     
 
     //reactive variable for titleForm
@@ -69,8 +78,9 @@ const ReaderEditor = ({route}) => {
 
         setContentsForm(entryContents);
 
-        //override rtl data if language is detected
-        changeRTL(isRTLChar(entryContents))
+        //detect initial text direction based on entry contents
+        detectDirection(entryTitle)
+
         // Mark initialization as complete
         setIsInitialized(true);
 
@@ -95,10 +105,12 @@ const ReaderEditor = ({route}) => {
 
     //Finally, handle form input changes to update titleForm and contentsForm:
     const handleTitleChange = (text) => {
+        detectDirection(text);
         setTitleForm(text);
     };
     
     const handleContentsChange = (text) => {
+        detectDirection(text);
         setContentsForm(text);
     };
     
@@ -117,7 +129,7 @@ const ReaderEditor = ({route}) => {
             <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{paddingRight:10, paddingBottom:100}}>
 
                 {/* title form - can be edited */}
-                <TextInput  style={[ styles.titleContainer, {textAlign: isRTL ? 'right' : 'left', paddingHorizontal: responsiveHorizontalPadding + 10} ]}
+                <TextInput  style={[ styles.titleContainer, {textAlign: direction === 'rtl' ? 'right' : 'left', paddingHorizontal: responsiveHorizontalPadding + 10} ]}
                             placeholder= { "Enter title..." }
                             value={ titleForm } 
                             onChangeText={ handleTitleChange }
@@ -130,7 +142,7 @@ const ReaderEditor = ({route}) => {
 
                     {/* Main body data here */}
                     <TextInput  style={{fontSize:style.text_lg, color: style.gray_500, fontWeight:'500', width:'100%', flexWrap:'wrap', paddingBottom:100,
-                        padding:10, textAlign: isRTL ? 'right' : 'left'
+                        padding:10, textAlign: direction === 'rtl' ? 'right' : 'left' 
                     }}
                                 placeholder= { "Start writing here..." }
                                 value={ contentsForm } 

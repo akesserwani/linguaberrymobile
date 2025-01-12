@@ -237,16 +237,23 @@ const Study = () => {
         rearrange();
 
         setCurrentIndex((prevIndex) => {
-          const newIndex = (prevIndex + 1) % srsData.length; // Ensure it wraps around
-          const currentCard = srsData[newIndex];
-          const key = Object.keys(currentCard)[0];
-      
-          console.log("Next Key:", key);
-          console.log("Next Value:", currentCard[key]);
-      
-          return newIndex;
+            let newIndex = prevIndex;
+    
+            // Loop to find the next card that is not easy (currentCard[key][0] !== 1)
+            do {
+                newIndex = (newIndex + 1) % srsData.length; // Increment index and wrap around if needed
+                const currentCard = srsData[newIndex];
+                const key = Object.keys(currentCard)[0];
+    
+                // Check if the card is not easy
+                if (currentCard[key][0] !== 1) {
+                    break; // Exit the loop when a valid card is found
+                }
+            } while (newIndex !== prevIndex); // Stop if we've looped back to the original card
+    
+            return newIndex; // Return the index of the next valid card
         });
-      };
+    };
       
     //button functions
     const hardButton = () => {
@@ -288,13 +295,19 @@ const Study = () => {
           const currentCard = updatedData[currentIndex];
           const key = Object.keys(currentCard)[0];
       
-          if (currentCard[key]) {
-            if (currentCard[key][1] === 0) {
-              currentCard[key][1] = 1; // Update the second index in the value array to 1
-            } else if (currentCard[key][1] === 1) {
-              currentCard[key][0] = 1; // Update the first index in the value array to 1
-            }
-          }
+        if (currentCard[key]) {
+            currentCard[key][0] = 1; // Update the first index in the value array to 2
+        }
+        
+
+
+        //   if (currentCard[key]) {
+        //     if (currentCard[key][1] === 0) {
+        //       currentCard[key][1] = 1; // Update the second index in the value array to 1
+        //     } else if (currentCard[key][1] === 1) {
+        //       currentCard[key][0] = 1; // Update the first index in the value array to 1
+        //     }
+        //   }
       
           return updatedData;
         });

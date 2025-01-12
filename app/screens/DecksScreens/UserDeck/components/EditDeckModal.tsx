@@ -124,11 +124,34 @@ const EditDeckModal = ({onClose, currentLang, deckId, deckName, refreshDeck, ref
 
     }
 
-    return ( 
-        <CustomModal title="Edit Deck" onClose={onClose}>
+    //copy data button
+    const copyAIPrompt = async() =>{
 
-            <KeyboardAvoidingView behavior={'padding'} keyboardVerticalOffset={50} >
-            <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{paddingRight:10}}>
+        const format = "term 1, translation 1 \n word 2, translation 2 "
+
+        const prompt = `We are learning ${currentLang}. We want to generate translation values for these words: "${inputData}". Generate the term translation values in this CSV format ${format}. All lowercase. You can keep the notes column empty (so just term 1, translation 1). No repetition of words. `;
+
+        await Clipboard.setStringAsync(prompt);
+
+        CustomAlert("Data copied to clipboard");
+
+    }
+
+    //paste button
+    const pasteButton = async() =>{
+        //get the text
+        const text = await Clipboard.getStringAsync()
+
+        //set the text to the input data prompt
+        setInputData(text)
+    }
+    
+
+    return ( 
+        <CustomModal title="Edit Deck" onClose={onClose} horizontalPadding={0} overrideStyle={{maxHeight:'80%'}}>
+
+            <KeyboardAvoidingView behavior={'padding'} keyboardVerticalOffset={50} style={{maxHeight:'95%'}}>
+            <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ gap: 10, padding:35, flexDirection:'column' }}>
 
                 {/* DECK NAME */}
                 {/* Input to edit the deck */}
@@ -141,32 +164,45 @@ const EditDeckModal = ({onClose, currentLang, deckId, deckName, refreshDeck, ref
                     }
 
                 {/* Input for the deck data */}
-                    <View style={{marginTop:40}}>
-                        <View style={{borderTopLeftRadius:style.rounded_md, borderTopRightRadius:style.rounded_md, backgroundColor:style.gray_300, height:50, padding:15}}>
+                    <View style={{marginTop:40, backgroundColor:style.gray_300, borderRadius:style.rounded_md}}>
+                        <View style={{borderTopLeftRadius:style.rounded_md, borderTopRightRadius:style.rounded_md, backgroundColor:style.gray_300, height:50, padding:15, paddingTop:20}}>
                             <Text style={{color:style.gray_600, fontWeight:'500'}}>Term, Translation, Notes (optional)</Text>
                         </View>
                         <CustomInput showLabel={false} placeholder={"Enter data..." } value={inputData} onChangeText={setInputData} 
-                            multiline={true} maxLength={100000} customFormStyle={{height:120, borderTopLeftRadius:0, borderTopRightRadius:0, borderTopWidth:0}} />
+                            multiline={true} maxLength={100000} customFormStyle={{height:180, borderTopLeftRadius:0, borderTopRightRadius:0, borderTopWidth:0}}/>
                     </View>
 
                     {/* Print the errors of the CSV data input */}
-                    <Text style={{color:style.red_500, fontWeight:"400", position: "relative", left:5, top:10}}>
+                    <Text style={{color:style.red_500, fontWeight:"400"}}>
                         { dataError }
                     </Text>
                 
                 {/* Button Container */}
-                <View style={{flexDirection:'row', gap:5}}>
+                <View style={{flexDirection:'row', gap:5, flexWrap:'wrap'}}>
                     {/* Copy Text Button */}
-                    <CustomButton onPress={copyData} customStyle={{flexDirection:'row', gap:5, backgroundColor:style.gray_200}}> 
-                        <Text style={{color:style.gray_500, fontSize:style.text_xs, fontWeight:'500'}}>Copy data</Text>
-                        <Icon name={"copy"} size={15} color={style.gray_500} />
+                    <CustomButton onPress={copyData} customStyle={{flexDirection:'row', gap:5}}> 
+                        <Text style={{color:style.white, fontSize:style.text_xs, fontWeight:'500'}}>Copy Data</Text>
+                        <Icon name={"copy"} size={15} solid={true} color={style.white} />
+                    </CustomButton>
+
+                    {/* AI prompt button for word data */}
+                    <CustomButton onPress={copyAIPrompt} customStyle={{flexDirection:'row', gap:5}}> 
+                        <Text style={{color:style.white, fontSize:style.text_xs, fontWeight:'500'}}>Copy Prompt</Text>
+                        <Icon name={"copy"} size={15} solid={true} color={style.white} />
+                    </CustomButton>
+
+                    {/* Paste Data Button */}
+                    <CustomButton onPress={pasteButton} customStyle={{flexDirection:'row', gap:5, height:35, backgroundColor:style.gray_200}}>
+                        <Text style={{color:style.gray_500, fontSize:style.text_xs, fontWeight:'600'}}>Paste</Text>
+                        <Icon name={"paste"} width={10} solid={true} height={10} color={style.gray_500} />
                     </CustomButton>
 
                     {/* Share Data Button */}
-                    <CustomButton onPress={shareData} customStyle={{flexDirection:'row', gap:5, height:35}}>
-                        <Text style={{color:style.white, fontSize:style.text_xs, fontWeight:'600'}}>Share</Text>
-                        <Icon name={"share"} width={12} height={10} color={style.white} />
+                    <CustomButton onPress={shareData} customStyle={{flexDirection:'row', gap:5, height:35, backgroundColor:style.gray_200}}>
+                        <Text style={{color:style.gray_500, fontSize:style.text_xs, fontWeight:'600'}}>Share</Text>
+                        <Icon name={"share"} width={12} height={10} color={style.gray_500} />
                     </CustomButton>
+
                 </View>
 
                 {/* User warning to use semicolon instead of commas*/}

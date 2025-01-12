@@ -1,31 +1,53 @@
 
 import { useState } from 'react';
 
-import { Text, View, TextInput, StyleSheet } from 'react-native';
+import { Text, View, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import * as style from '@/assets/styles/styles'
 
+import { isRTLChar } from '../data/LangData';
 
 const CustomInput = ({showLabel = true, label = "My Form", placeholder, value, onChangeText, maxLength=100, customStyle=null, customFormStyle=null, multiline=false, editable=true }) => {
 
+    // const [direction, setDirection] = useState(false);
+
+    const [direction, setDirection] = useState('ltr'); // Default direction is Left-to-Right
+
+    // Function to detect RTL characters
+    const detectDirection = (text) => {
+        if (isRTLChar(text)) {
+            setDirection('rtl'); // Switch to Right-to-Left
+        } else {
+            setDirection('ltr'); // Default to Left-to-Right
+        }
+    };
+
+
+    const handleTextChange = (text) => {
+        detectDirection(text); // Detect language direction dynamically
+        onChangeText(text); // Call the parent onChangeText handler
+    };
 
 
     return ( 
         <View style={[{flexDirection: 'column', gap: 15}, customStyle]}>
 
-            {/* Label */}
-            {/* Make label dynamic based on the prop insertion, it is true by default though */}
-            { showLabel && 
+            <View style={{flexDirection:'row', justifyContent:'space-between'}}>
 
-            <Text style={{color:style.gray_500, fontSize: style.text_md, fontWeight: '500'}}> {label}: </Text>
+                {/* Label */}
+                {/* Make label dynamic based on the prop insertion, it is true by default though */}
+                { showLabel && 
 
-            }
-        
+                    <Text style={{color:style.gray_500, fontSize: style.text_md, fontWeight: '500'}}> {label}: </Text>
+
+                }
+            </View>
+
             {/* Form */}
-            <TextInput style={[styles.form, customFormStyle]} 
+            <TextInput style={[styles.form, customFormStyle, { textAlign: direction === 'rtl' ? 'right' : 'left' }]} 
                         placeholder= { placeholder }
                         placeholderTextColor={'#9ca3af'}
                         value={ value } 
-                        onChangeText={ onChangeText }
+                        onChangeText={ handleTextChange }
                         autoCorrect={ false }
                         autoCapitalize='none'
                         maxLength={maxLength}

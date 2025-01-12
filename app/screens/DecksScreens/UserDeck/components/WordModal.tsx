@@ -16,9 +16,11 @@ import Icon from '@expo/vector-icons/FontAwesome6'
 
 //import function to shorten data
 import { limitLength } from '@/app/data/Functions';
+import { isRTLChar } from '@/app/data/LangData';
 
 //import function to toggle the starred value
 import { toggleStar, getStarred, updateWord, deleteWord, wordExistsInDeck } from '../../DataDecks';
+import React from 'react';
 
 
 const WordModal = ({onClose, deckId, wordData, deckName}) => {
@@ -106,6 +108,16 @@ const WordModal = ({onClose, deckId, wordData, deckName}) => {
         );
     
     }
+
+    //Switch term/translation functionality
+    const switchData = () =>{
+        //set formWord to the form translation
+        setFormWord(formTransl);
+
+        //set formTranslation to the formWord
+        setFormTransl(formWord);
+    }
+    
     
 
     return ( 
@@ -155,17 +167,19 @@ const WordModal = ({onClose, deckId, wordData, deckName}) => {
 
             <View style={{flexDirection:'column', borderTopWidth: 1, borderTopColor: style.gray_200}}>
                 {/* Term */}
-                <Text style={{color:style.gray_500, fontSize: style.text_lg, fontWeight: '500', marginTop: 20}}>Term: </Text>
-                { !editToggled ? (
-                    //If edit is not toggled - show the text
-                    <Text style={{color:style.gray_500, fontSize: style.text_lg, fontWeight: '300', marginTop: 5}}> 
-                    { wordData.term }
-                    </Text>
+               { !editToggled ? (
+                    <>
+                        {/* //If edit is not toggled - show the text */}
+                        <Text style={{color:style.gray_500, fontSize: style.text_lg, fontWeight: '500', marginTop: 20}}>Term: </Text>
+                        <Text style={{color:style.gray_500, fontSize: style.text_lg, fontWeight: '300', marginTop: 5, textAlign: isRTLChar(wordData.term)  ? 'right' : 'left',}}> 
+                        { wordData.term }
+                        </Text>
+                    </>
                     ) : (
                         <>
                         {/* if it is toggled, show the edit form */}
-                        <CustomInput showLabel={false} placeholder={"Type word..." } value={formWord} onChangeText={setFormWord} 
-                        maxLength={100} customStyle={{marginTop: 25}} multiline={true} customFormStyle={{height: 80}}/>
+                        <CustomInput showLabel={true} label={"Term"} placeholder={"Type term..." } value={formWord} onChangeText={setFormWord} 
+                        maxLength={100} customStyle={{marginTop: 30}} multiline={true} customFormStyle={{height: 80}}/>
                         {/* term already exists in deck */}
                         { termExist && 
                             <Text style={{color:style.red_500, fontWeight:"400", position: "relative", left:5, top:10}}>Term already exists in this deck</Text>
@@ -174,29 +188,46 @@ const WordModal = ({onClose, deckId, wordData, deckName}) => {
                     )
                 }
 
+
+                {/* Switch term and translation button - only visible if edit toggled */}
+                { editToggled &&
+                    <View style={{padding:5, flexDirection:'row', justifyContent:'flex-end', paddingTop:30}}>
+                        <TouchableOpacity onPress={switchData} activeOpacity={0.7}>
+                            <Icon name={"arrows-up-down"} size={20} color={style.gray_500}/>
+                        </TouchableOpacity>
+                    </View>
+                }
+
+
+
                 {/* Translation */}
-                <Text style={{color:style.gray_500, fontSize: style.text_lg, fontWeight: '500', marginTop: 20}}>Translation: </Text>
                 { !editToggled ? (
-                    //If edit is not toggled - show the text
-                    <Text style={{color:style.gray_500, fontSize: style.text_lg, fontWeight: '300', marginTop: 5}}> 
+                    <>
+                    <Text style={{color:style.gray_500, fontSize: style.text_lg, fontWeight: '500', marginTop: 30}}>Translation: </Text>
+                    {/* If edit is not toggled - show the text */}
+                    <Text style={{color:style.gray_500, fontSize: style.text_lg, fontWeight: '300', marginTop: 5, textAlign: isRTLChar(wordData.translation)  ? 'right' : 'left',}}> 
                         { wordData.translation }
                     </Text>
+                    </>
                     ) : (
                         //if it is toggled, show the edit form
-                        <CustomInput showLabel={false} placeholder={"Type translation..." } value={formTransl} onChangeText={setFormTransl} 
-                        maxLength={100} customStyle={{marginTop: 25}} multiline={true} customFormStyle={{height: 80}}/>
+                        <CustomInput showLabel={true} label={"Translation"} placeholder={"Type translation..." } value={formTransl} onChangeText={setFormTransl} 
+                        maxLength={100} customStyle={{marginTop: 30}} multiline={true} customFormStyle={{height: 80}}/>
                     )
                 }
+
                 {/* Etymology */}
-                <Text style={{color:style.gray_500, fontSize: style.text_lg, fontWeight: '500', marginTop: 20}}>Notes: </Text>
                 { !editToggled ? (
-                    //If edit is not toggled - show the text
-                    <Text style={{color:style.gray_500, fontSize: style.text_lg, fontWeight: '300', marginTop: 5}}> 
+                    <>
+                    <Text style={{color:style.gray_500, fontSize: style.text_lg, fontWeight: '500', marginTop: 30}}>Notes: </Text>
+                    {/* //If edit is not toggled - show the text */}
+                    <Text style={{color:style.gray_500, fontSize: style.text_lg, fontWeight: '300', marginTop: 5, textAlign: isRTLChar(wordData.term)  ? 'right' : 'left',}}> 
                         { wordData.notes }
                     </Text>
+                    </>
                     ) : (
                         //if it is toggled, show the edit form
-                        <CustomInput showLabel={false} placeholder={"Type notes..." } value={formEty} 
+                        <CustomInput showLabel={true} label={"Notes"} placeholder={"Type notes..." } value={formEty} 
                         onChangeText={setFormEty} maxLength={1000} multiline={true} customStyle={{marginTop:25}}
                         customFormStyle={{height:100}} />
                     )

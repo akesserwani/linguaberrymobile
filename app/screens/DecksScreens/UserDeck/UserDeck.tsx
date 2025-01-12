@@ -25,6 +25,7 @@ import CreateWordModal from './components/CreateWordModal';
 import WordModal from './components/WordModal';
 
 import { limitLength } from '@/app/data/Functions';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 const UserDeck = ({route}) => {
 
@@ -159,6 +160,14 @@ const UserDeck = ({route}) => {
     },[wordData])
 
 
+    //function to get part of speech from notes
+    const getPartOfSpeech = (text) => {
+        // Use a regular expression to match content between brackets
+        const match = text.match(/\[([a-zA-Z]+)\]/);
+        // Return the first group match truncated to 5 characters or null if not found
+        return match ? match[1].substring(0, 5) : null;
+    };
+
 
     //SCREEN WIDTH AND RESPONSIVE DESIGNS
     // Get screen width dynamically
@@ -174,6 +183,7 @@ const UserDeck = ({route}) => {
         flatListRef.current?.scrollToOffset({ offset: totalHeight, animated: true });
       };
           
+
     return ( 
         <View style={[styles.mainContainer, { paddingHorizontal: responsiveHorizontalPadding }]}>
             {/* Top Container with title, buttons, and tag dropdown */}
@@ -312,9 +322,16 @@ const UserDeck = ({route}) => {
                                 </View>
 
                                 {/* Container for Translation */}
-                                <View style={{ width: '40%', height: 60, justifyContent: 'center', paddingVertical:2 }}>
+                                <View style={{ width: '30%', height: 60, justifyContent: 'center', paddingVertical:2 }}>
                                     <Text style={{ color: style.gray_400, fontSize: style.text_md }}> 
                                     { limitLength(item.translation, 20) } 
+                                    </Text>
+                                </View>
+
+                                {/* Container for end to get part of speech */}
+                                <View style={{ width: '15%', height: 60, justifyContent: 'center', paddingVertical:2 }}>
+                                    <Text style={{ color: style.gray_400, fontStyle:'italic', fontSize: style.text_sm }}> 
+                                        {getPartOfSpeech(item.notes)}
                                     </Text>
                                 </View>
 

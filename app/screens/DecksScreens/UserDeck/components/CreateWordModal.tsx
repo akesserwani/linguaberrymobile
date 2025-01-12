@@ -115,7 +115,7 @@ const CreateWordModal = ({ onClose, refresh, scrollToBottom, deckId }) => {
                     }
 
                     {/* Button to switch term and translation*/}
-                    <View style={{padding:5, flexDirection:'row', justifyContent:'flex-end'}}>
+                    <View style={{padding:5, flexDirection:'row', justifyContent:'flex-end', paddingVertical:15}}>
                         <TouchableOpacity onPress={switchData} activeOpacity={0.7}>
                             <Icon name={"arrows-up-down"} size={20} color={style.gray_500}/>
                         </TouchableOpacity>
@@ -137,7 +137,7 @@ const CreateWordModal = ({ onClose, refresh, scrollToBottom, deckId }) => {
                         //Add etymology input, multiline form
                         <CustomInput showLabel={false} placeholder={"Type notes..." } value={formEty} 
                                 onChangeText={setFormEty} maxLength={1000} multiline={true} customStyle={{marginTop:25}}
-                                customFormStyle={{height:100}} />
+                                customFormStyle={{height:100}}/>
                         
                     }
 

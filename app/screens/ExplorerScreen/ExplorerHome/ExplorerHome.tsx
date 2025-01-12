@@ -222,8 +222,8 @@ const ExplorerHome = () => {
                                 </Text>
                             </TouchableOpacity>
 
-                            {/* Only for Arabic - for now */}
-                            { currentLang === "Arabic" &&
+                            {/* hide this section for now */}
+                            { false &&
                             <TouchableOpacity onPress={() => setActiveTab('Religion')} style={[styles.individualTab, activeTab === 'Religion' && styles.activeTab]} activeOpacity={0.7}>
                                 {/*Icon */}
                                 <Icon name={'hands-praying'} solid={true} size={20} color={style.gray_400} style={[activeTab === 'Religion' && styles.activeTab]}/>

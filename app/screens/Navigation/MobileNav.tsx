@@ -25,8 +25,11 @@ const MobileNav = () => {
     const { width } = useWindowDimensions();
 
     //if width < 800, make icon size 20, else 40
-    const dynamicIcon = width < 800 ? 20 : 25;  // 90% for mobile, 80% for larger screens
+    const dynamicIcon = width < 800 ? 15 : 20;  // 90% for mobile, 80% for larger screens
 
+    const dynamicText = width < 800 ? style.text_xs : style.text_sm;
+    
+    const dynamicWidth = width < 800 ? 80 : 110;
 
     return ( 
 
@@ -38,10 +41,13 @@ const MobileNav = () => {
         tabBarItemStyle: {
             justifyContent: 'center',  
             alignContent:'center',
-            alignItems: 'center',        
+            alignItems: 'center',  
             borderRadius: 15,
             padding:5,
-            maxWidth:150
+            maxWidth:dynamicWidth,
+            minHeight:60, 
+            paddingBottom:10,
+            marginHorizontal:2
         },
         tabBarActiveBackgroundColor: style.blue_100,
         }}
@@ -66,7 +72,7 @@ const MobileNav = () => {
                         tabBarIcon: ({color}) => <Icon name="house" size={dynamicIcon} color={color} />,
                         //have no header title
                         headerTitle: "",
-                        tabBarLabelStyle: { fontWeight: '500', fontSize:style.text_sm },
+                        tabBarLabelStyle: { fontWeight: '500', fontSize:dynamicText },
                     }}/>
 
         {/* Decks Screen   */}     
@@ -74,14 +80,14 @@ const MobileNav = () => {
                     options={{
                         headerShown:false,
                         tabBarIcon: ({color}) => <Icon name="table-list" size={dynamicIcon} color={color} />,
-                        tabBarLabelStyle: { fontWeight: '500', fontSize:style.text_sm },
+                        tabBarLabelStyle: { fontWeight: '500', fontSize:dynamicText },
                     }} />
 
         {/* Reader Router   */}     
         <Tab.Screen name="Reader" component={ ReaderStack } options={{
                         headerShown:false,
                         tabBarIcon: ({color}) => <Icon name="book" size={dynamicIcon} color={color} />,
-                        tabBarLabelStyle: { fontWeight: '500', fontSize:style.text_sm }
+                        tabBarLabelStyle: { fontWeight: '500', fontSize:dynamicText }
                     }} />
 
         {/* Explorer Router   */}     
@@ -89,7 +95,7 @@ const MobileNav = () => {
                     options={{
                         headerShown:false,
                         tabBarIcon: ({color}) => <Icon name="book-atlas" size={dynamicIcon} color={color} />,
-                        tabBarLabelStyle: { fontWeight: '500', fontSize:style.text_sm }
+                        tabBarLabelStyle: { fontWeight: '500', fontSize:dynamicText }
                     }} />
         </Tab.Navigator>
      );

@@ -13,6 +13,8 @@ import CustomAlert from '@/app/components/CustomAlert';
 import * as style from '@/assets/styles/styles'
 import React from 'react';
 
+import * as Clipboard from 'expo-clipboard';
+
 import { CurrentLangContext } from '@/app/data/CurrentLangContext.tsx';
 import { addWebDataToDeck } from '../DecksScreens/DataDecks';
 import { apiLink, apiKey } from '@/app/data/LangData';
@@ -131,12 +133,26 @@ const ImportDeck = ({onClose, refresh}) => {
 
   };
 
+    const pasteCode = async() =>{
+        //get the text
+        const text = await Clipboard.getStringAsync()
 
+        //set the text to the input data prompt
+        setFormInput(text)
+
+    }
+  
+  
     return ( 
-        <CustomModal onClose={onClose} title="Import from Web" >
+        <CustomModal onClose={onClose} title="Import from Web">
 
             {/* Input form */}
             <CustomInput label={ "Enter Code"} placeholder={"Type code here..." } value={formInput} onChangeText={setFormInput} maxLength={20}/>
+
+            {/* Paste Button */}
+            <TouchableOpacity style={{margin:8}} activeOpacity={0.5} onPress={pasteCode}>
+                <Text style={{color:style.blue_500}}>Paste</Text>
+            </TouchableOpacity>
 
             {/* Submission button */}
             <CustomButton onPress={importDeckFromWeb} customStyle={{marginTop: 40, height:45}}>
