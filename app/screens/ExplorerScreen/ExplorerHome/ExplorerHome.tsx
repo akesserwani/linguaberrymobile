@@ -195,7 +195,7 @@ const ExplorerHome = () => {
             <View style={{ flex:1, backgroundColor:style.white, paddingTop:20, borderColor:style.gray_200, borderWidth:style.border_sm, borderTopRightRadius:style.rounded_lg, borderTopLeftRadius:style.rounded_lg}}>
                     {/* Top Container with Tabs - All and Bookmarks */}
                     <View style={styles.tabContainer}>
-                        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{paddingHorizontal:25, flex:1, justifyContent:'center'}}>
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal:30, flexGrow:1 }}>
                             <TouchableOpacity onPress={() => setActiveTab('Words')} style={[styles.individualTab, activeTab === 'Words' && styles.activeTab]} activeOpacity={0.7}>
                                 {/*Icon */}
                                 <Icon name={'table-list'} solid={true} size={20} color={style.gray_400} style={[activeTab === 'Words' && styles.activeTab]}/>
@@ -222,15 +222,18 @@ const ExplorerHome = () => {
                                 </Text>
                             </TouchableOpacity>
 
-                            <TouchableOpacity onPress={() => setActiveTab('Nonfiction')} style={[styles.individualTab, activeTab === 'Nonfiction' && styles.activeTab]} activeOpacity={0.7}>
+                            {/* Only for Arabic - for now */}
+                            { currentLang === "Arabic" &&
+                            <TouchableOpacity onPress={() => setActiveTab('Religion')} style={[styles.individualTab, activeTab === 'Religion' && styles.activeTab]} activeOpacity={0.7}>
                                 {/*Icon */}
-                                <Icon name={'landmark-dome'} solid={true} size={20} color={style.gray_400} style={[activeTab === 'Nonfiction' && styles.activeTab]}/>
-                                <Text style={[styles.tabText, activeTab === 'Nonfiction' && styles.activeTab]} >
+                                <Icon name={'hands-praying'} solid={true} size={20} color={style.gray_400} style={[activeTab === 'Religion' && styles.activeTab]}/>
+                                <Text style={[styles.tabText, activeTab === 'Religion' && styles.activeTab]} >
                                     Religion
                                 </Text>
                             </TouchableOpacity>
-                        </ScrollView>
+                            }
 
+                        </ScrollView>
                     </View>
                 {/* Container for The Rendered Content  */}
                 <View style={{ flexDirection: 'column', flex:1, paddingHorizontal:25, backgroundColor:style.white}} >
@@ -268,15 +271,17 @@ const ExplorerHome = () => {
                                             </View>
                                         </View>
 
-                                        {/* Word Count - only show if active tab is Words */}
-                                        { activeTab === "Words" &&
-                                            <Text style={{ color: style.gray_400, fontWeight: '400' }}>
-                                                {item.wordCount} words
-                                            </Text>
-                                        }
-
                                         {/* Data only for stories */}
-                                        <View style={{flexDirection:'row', gap:15, width:50, justifyContent:'flex-end'}}>
+                                        <View style={{flexDirection:'row', gap:15, width:'auto', justifyContent:'flex-end', paddingRight:5}}>
+
+                                            {/* Word Count - only show if active tab is Words */}
+                                            { activeTab === "Words" &&
+                                                    <Text style={{ color: style.gray_400, fontWeight: '400' }}>
+                                                        {item.wordCount} words
+                                                    </Text>
+                                            }
+
+
                                             {/* Bookmark icon - only for stories */}
                                             {/* Level dot - only for stories */}
                                             { (activeTab !== "Words" && getExplorerBookmarks(currentLang).includes(item.title.trim())) && 
@@ -345,6 +350,7 @@ const styles = StyleSheet.create({
 
     individualTab:{
         flex:1,
+        minWidth: 100,
         paddingHorizontal:10,
         borderBottomWidth: 3,
         borderBottomColor: style.gray_200,
