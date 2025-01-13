@@ -8,6 +8,8 @@ import { CurrentLangContext } from '@/app/data/CurrentLangContext.tsx';
 import { isRTLChar } from '@/app/data/LangData';
 //database functions
 import { getWordData } from '../../DataReader';
+import * as Clipboard from 'expo-clipboard'; // Import clipboard for copying
+import CustomAlert from '@/app/components/CustomAlert';
 
 import AddWordToDeck from '@/app/screens/components/AddWordToDeck';
 
@@ -171,9 +173,14 @@ const TooltipComponent = ({ entryId, contents, refresh }) => {
                         <View style={{flexDirection:'row', justifyContent:'space-between'}}>
                             {/* Title Text */}
                             <View style={{width:'60%'}}>
-                                <Text style={{fontSize: style.text_lg, color: style.gray_600, fontWeight:'600', marginTop:10}}>
-                                    { cleanString(selectedWord) }
-                                </Text>
+                                <TouchableOpacity onPress={()=>{ 
+                                            Clipboard.setString(cleanString(selectedWord)); 
+                                            CustomAlert(`Copied "${cleanString(selectedWord)}"`)
+                                        }}>
+                                    <Text style={{fontSize: style.text_lg, color: style.gray_600, fontWeight:'600', marginTop:10}}>
+                                        { cleanString(selectedWord) }
+                                    </Text>
+                                </TouchableOpacity>
                             </View>
 
                             {/* Button to add word to deck - ON FAR RIGHT */}
@@ -191,17 +198,27 @@ const TooltipComponent = ({ entryId, contents, refresh }) => {
 
                         </View>
                         {/* Translation here */}
-                        <Text style={{fontSize: style.text_lg, color: style.gray_600, marginTop:20}}>
-                            { getTranslation(selectedWord) }
-                        </Text>
+                        <TouchableOpacity onPress={()=>{ 
+                                            Clipboard.setString(getTranslation(selectedWord)); 
+                                            CustomAlert(`Copied "${getTranslation(selectedWord)}"`)
+                                        }}>
+                            <Text style={{fontSize: style.text_lg, color: style.gray_600, marginTop:20}}>
+                                { getTranslation(selectedWord) }
+                            </Text>
+                        </TouchableOpacity>
                         {/* notes here */}
                         <View style={{marginTop:20, borderTopWidth: 1, borderTopColor:style.gray_300, paddingTop:20, flexDirection:'row', gap:5}}>
                             <Text style={{fontSize: style.text_md, color: style.gray_600, fontWeight:'600'}}>
                                 Notes: 
                             </Text>
-                            <Text style={{fontSize: style.text_md, color: style.gray_600}}>
-                               {getNotes(selectedWord)} 
-                            </Text>
+                            <TouchableOpacity onPress={()=>{ 
+                                            Clipboard.setString(getNotes(selectedWord)); 
+                                            CustomAlert(`Copied "${getNotes(selectedWord)}"`)
+                                        }}>
+                                <Text style={{fontSize: style.text_md, color: style.gray_600}}>
+                                {getNotes(selectedWord)} 
+                                </Text>
+                            </TouchableOpacity>
                         </View>
                     </ScrollView>
 

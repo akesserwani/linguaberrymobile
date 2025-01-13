@@ -192,7 +192,7 @@ const ExplorerHome = () => {
             <ExplorerFilter selectedLevel={selectedLevel} setLevel={setLevel} getColorLevel={getColorLevel}/>
 
             {/* White card container that holds the content */}
-            <View style={{ flex:1, backgroundColor:style.white, paddingTop:20, borderColor:style.gray_200, borderWidth:style.border_sm, borderTopRightRadius:style.rounded_lg, borderTopLeftRadius:style.rounded_lg}}>
+            <View style={{ flex:1, backgroundColor:style.white, paddingTop:20, borderColor:style.gray_200, borderWidth:style.border_md, borderTopRightRadius:style.rounded_lg, borderTopLeftRadius:style.rounded_lg}}>
                     {/* Top Container with Tabs - All and Bookmarks */}
                     <View style={styles.tabContainer}>
                         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal:30, flexGrow:1 }}>

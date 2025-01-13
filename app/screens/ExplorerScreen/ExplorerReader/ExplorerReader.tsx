@@ -219,7 +219,7 @@ const ExplorerReader = ({route}) => {
             </View>
 
             {/* Container for the main text with interactive functionalities */}
-            <ScrollView style={{ flex:1}} contentContainerStyle={{marginTop:20, paddingRight:15, paddingBottom:200}} ref={scrollViewRef} >
+            <ScrollView style={{ flex:1}} contentContainerStyle={{marginTop:20, paddingRight:15, paddingBottom:200}} ref={scrollViewRef} showsVerticalScrollIndicator={false}>
                 {storyData ? (
                     <>
                         {/* Main Text here in the Target Language */}

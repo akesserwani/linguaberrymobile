@@ -2,11 +2,8 @@ import { useState, useEffect, useRef  } from "react";
 import { TouchableOpacity, View, Text, StyleSheet, Modal } from "react-native";
 import Icon from '@expo/vector-icons/FontAwesome6'
 import * as style from '@/assets/styles/styles'
-import { useNavigation, useRoute } from '@react-navigation/native';
 
-import CustomAlert from "@/app/components/CustomAlert";
 
-import { deleteEntry } from "../../DataReader";
 import EditDataModal from "./EditDataModal";
 import ViewWordModal from "@/app/screens/components/ViewWordModal";
 import React from "react";
@@ -27,7 +24,6 @@ const HeaderRight = ({currentLang, entryId, entryTitle, setRefresh}) => {
 
     const [editDataModal, setEditDataModal] = useState(false);
 
-    const navigation = useNavigation();
 
 
     //Set dropdown based on position of the target ref
@@ -51,31 +47,6 @@ const HeaderRight = ({currentLang, entryId, entryTitle, setRefresh}) => {
         }
     };
     
-    //delete story functionality
-    const deleteEntryFunc = () =>{
-
-        //Make alert to confirm the deletion
-        CustomAlert(
-            `Are you sure you want to delete this story?`, 
-            'This entire story and all of its data will be permanently deleted.',  
-            [
-                { text: 'No',  onPress: () => console.log('Delete canceled'), style: 'cancel', },
-                { text: 'Yes', onPress: () => {
-                    //delete via database
-                    deleteEntry(entryId, currentLang);
-
-                    
-                    //Redirect to the ReaderHome view
-                    navigation.navigate('ReaderHome'); 
-                        
-                    }
-                }
-            ],
-            { cancelable: false } // Prevent dismissing the alert by tapping outside
-        );
-
-    }
-
 
     return (
         <>
@@ -120,11 +91,6 @@ const HeaderRight = ({currentLang, entryId, entryTitle, setRefresh}) => {
                         }} activeOpacity={0.7}>
                             <Text style={{color:style.gray_500}}>Edit Data</Text>
                         </TouchableOpacity>      
-
-                        <TouchableOpacity onPress={deleteEntryFunc} 
-                            activeOpacity={0.7}>
-                            <Text style={{color:style.gray_500}}>Delete Story</Text>
-                        </TouchableOpacity>                    
                                       
                     </View>
                 </TouchableOpacity>

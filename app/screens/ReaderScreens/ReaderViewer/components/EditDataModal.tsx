@@ -21,6 +21,7 @@ import { getWordData, updateWordData, getTranslationData, updateTranslationData,
 import { validateCSVFormat, CSVToObject, ObjectToCSV } from "@/app/data/Functions";
 
 import * as Clipboard from 'expo-clipboard';
+import { deleteEntry } from "../../DataReader";
 
 
 const EditDataModal = ({onClose, entryId, setRefresh}) => {
@@ -179,128 +180,161 @@ const EditDataModal = ({onClose, entryId, setRefresh}) => {
 
     }
 
+    //delete story functionality
+    const navigation = useNavigation();
+    
+    const deleteEntryFunc = () =>{
+
+        //Make alert to confirm the deletion
+        CustomAlert(
+            `Are you sure you want to delete this story?`, 
+            'This entire story and all of its data will be permanently deleted.',  
+            [
+                { text: 'No',  onPress: () => console.log('Delete canceled'), style: 'cancel', },
+                { text: 'Yes', onPress: () => {
+                    //delete via database
+                    deleteEntry(entryId, currentLang);
+
+                    //close the modal
+                    onClose()
+
+                
+                    //Redirect to the ReaderHome view
+                    navigation.navigate('ReaderHome'); 
+                        
+                    }
+                }
+            ],
+            { cancelable: false } // Prevent dismissing the alert by tapping outside
+        );
+
+    }
 
 
     const { width } = useWindowDimensions(); // Get screen width
 
     return ( 
-        <CustomModal title="Edit Data" onClose={onClose} horizontalPadding={0} overrideStyle={{maxHeight:'80%'}}>
+        <CustomModal title="Edit Data" onClose={onClose} horizontalPadding={0} overrideStyle={{maxHeight:'80%'}} allowBackdropClose={false}>
             {/* Main Content here */}
             <KeyboardAvoidingView behavior={'padding'} keyboardVerticalOffset={50} style={{maxHeight:'95%'}} >
                 <ScrollView contentContainerStyle={{ gap: 20, padding:35, flexDirection:'column' }}>
+                    <TouchableOpacity activeOpacity={1} style={{gap: 20, padding:5, flexDirection:'column'}}>
 
-                    {/* Bookmark Dropdown */}
-                    <BookmarkDropdown onTagSelect={selectTag} currentTag={selectedTag} filter={false}/>
+                        {/* Bookmark Dropdown */}
+                        <BookmarkDropdown onTagSelect={selectTag} currentTag={selectedTag} filter={false}/>
 
-                    {/* Copy Text Button */}
-                    <CustomButton onPress={copyFullText} customStyle={{flexDirection:'row', gap:5, backgroundColor:style.gray_200}}> 
-                        <Text style={{color:style.gray_500, fontSize:style.text_xs, fontWeight:'500'}}>Copy full text</Text>
-                        <Icon name={"copy"} size={15} color={style.gray_500} />
-                    </CustomButton>
+                        {/* Copy Text Button */}
+                        <CustomButton onPress={copyFullText} customStyle={{flexDirection:'row', gap:5, backgroundColor:style.gray_200}}> 
+                            <Text style={{color:style.gray_500, fontSize:style.text_xs, fontWeight:'500'}}>Copy full text</Text>
+                            <Icon name={"copy"} size={15} color={style.gray_500} />
+                        </CustomButton>
 
-                    {/* Column 1 - Word Data */}
-                    <View style={{flexDirection:'column', gap:10, marginTop:20}}>
+                        {/* Column 1 - Word Data */}
+                        <View style={{flexDirection:'column', gap:10, marginTop:20}}>
 
-                        {/* Form Label */}
-                        <Text style={{color:style.gray_500, fontSize: style.text_md, fontWeight: '500'}}> Word data: </Text>
+                            {/* Form Label */}
+                            <Text style={{color:style.gray_500, fontSize: style.text_md, fontWeight: '500'}}> Word data: </Text>
 
-                        {/* Word Data input form */}
-                        <View style={{ backgroundColor:style.gray_300, borderRadius:style.rounded_md}}>
-                            <View style={{borderTopLeftRadius:style.rounded_md, borderTopRightRadius:style.rounded_md, backgroundColor:style.gray_300, height:50, padding:15, paddingTop:20}}>
-                                <Text style={{color:style.gray_600, fontWeight:'500'}}>Term, Translation, Notes (optional)</Text>
+                            {/* Word Data input form */}
+                            <View style={{ backgroundColor:style.gray_300, borderRadius:style.rounded_md}}>
+                                <View style={{borderTopLeftRadius:style.rounded_md, borderTopRightRadius:style.rounded_md, backgroundColor:style.gray_300, height:50, padding:15, paddingTop:20}}>
+                                    <Text style={{color:style.gray_600, fontWeight:'500'}}>Term, Translation, Notes (optional)</Text>
+                                </View>
+                                <CustomInput showLabel={false} placeholder={"Write csv data here..."} value={wordDataInput} 
+                                                onChangeText={setWordDataInput} maxLength={50000} multiline={true} customFormStyle={{height:180, borderTopLeftRadius:0, borderTopRightRadius:0, borderTopWidth:0}}/>
                             </View>
-                            <CustomInput showLabel={false} placeholder={"Write csv data here..."} value={wordDataInput} 
-                                            onChangeText={setWordDataInput} maxLength={50000} multiline={true} customFormStyle={{height:180, borderTopLeftRadius:0, borderTopRightRadius:0, borderTopWidth:0}}/>
+
+                            {/* Button Container below the form */}
+                            <View style={{flexDirection:'row', gap:5, flexWrap:'wrap'}}>
+                                    {/* Copy Text Button */}
+                                    <CustomButton onPress={copyWordData} customStyle={{flexDirection:'row', gap:5}}> 
+                                        <Text style={{color:style.white, fontSize:style.text_xs, fontWeight:'500'}}>Copy Data</Text>
+                                        <Icon name={"copy"} size={15} solid={true} color={style.white} />
+                                    </CustomButton>
+                                    {/* AI prompt button for word data */}
+                                    <CustomButton onPress={wordPrompt} customStyle={{flexDirection:'row', gap:5}}> 
+                                        <Text style={{color:style.white, fontSize:style.text_xs, fontWeight:'500'}}>Copy Prompt</Text>
+                                        <Icon name={"copy"} size={15} solid={true} color={style.white} />
+                                    </CustomButton>
+
+                                    {/* Paste Data Button */}
+                                    <CustomButton onPress={pasteData} customStyle={{flexDirection:'row', gap:5, height:35, backgroundColor:style.blue_200}}>
+                                        <Text style={{color:style.blue_500, fontSize:style.text_xs, fontWeight:'600'}}>Paste</Text>
+                                        <Icon name={"paste"} width={10} solid={true} height={10} color={style.blue_500} />
+                                    </CustomButton>
+
+                                    {/* Share button */}
+                                    <CustomButton onPress={shareWordData} customStyle={{flexDirection:'row', gap:5, height:35, backgroundColor:style.blue_200}}>
+                                        <Text style={{color:style.blue_500, fontSize:style.text_xs, fontWeight:'600'}}>Share</Text>
+                                        <Icon name={"share"} width={12} height={10} color={style.blue_500} />
+                                    </CustomButton>
+                            </View>
+
+                            {/* Print the errors of the CSV word input */}
+                            <Text style={{color:style.red_500, fontWeight:"400", position: "relative", left:5, top:10}}>
+                                { wordError }
+                            </Text>
+
                         </View>
 
-                        {/* Button Container below the form */}
-                        <View style={{flexDirection:'row', gap:5, flexWrap:'wrap'}}>
+                        {/* Column 2 - Translation Data */}
+                        <View style={{flexDirection:'column', gap:10, marginTop:20}}>
+
+                            
+                            {/* Translation Data input form */}
+                            <CustomInput showLabel={true} label={"Full Translation"} placeholder={"Write translation here..."} value={textTranslation} 
+                                            onChangeText={setTextTranslation} maxLength={50000} multiline={true} customFormStyle={{height:120}}/>
+
+                            {/*Button container below the form*/}
+                            <View style={{flexDirection:'row', gap:5, flexWrap:'wrap'}}>
                                 {/* Copy Text Button */}
-                                <CustomButton onPress={copyWordData} customStyle={{flexDirection:'row', gap:5}}> 
+                                <CustomButton onPress={copyTranslation} customStyle={{flexDirection:'row', gap:5}}> 
                                     <Text style={{color:style.white, fontSize:style.text_xs, fontWeight:'500'}}>Copy Data</Text>
                                     <Icon name={"copy"} size={15} solid={true} color={style.white} />
                                 </CustomButton>
+
                                 {/* AI prompt button for word data */}
-                                <CustomButton onPress={wordPrompt} customStyle={{flexDirection:'row', gap:5}}> 
+                                <CustomButton onPress={translationPrompt} customStyle={{flexDirection:'row', gap:5}}> 
                                     <Text style={{color:style.white, fontSize:style.text_xs, fontWeight:'500'}}>Copy Prompt</Text>
                                     <Icon name={"copy"} size={15} solid={true} color={style.white} />
                                 </CustomButton>
 
-                                {/* Paste Data Button */}
-                                <CustomButton onPress={pasteData} customStyle={{flexDirection:'row', gap:5, height:35, backgroundColor:style.gray_200}}>
-                                    <Text style={{color:style.gray_500, fontSize:style.text_xs, fontWeight:'600'}}>Paste</Text>
-                                    <Icon name={"paste"} width={10} solid={true} height={10} color={style.gray_500} />
+                                {/* Paste Translation Button */}
+                                <CustomButton onPress={pasteTranslation} customStyle={{flexDirection:'row', gap:5, height:35, backgroundColor:style.blue_200}}>
+                                    <Text style={{color:style.blue_500, fontSize:style.text_xs, fontWeight:'600'}}>Paste</Text>
+                                    <Icon name={"paste"} width={10} solid={true} height={10} color={style.blue_500} />
                                 </CustomButton>
 
                                 {/* Share button */}
-                                <CustomButton onPress={shareWordData} customStyle={{flexDirection:'row', gap:5, height:35, backgroundColor:style.gray_200}}>
-                                    <Text style={{color:style.gray_500, fontSize:style.text_xs, fontWeight:'600'}}>Share</Text>
-                                    <Icon name={"share"} width={12} height={10} color={style.gray_500} />
+                                <CustomButton onPress={shareTranslation} customStyle={{flexDirection:'row', gap:5, height:35, backgroundColor:style.blue_200}}>
+                                    <Text style={{color:style.blue_500, fontSize:style.text_xs, fontWeight:'600'}}>Share</Text>
+                                    <Icon name={"share"} width={12} height={10} color={style.blue_500} />
                                 </CustomButton>
+
+                            </View>
+
+                            {/* Print the errors of the CSV sentence input */}
+                            <Text style={{color:style.red_500, fontWeight:"400", paddingVertical:5}}>
+                                { textError }
+                            </Text>
+
                         </View>
 
-                        {/* Print the errors of the CSV word input */}
-                        <Text style={{color:style.red_500, fontWeight:"400", position: "relative", left:5, top:10}}>
-                            { wordError }
-                        </Text>
+                        {/* Submission button to submit data */}
+                        <CustomButton onPress={loadData} customStyle={null}> 
+                            <Text style={{color:style.white, fontSize:style.text_sm, fontWeight:'600'}}>Load Data</Text>
+                        </CustomButton>
 
-                    </View>
-
-                    {/* Column 2 - Translation Data */}
-                    <View style={{flexDirection:'column', gap:10, marginTop:20}}>
-
+                        {/* Delete button */}
+                        <View style={{flexDirection:'column', alignItems:'center',justifyContent:'center', marginTop: 10}}>
+                            <TouchableOpacity onPress={deleteEntryFunc} style={{ marginTop:20 }} activeOpacity={0.7}>
+                                        <Text style={{color:style.red_400, fontSize:style.text_md}}>Delete Story</Text>
+                            </TouchableOpacity>
+                        </View>
                         
-                        {/* Translation Data input form */}
-                        <CustomInput showLabel={true} label={"Full Translation"} placeholder={"Write translation here..."} value={textTranslation} 
-                                        onChangeText={setTextTranslation} maxLength={50000} multiline={true} customFormStyle={{height:120}}/>
 
-                        {/*Button container below the form*/}
-                        <View style={{flexDirection:'row', gap:5, flexWrap:'wrap'}}>
-                            {/* Copy Text Button */}
-                            <CustomButton onPress={copyTranslation} customStyle={{flexDirection:'row', gap:5}}> 
-                                <Text style={{color:style.white, fontSize:style.text_xs, fontWeight:'500'}}>Copy Data</Text>
-                                <Icon name={"copy"} size={15} solid={true} color={style.white} />
-                            </CustomButton>
 
-                            {/* AI prompt button for word data */}
-                            <CustomButton onPress={translationPrompt} customStyle={{flexDirection:'row', gap:5}}> 
-                                <Text style={{color:style.white, fontSize:style.text_xs, fontWeight:'500'}}>Copy Prompt</Text>
-                                <Icon name={"copy"} size={15} solid={true} color={style.white} />
-                            </CustomButton>
-
-                            {/* Paste Translation Button */}
-                            <CustomButton onPress={pasteTranslation} customStyle={{flexDirection:'row', gap:5, height:35, backgroundColor:style.gray_200}}>
-                                <Text style={{color:style.gray_500, fontSize:style.text_xs, fontWeight:'600'}}>Paste</Text>
-                                <Icon name={"paste"} width={10} solid={true} height={10} color={style.gray_500} />
-                            </CustomButton>
-
-                            {/* Share button */}
-                            <CustomButton onPress={shareTranslation} customStyle={{flexDirection:'row', gap:5, height:35, backgroundColor:style.gray_200}}>
-                                <Text style={{color:style.gray_500, fontSize:style.text_xs, fontWeight:'600'}}>Share</Text>
-                                <Icon name={"share"} width={12} height={10} color={style.gray_500} />
-                             </CustomButton>
-
-                        </View>
-
-                        {/* Print the errors of the CSV sentence input */}
-                        <Text style={{color:style.red_500, fontWeight:"400", paddingVertical:5}}>
-                            { textError }
-                        </Text>
-
-                    </View>
-
-                    {/* Submission button to submit data */}
-                    <CustomButton onPress={loadData} customStyle={null}> 
-                        <Text style={{color:style.white, fontSize:style.text_sm, fontWeight:'600'}}>Load Data</Text>
-                    </CustomButton>
-
-                    {/* Help Link */}
-                    {/* <TouchableOpacity activeOpacity={0.7} style={{alignItems:'center'}}>
-                        <Text style={{color:style.blue_500, fontSize:style.text_sm, fontWeight:'500'}}>
-                            Need help? 
-                        </Text>
-                    </TouchableOpacity> */}
-
+                    </TouchableOpacity>
                 </ScrollView>
             </KeyboardAvoidingView>
 

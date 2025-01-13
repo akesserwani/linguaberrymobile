@@ -7,7 +7,9 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { CurrentLangContext } from '@/app/data/CurrentLangContext.tsx';
 
 import { RTLlanguages } from '@/app/data/LangData';
+import * as Clipboard from 'expo-clipboard'; // Import clipboard for copying
 
+import CustomAlert from '@/app/components/CustomAlert';
 
 import AddWordToDeck from '@/app/screens/components/AddWordToDeck';
 
@@ -121,7 +123,7 @@ const TooltipComponent = ({ title }) => {
         <>
 
             {/* Render the Text */}
-            <View style={{ flexWrap: 'wrap', flexDirection: 'row', marginBottom:60, direction:isRTL ? 'rtl' : 'ltr' }}>
+            <View style={{ flexWrap: 'wrap', flexDirection: 'row', marginBottom:60, direction:isRTL ? 'rtl' : 'ltr', flex:1 }}>
                 {words.map((word, index) => (
                     <View key={index} style={styles.wordContainer}>
                         {/* Individual Word */}
@@ -174,9 +176,14 @@ const TooltipComponent = ({ title }) => {
                         <View style={{flexDirection:'row', justifyContent:'space-between'}}>
                             {/* Title Text */}
                             <View style={{width:'60%'}}>
-                                <Text style={{fontSize: style.text_lg, color: style.gray_600, fontWeight:'600', marginTop:10}}>
-                                    { cleanString(selectedWord) }
-                                </Text>
+                                <TouchableOpacity onPress={()=>{ 
+                                        Clipboard.setString(cleanString(selectedWord)); 
+                                        CustomAlert(`Copied "${cleanString(selectedWord)}"`)
+                                    }}>
+                                    <Text style={{fontSize: style.text_lg, color: style.gray_600, fontWeight:'600', marginTop:10}}>
+                                        { cleanString(selectedWord) }
+                                    </Text>
+                                </TouchableOpacity>
                             </View>
 
                             {/* Button Containers on Right */}
@@ -202,9 +209,15 @@ const TooltipComponent = ({ title }) => {
 
                         </View>
                         {/* Translation here */}
-                        <Text style={{fontSize: style.text_lg, color: style.gray_600, marginTop:20}}>
-                            { getTranslation(selectedWord).toLowerCase() }
-                        </Text>
+                        <TouchableOpacity onPress={()=>{ 
+                                        Clipboard.setString(getTranslation(selectedWord).toLowerCase()); 
+                                        CustomAlert(`Copied "${getTranslation(selectedWord).toLowerCase()}"`)
+                                    }}>
+                            <Text style={{fontSize: style.text_lg, color: style.gray_600, marginTop:20}}>
+                                { getTranslation(selectedWord).toLowerCase() }
+                            </Text>
+                        </TouchableOpacity>
+                        
                     </ScrollView>
 
                 </View>

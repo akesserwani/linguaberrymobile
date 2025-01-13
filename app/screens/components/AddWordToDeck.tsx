@@ -9,6 +9,7 @@ import CustomModal from "@/app/components/CustomModal";
 import CustomInput from "@/app/components/CustomInput";
 import CustomButton from "@/app/components/CustomButton";
 import CustomAlert from "@/app/components/CustomAlert";
+import * as Clipboard from 'expo-clipboard'; // Import clipboard for copying
 
 //data for context
 import { CurrentLangContext } from '@/app/data/CurrentLangContext.tsx';
@@ -92,27 +93,46 @@ const AddWordToDeck = ({onClose, wordToAdd}) => {
                         <Text style={{color: style.gray_600, fontWeight:'500', fontSize: style.text_lg}}>
                             Term: 
                         </Text>
-                        <Text style={{color: style.gray_500, fontWeight:'400', fontSize: style.text_lg}}>
-                            {wordToAdd[0]}
-                        </Text>
+                        <TouchableOpacity onPress={()=>{ 
+                             Clipboard.setString(wordToAdd[0]); 
+                             CustomAlert(`Copied "${wordToAdd[0]}"`)
+                         }}>
+                            <Text style={{color: style.gray_500, fontWeight:'400', fontSize: style.text_lg}}>
+                                {wordToAdd[0]}
+                            </Text>
+                        </TouchableOpacity>
+
                     </View>       
                     {/* Selected Translation */}      
                     <View style={{flexDirection:'row', marginTop:15, gap:5}}>
                         <Text style={{color: style.gray_600, fontWeight:'500', fontSize: style.text_lg}}>
                             Translation: 
                         </Text>
-                        <Text style={{color: style.gray_500, fontWeight:'400', fontSize: style.text_lg}}>
-                            {wordToAdd[1]}
-                        </Text>
+
+                        <TouchableOpacity onPress={()=>{ 
+                             Clipboard.setString(wordToAdd[1]); 
+                             CustomAlert(`Copied "${wordToAdd[1]}"`)
+                         }}>
+                            <Text style={{color: style.gray_500, fontWeight:'400', fontSize: style.text_lg}}>
+                                {wordToAdd[1]}
+                            </Text>
+                        </TouchableOpacity>
                     </View>       
                     {/* Notes */}      
                     <View style={{flexDirection:'column', marginTop:15, gap:5}}>
                         <Text style={{color: style.gray_600, fontWeight:'500', fontSize: style.text_lg}}>
                             Notes: 
                         </Text>
-                        <Text style={{color: style.gray_500, fontWeight:'400', fontSize: style.text_lg}}>
-                            {wordToAdd[2]}
-                        </Text>
+
+                        <TouchableOpacity onPress={()=>{ 
+                             Clipboard.setString(wordToAdd[2]); 
+                             CustomAlert(`Copied notes`)
+                         }}>
+                            <Text style={{color: style.gray_500, fontWeight:'400', fontSize: style.text_lg}}>
+                                {wordToAdd[2]}
+                            </Text>
+                        </TouchableOpacity>
+
                     </View>       
                 </ScrollView>
 

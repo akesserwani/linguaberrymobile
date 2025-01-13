@@ -10,7 +10,7 @@ import CustomButton from "./CustomButton";
 
 
 //Props: title, function to close, function to toggle, children  
-const CustomModal = ({title="My Modal", onClose, children, overrideStyle ={}, horizontalPadding = 40, topPadding = 30 }) => {
+const CustomModal = ({title="My Modal", onClose, children, overrideStyle ={}, horizontalPadding = 40, topPadding = 30, allowBackdropClose=true }) => {
 
     //Width logic
     //get window width
@@ -24,7 +24,12 @@ const CustomModal = ({title="My Modal", onClose, children, overrideStyle ={}, ho
     return ( 
         <Modal transparent={true} supportedOrientations={['portrait', 'landscape']} >
             {/* TouchableWithoutFeedback for backdrop click */}
-            <TouchableWithoutFeedback onPress={onClose}>
+            <TouchableWithoutFeedback      
+                    onPress={() => {
+                        if (allowBackdropClose) {
+                            onClose(); // Close modal if allowed
+                        }
+                }}>
                 <View style={styles.modalOverlay}>
                     {/* Main Content - White Div */}
                     <View style={[styles.modalContainer, { width: dynamicWidth }, overrideStyle]} onStartShouldSetResponder={() => true}>

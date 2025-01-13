@@ -18,6 +18,9 @@ import { limitLength, matchSentences } from "@/app/data/Functions";
 
 import { storyFiles } from "../../../assets/data/ExplorerData";
 
+import * as Clipboard from 'expo-clipboard'; // Import clipboard for copying
+import CustomAlert from "@/app/components/CustomAlert";
+
 const ViewSentences = ({onClose, modalTitle, entryId=null}) => {
 
     //current language
@@ -49,6 +52,7 @@ const ViewSentences = ({onClose, modalTitle, entryId=null}) => {
     }, [entryId, currentLang])
         
 
+    
 
     return ( 
         <CustomModal title={limitLength(modalTitle, 25)} onClose={onClose} overrideStyle={{maxHeight:'80%'}} horizontalPadding={0} topPadding={0}>
@@ -75,30 +79,63 @@ const ViewSentences = ({onClose, modalTitle, entryId=null}) => {
                     // Render words in a flatlist 
                     <FlatList
                         data={sentenceData}
-                        contentContainerStyle={{ paddingRight: 20, paddingTop: 20, paddingBottom: 20, paddingHorizontal: 20, minHeight:'50%' }}
+                        contentContainerStyle={{ paddingRight: 20, paddingTop: 20, paddingBottom: 20, paddingHorizontal: 20 }}
                         keyExtractor={(item, index) => index.toString()}
                         renderItem={({ item, index }) => (
-                            // Wrap all elements inside a parent container
-                            <View style={{ flexDirection: 'row', gap:10, marginBottom: 10 }}>
-                                <View style={{ flex:1, minHeight: 60, justifyContent: 'flex-start' }}>
-                                    <Text style={{ color: style.gray_400, fontSize: style.text_md, marginRight: 10 }}>
-                                        {index + 1}
-                                    </Text>
-                                </View>
-                                {/* Container for Term */}
-                                <View style={{ flex:4, minHeight: 60, justifyContent: 'flex-start' }}>
-                                    <Text style={{ color: style.gray_500, fontSize: style.text_md }}>
-                                        {item.mainSentence}
-                                    </Text>
-                                </View>
+                            <TouchableOpacity activeOpacity={1}>
+                                {/* // Wrap all elements inside a parent container */}
+                                <View style={{ flexDirection: 'row', gap:10, marginBottom: 10 }}>
+                                    <View style={{ flex:1, minHeight: 60, justifyContent: 'flex-start' }}>
+                                        <Text style={{ color: style.gray_400, fontSize: style.text_md, marginRight: 10 }}>
+                                            {index + 1}
+                                        </Text>
+                                    </View>
 
-                                {/* Container for Translation */}
-                                <View style={{ flex:4, minHeight: 60, justifyContent: 'flex-start' }}>
-                                    <Text style={{ color: style.gray_400, fontSize: style.text_md }}>
-                                        {item.translationSentence}
-                                    </Text>
+                                    {/* Container for Term */}
+                                    <View style={{ flex: 4, minHeight: 60, justifyContent: 'flex-start', flexDirection: 'row', flexWrap: 'wrap' }}>
+                                        {item.mainSentence.split(' ').map((word, index) => (
+                                            <TouchableOpacity
+                                                key={index}
+                                                style={{ marginRight: 5 }} // Add spacing between words
+                                                onPress={() => {
+                                                    Clipboard.setString(word); 
+                                                    CustomAlert(`Copied "${word}"`)
+                                                }}>
+                                                <Text
+                                                    style={{
+                                                        color: style.gray_500,
+                                                        fontSize: style.text_md,
+                                                    }}>
+                                                    {word}
+                                                </Text>
+                                            </TouchableOpacity>
+                                        ))}
+                                    </View>
+
+                                    {/* Container for Translation */}
+                                    <View style={{ flex: 4, minHeight: 60, justifyContent: 'flex-start', flexDirection: 'row', flexWrap: 'wrap' }}>
+                                        {item.translationSentence.split(' ').map((word, index) => (
+                                            <TouchableOpacity
+                                                key={index}
+                                                style={{ marginRight: 5 }} // Add spacing between words
+                                                onPress={() => {
+                                                    Clipboard.setString(word); 
+                                                    CustomAlert(`Copied "${word}"`)
+                                                }}>
+                                                <Text
+                                                    style={{
+                                                        color: style.gray_500,
+                                                        fontSize: style.text_md,
+                                                    }}>
+                                                    {word}
+                                                </Text>
+                                            </TouchableOpacity>
+                                        ))}
+                                    </View>
+
+
                                 </View>
-                            </View>
+                            </TouchableOpacity>
                         )}
                     />
                 )}

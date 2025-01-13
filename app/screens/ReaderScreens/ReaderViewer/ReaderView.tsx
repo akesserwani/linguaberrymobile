@@ -138,7 +138,7 @@ const ReaderViewer = ({route}) => {
                                 if (countSentences(entryData.contents) > 2 && countSentences(entryData.translation_data) > 2) {
                                     navigation.navigate('PracticeReader', {story: entryData.contents, storyTranslation: entryData.translation_data, title: entryTitle, entryId: entryId, stack:"Reader"  });
                                 } else {
-                                    CustomAlert("You do not have enough sentences to practice!", "Minimum of THREE sentences for both the main text and translation to practice.")
+                                    CustomAlert("You do not have enough sentences to practice!", "Minimum of three sentences for both the main text and translation to practice.")
                                 }
                             }} 
                               customStyle={{backgroundColor:style.blue_200, flexDirection:'row', gap:8}}>

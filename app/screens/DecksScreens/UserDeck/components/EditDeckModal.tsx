@@ -148,82 +148,84 @@ const EditDeckModal = ({onClose, currentLang, deckId, deckName, refreshDeck, ref
     
 
     return ( 
-        <CustomModal title="Edit Deck" onClose={onClose} horizontalPadding={0} overrideStyle={{maxHeight:'80%'}}>
+        <CustomModal title="Edit Deck" onClose={onClose} horizontalPadding={0} overrideStyle={{maxHeight:'80%'}} allowBackdropClose={false}>
 
             <KeyboardAvoidingView behavior={'padding'} keyboardVerticalOffset={50} style={{maxHeight:'95%'}}>
-            <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ gap: 10, padding:35, flexDirection:'column' }}>
+                <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ gap: 10, padding:35, flexDirection:'column' }}>
+                    <TouchableOpacity activeOpacity={1}>
+                        {/* DECK NAME */}
+                        {/* Input to edit the deck */}
+                        <CustomInput label={ "Deck Name"} placeholder={"Type deck name..." } value={inputName} onChangeText={setInputName} 
+                                    maxLength={30} customFormStyle={{height: 50}}/>
 
-                {/* DECK NAME */}
-                {/* Input to edit the deck */}
-                <CustomInput label={ "Deck Name"} placeholder={"Type deck name..." } value={inputName} onChangeText={setInputName} 
-                            maxLength={30} customFormStyle={{height: 50}}/>
+                            {/* Deck name already exists */}
+                            { nameExists && 
+                                <Text style={{color:style.red_500, fontWeight:"400", position: "relative", left:5, top:10}}>Deck name already exists</Text>
+                            }
 
-                    {/* Deck name already exists */}
-                    { nameExists && 
-                        <Text style={{color:style.red_500, fontWeight:"400", position: "relative", left:5, top:10}}>Deck name already exists</Text>
-                    }
+                        {/* Input for the deck data */}
+                            <View style={{marginTop:40, backgroundColor:style.gray_300, borderRadius:style.rounded_md}}>
+                                <View style={{borderTopLeftRadius:style.rounded_md, borderTopRightRadius:style.rounded_md, backgroundColor:style.gray_300, height:50, padding:15, paddingTop:20}}>
+                                    <Text style={{color:style.gray_600, fontWeight:'500'}}>Term, Translation, Notes (optional)</Text>
+                                </View>
+                                <CustomInput showLabel={false} placeholder={"Enter data..." } value={inputData} onChangeText={setInputData} 
+                                    multiline={true} maxLength={100000} customFormStyle={{height:180, borderTopLeftRadius:0, borderTopRightRadius:0, borderTopWidth:0}}/>
+                            </View>
 
-                {/* Input for the deck data */}
-                    <View style={{marginTop:40, backgroundColor:style.gray_300, borderRadius:style.rounded_md}}>
-                        <View style={{borderTopLeftRadius:style.rounded_md, borderTopRightRadius:style.rounded_md, backgroundColor:style.gray_300, height:50, padding:15, paddingTop:20}}>
-                            <Text style={{color:style.gray_600, fontWeight:'500'}}>Term, Translation, Notes (optional)</Text>
+                            {/* Print the errors of the CSV data input */}
+                            <Text style={{color:style.red_500, fontWeight:"400"}}>
+                                { dataError }
+                            </Text>
+                        
+                        {/* Button Container */}
+                        <View style={{flexDirection:'row', gap:5, flexWrap:'wrap'}}>
+                            {/* Copy Text Button */}
+                            <CustomButton onPress={copyData} customStyle={{flexDirection:'row', gap:5}}> 
+                                <Text style={{color:style.white, fontSize:style.text_xs, fontWeight:'500'}}>Copy Data</Text>
+                                <Icon name={"copy"} size={15} solid={true} color={style.white} />
+                            </CustomButton>
+
+                            {/* AI prompt button for word data */}
+                            <CustomButton onPress={copyAIPrompt} customStyle={{flexDirection:'row', gap:5}}> 
+                                <Text style={{color:style.white, fontSize:style.text_xs, fontWeight:'500'}}>Copy Prompt</Text>
+                                <Icon name={"copy"} size={15} solid={true} color={style.white} />
+                            </CustomButton>
+
+                            {/* Paste Data Button */}
+                            <CustomButton onPress={pasteButton} customStyle={{flexDirection:'row', gap:5, height:35, backgroundColor:style.blue_200}}>
+                                <Text style={{color:style.blue_500, fontSize:style.text_xs, fontWeight:'600'}}>Paste</Text>
+                                <Icon name={"paste"} width={10} solid={true} height={10} color={style.blue_500} />
+                            </CustomButton>
+
+                            {/* Share Data Button */}
+                            <CustomButton onPress={shareData} customStyle={{flexDirection:'row', gap:5, height:35, backgroundColor:style.blue_200}}>
+                                <Text style={{color:style.blue_500, fontSize:style.text_xs, fontWeight:'600'}}>Share</Text>
+                                <Icon name={"share"} width={12} height={10} color={style.blue_500} />
+                            </CustomButton>
+
                         </View>
-                        <CustomInput showLabel={false} placeholder={"Enter data..." } value={inputData} onChangeText={setInputData} 
-                            multiline={true} maxLength={100000} customFormStyle={{height:180, borderTopLeftRadius:0, borderTopRightRadius:0, borderTopWidth:0}}/>
-                    </View>
 
-                    {/* Print the errors of the CSV data input */}
-                    <Text style={{color:style.red_500, fontWeight:"400"}}>
-                        { dataError }
-                    </Text>
-                
-                {/* Button Container */}
-                <View style={{flexDirection:'row', gap:5, flexWrap:'wrap'}}>
-                    {/* Copy Text Button */}
-                    <CustomButton onPress={copyData} customStyle={{flexDirection:'row', gap:5}}> 
-                        <Text style={{color:style.white, fontSize:style.text_xs, fontWeight:'500'}}>Copy Data</Text>
-                        <Icon name={"copy"} size={15} solid={true} color={style.white} />
-                    </CustomButton>
-
-                    {/* AI prompt button for word data */}
-                    <CustomButton onPress={copyAIPrompt} customStyle={{flexDirection:'row', gap:5}}> 
-                        <Text style={{color:style.white, fontSize:style.text_xs, fontWeight:'500'}}>Copy Prompt</Text>
-                        <Icon name={"copy"} size={15} solid={true} color={style.white} />
-                    </CustomButton>
-
-                    {/* Paste Data Button */}
-                    <CustomButton onPress={pasteButton} customStyle={{flexDirection:'row', gap:5, height:35, backgroundColor:style.gray_200}}>
-                        <Text style={{color:style.gray_500, fontSize:style.text_xs, fontWeight:'600'}}>Paste</Text>
-                        <Icon name={"paste"} width={10} solid={true} height={10} color={style.gray_500} />
-                    </CustomButton>
-
-                    {/* Share Data Button */}
-                    <CustomButton onPress={shareData} customStyle={{flexDirection:'row', gap:5, height:35, backgroundColor:style.gray_200}}>
-                        <Text style={{color:style.gray_500, fontSize:style.text_xs, fontWeight:'600'}}>Share</Text>
-                        <Icon name={"share"} width={12} height={10} color={style.gray_500} />
-                    </CustomButton>
-
-                </View>
-
-                {/* User warning to use semicolon instead of commas*/}
-                <Text style={{color:style.gray_400, fontWeight:"500", margin:5, marginTop:20}}>
-                    Note: Use semicolons instead of commas in the individual terms, translations, and notes
-                </Text>
+                        {/* User warning to use semicolon instead of commas*/}
+                        <Text style={{color:style.gray_400, fontWeight:"500", margin:5, marginTop:20}}>
+                            Note: Use semicolons instead of commas in the individual terms, translations, and notes
+                        </Text>
 
 
-                {/* Button to update the deck */}
-                <CustomButton onPress={updateDeckFunc} customStyle={{marginTop: 40, height:45}}>
-                        <Text style={{color:style.white, fontSize: style.text_md}}>Update Deck</Text>
-                </CustomButton>
+                        {/* Button to update the deck */}
+                        <CustomButton onPress={updateDeckFunc} customStyle={{marginTop: 40, height:45}}>
+                                <Text style={{color:style.white, fontSize: style.text_md}}>Update Deck</Text>
+                        </CustomButton>
 
 
-                {/* Button to delete the deck */}
-                <View style={{flexDirection:'column', alignItems:'center',justifyContent:'center', marginTop: 10}}>
-                    <TouchableOpacity onPress={deleteDeckFunc} style={{ marginTop:20 }} activeOpacity={0.7}>
-                                <Text style={{color:style.red_400, fontSize:style.text_md}}>Delete Deck</Text>
+                        {/* Button to delete the deck */}
+                        <View style={{flexDirection:'column', alignItems:'center',justifyContent:'center', marginTop: 10}}>
+                            <TouchableOpacity onPress={deleteDeckFunc} style={{ marginTop:20 }} activeOpacity={0.7}>
+                                        <Text style={{color:style.red_400, fontSize:style.text_md}}>Delete Deck</Text>
+                            </TouchableOpacity>
+                        </View>
                     </TouchableOpacity>
-                </View>
-            </ScrollView>
+
+                </ScrollView>
             </KeyboardAvoidingView>
         </CustomModal>
      );

@@ -58,6 +58,14 @@ const Card = ({wordData, setWordData, currentLang, deckId, frontFirst}) => {
         setStarred(!starred);
     }
 
+    //function to get part of speech from notes
+    const getPartOfSpeech = (text) => {
+        // Use a regular expression to match content between brackets
+        const match = text.match(/\[([a-zA-Z]+)\]/);
+        // Return the first group match truncated to 5 characters or null if not found
+        return match ? match[1].substring(0, 5) : null;
+    };
+
 
     return (
         <>
@@ -72,9 +80,9 @@ const Card = ({wordData, setWordData, currentLang, deckId, frontFirst}) => {
                 <View style={styles.textContainer}>
                     {/* Top Container with the Star Button on top right, notes button on left */}
                     <View style={{flexDirection:'row', justifyContent:'space-between', padding:15}}>
-                        {/* Notes Buton - toggle modal */}
+                        {/* Notes Buton- toggle modal */}
                         <TouchableOpacity onPress={()=>toggleModal(true)} activeOpacity={0.7}>
-                                <Icon name={"list"} solid={true} size={20} color={style.gray_300}/>     
+                            <Icon name={"list"} solid={true} size={20} color={style.gray_300}/>     
                         </TouchableOpacity>
 
                         {/* Only show starred button if practice mode is off */}
@@ -92,7 +100,7 @@ const Card = ({wordData, setWordData, currentLang, deckId, frontFirst}) => {
 
                     {/* CARD TEXT HERE */}
                     {/* Bottom Container with full text */}
-                    <View style={{flex:1, alignItems:'center', justifyContent:'center', marginTop:10, padding:20}}>
+                    <View style={{flex:1, alignItems:'center', justifyContent:'center', marginTop:10, padding:20, flexDirection:'row', gap:10}}>
                         <Text style={{fontSize:style.text_md, color:style.gray_600, fontWeight:'600'}}>
                             {/* Change value based on whether card and front first variable */}
                             { (!flipped && frontFirst) || (flipped && !frontFirst) ? (
@@ -102,6 +110,12 @@ const Card = ({wordData, setWordData, currentLang, deckId, frontFirst}) => {
                             ) }
 
                         </Text>
+
+                        {/* Part of Speech */}
+                        <Text style={{fontSize:style.text_md, color:style.gray_400, fontWeight:'500', fontStyle:'italic'}}>
+                            { getPartOfSpeech(wordData.notes) }
+                        </Text>
+
                     </View>
 
                 </View>

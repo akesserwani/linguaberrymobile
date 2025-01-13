@@ -333,6 +333,18 @@ const Practice = () => {
         return 'left';
     };
 
+    //function to get part of speech from notes
+    const getPartOfSpeech = (text) => {
+        if (typeof text !== 'string') {
+            return null; // Return null if text is not a valid string
+        }
+    
+        // Use a regular expression to match content between brackets
+        const match = text.match(/\[([a-zA-Z]+)\]/);
+        // Return the first group match truncated to 5 characters or null if not found
+        return match ? match[1].substring(0, 5) : null;
+    };
+    
     
 
     //SCREEN WIDTH AND RESPONSIVE DESIGNS
@@ -370,22 +382,36 @@ const Practice = () => {
                                     Translate to { !frontFirst ? 'English' : currentLang }:
                                 </Text>          
 
-                                {/* Text to Translate - from the data */}
-                                <Text style={{color:style.gray_600, fontSize:style.text_md, fontWeight:'400', marginLeft:5,
-                                              textAlign: getTextAlignment(isRTL, frontFirst), // Align text based on direction
-                                              writingDirection: getTextDirection(isRTL, frontFirst), // Ensure proper 
-                                }}>
-                                    {loading ? (
-                                            "Loading..."
-                                        ) : (
-                                            //Check if frontFirst is true
-                                            frontFirst ? (
-                                                currentWordData.term// Show `term` if `frontFirst` is true
+
+                                <View style={{flexDirection:'row', gap:10}}>
+
+                                    {/* Text to Translate - from the data */}
+                                    <Text style={{color:style.gray_600, fontSize:style.text_md, fontWeight:'400', marginLeft:5,
+                                                textAlign: getTextAlignment(isRTL, frontFirst), // Align text based on direction
+                                                writingDirection: getTextDirection(isRTL, frontFirst), // Ensure proper 
+                                    }}>
+                                        {loading ? (
+                                                "Loading..."
                                             ) : (
-                                                currentWordData.translation// Show `translation` if `frontFirst` is false
-                                            )
+                                                //Check if frontFirst is true
+                                                frontFirst ? (
+                                                    currentWordData.term// Show `term` if `frontFirst` is true
+                                                ) : (
+                                                    currentWordData.translation// Show `translation` if `frontFirst` is false
+                                                )
+                                            )}
+                                    </Text>       
+
+                                    {/* Part of Speech */}
+                                    <Text style={{fontSize:style.text_md, color:style.gray_400, fontWeight:'500', fontStyle:'italic'}}>
+                                        { loading ? (
+                                            "..."
+                                        ) : (
+                                            getPartOfSpeech(currentWordData.notes) 
                                         )}
-                                </Text>          
+                                    </Text>
+
+                                </View>
 
                                 {/* Input Form */}
                                 <CustomInput showLabel={false} placeholder={"Begin translating here..."} value={userInput} onChangeText={setUserInput}
