@@ -296,16 +296,16 @@ export const getTagOfStory = (entryId, currentLang) => {
 //create a new reader entry
 
 //function to convert the CSV data from the text into the official format, derived from CSVToObject
-const formatWordDataFromWeb = (data) =>{
-    // Split the CSV data into rows
-    const rows = data.trim().split('\n');
+const formatWordDataFromWeb = (data) => {
+    // Split the data into rows using the correct line break format
+    const rows = data.split(/\\r\\n/);
 
     // Define the default headers in the expected order
     const defaultHeaders = ['term', 'translation', 'notes'];
 
     // Map the rows to objects using the default header order
     const result = rows.map(row => {
-        const values = row.split(',');
+        const values = row.split(',').map(value => value.trim()); // Split by commas and trim spaces
 
         // Create an object for each row
         const object = {};
@@ -317,8 +317,9 @@ const formatWordDataFromWeb = (data) =>{
         return object;
     }).filter(obj => obj.term && obj.translation); // Filter out rows without a valid term or translation
 
-    return JSON.stringify(result); // Serialize the array of objects to a JSON string
-}
+    return JSON.stringify(result, null, 2); // Serialize the array of objects to a pretty-printed JSON string
+};
+
 
 
 export const newEntryFull = ( 
@@ -331,7 +332,7 @@ export const newEntryFull = (
 
         try{
             const formattedWordData = formatWordDataFromWeb(word_data);
-
+            console.log(word_data)
             db.withTransactionSync(() => {
                 db.runSync(
                     `INSERT INTO story (title, contents, word_data, translation_data, bookmarked, tag, language_id) 

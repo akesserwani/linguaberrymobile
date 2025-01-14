@@ -95,7 +95,6 @@ const ImportStoryModal = ({onClose, refresh}) => {
 
         //decompress the data
         const decompressedData = LZString.decompressFromBase64(cleanedData);
-
         //parse as json
         const data = JSON.parse(decompressedData);
 
