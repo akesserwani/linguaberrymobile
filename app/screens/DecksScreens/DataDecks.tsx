@@ -209,12 +209,15 @@ export const createBulkWordsByDeckName = (deckName, words, language_id) => {
 
       // Step 2: Insert each word into the database
       words.forEach(word => {
-        const { term, translation, notes } = word;
+        // Trim white spaces from term and translation
+        const term = word.term.trim();
+        const translation = word.translation.trim();
+        const notes = word.notes?.trim() || "None";
 
         db.runSync(
           `INSERT OR IGNORE INTO word (term, translation, notes, tag, starred, deck_id, language_id)
            VALUES (?, ?, ?, ?, ?, ?, ?);`,
-          [term, translation, notes || "None", "None", 0, deck_id, language_id]
+          [term, translation, notes, "None", 0, deck_id, language_id]
         );
       });
     });
@@ -514,7 +517,7 @@ export const addWebDataToDeck = (currentLang, data) =>{
         createNewDeck(data.title, currentLang);
         //then add bulk words by deck name
         const words = parseTextToWords(data.data);
-        createBulkWordsByDeckName(data.title, words, currentLang);
+        createBulkWordsByDeckName(data.title.trim(), words, currentLang);
         
         //render a success alert
         CustomAlert("Deck successfully added!")

@@ -169,25 +169,28 @@ const ReaderHome = ({ navigation }) => {
 
                         <TouchableOpacity onPress={() => navigation.navigate("ReaderViewer", { entryTitle: item.title, entryId: item.id })}
                             style={[styles.itemCard, { marginBottom: 10 }]} activeOpacity={0.7}>
-                            <View style={{ flexDirection: 'row', gap: 15 }}>
+                            <View style={{ flexDirection: 'row', gap: 15, paddingVertical:10 }}>
                                 {/* Index Number for the Card */}
-                                <View style={{ width: 'auto',justifyContent: 'center' }}>
+                                <View style={{ width: 'auto',justifyContent: 'flex-start' }}>
                                     <Text style={{ color: style.gray_300, fontSize: style.text_md }}>
                                     {index + 1}
                                     </Text>
                                 </View>
                                 {/* Title for Deck */}
-                                <View style={{ width: '60%', justifyContent: 'center' }}>
+                                <View style={{ width: '60%', justifyContent: 'flex-start' }}>
                                     <Text style={{ color: style.gray_500, fontWeight: '500', fontSize: style.text_md }}>
-                                        {item.title && item.title.trim() !== "" ? limitLength(item.title, 20) : "No Title"}
+                                        {item.title && item.title.trim() !== "" ? item.title : "No Title"}
                                     </Text>
                                 </View>
-                            </View>
 
-                            {/* Created At */}
-                            <Text style={{ color: style.gray_400, fontWeight: '400' }}>
-                                { formatDate(item.created_at) } 
-                            </Text>
+                                {/* Created At */}
+                                <View style={{ width: '25%', justifyContent: 'flex-start' }}>
+                                    <Text style={{ color: style.gray_400, fontWeight: '400' }}>
+                                        { formatDate(item.created_at) } 
+                                    </Text>
+                                </View>
+
+                            </View>
                         </TouchableOpacity>
                         )}/>
 
@@ -267,7 +270,8 @@ const styles = StyleSheet.create({
     },
     itemCard: {
         backgroundColor: style.white, 
-        height: 60, 
+        height:'auto',
+        minHeight: 60, 
         borderRadius: style.rounded_md, 
         borderColor: style.gray_200,
         borderWidth: style.border_sm,

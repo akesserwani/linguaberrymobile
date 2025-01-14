@@ -56,6 +56,9 @@ const PracticeSentence = () => {
     //Data variable - this variable will contain the data
     const [sentenceData, setSentenceData] = useState(matchSentences(story, storyTranslation))
 
+    //get the number of sentences initially
+    const [entireCount, setEntireCount] = useState(null);
+
     //current index 
     const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -86,8 +89,11 @@ const PracticeSentence = () => {
 
     //this useEffect will reset everything if a user toggles - frontFirst
     useEffect(() => {
-        //rematch setnence data 
-        setSentenceData(matchSentences(story, storyTranslation))
+        const sentences = matchSentences(story, storyTranslation) 
+        //rematch sentence data 
+        setSentenceData(sentences);
+        //set the inital count
+        setEntireCount(sentences.length);
         //reset current index to 0
         setCurrentIndex(0);
         //reset current sentence
@@ -309,7 +315,7 @@ const PracticeSentence = () => {
 
                             {/* Current Index - Progress Count */}
                             <Text style={{color:style.gray_500, fontSize:style.text_md, fontWeight:'700', margin:10}}>
-                                {sentenceData.length} left
+                                { entireCount - sentenceData.length } / { entireCount }
                             </Text>          
                         </View>
 

@@ -40,6 +40,9 @@ const Practice = () => {
     //Pull the flashcard data from the database based on the deckID and current lang
     const [wordData, setWordData] = useState([]);
 
+    //get the number of words initially
+    const [entireCount, setEntireCount] = useState(null);
+
     //current index 
     const [currentIndex, setCurrentIndex] = useState(0);
     
@@ -133,6 +136,9 @@ const Practice = () => {
 
             //reset current index
             setCurrentIndex(0)
+
+            //set the entire count - number of all the words 
+            setEntireCount(data.length)
 
             //set isMounted to true once the data has been loaded
             setIsMounted(true);
@@ -366,8 +372,8 @@ const Practice = () => {
                         <TagSelection currentLang={currentLang} deckId={deckId} onTagSelect={selectTag} starredWordCount={starredWordCount}/>      
 
                         {/* Current Index - Progress Count */}
-                        <Text style={{color:style.gray_500, fontSize:style.text_md, fontWeight:'700', margin:10}}>
-                            { wordData.length } left
+                        <Text style={{color:style.blue_500, fontSize:style.text_md, fontWeight:'700', margin:10}}>
+                            { entireCount - wordData.length } / { entireCount }
                         </Text>          
                     </View>
 

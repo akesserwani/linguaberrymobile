@@ -148,18 +148,18 @@ const DecksHome = ({ navigation }) => {
                             //Individual Box being rendered
                             <TouchableOpacity onPress={() => navigation.navigate("UserDeck", { deckName: item.name, deckId: item.id })}
                                 style={[styles.wordCard, { marginBottom: 10 }]} activeOpacity={0.7}>
-                                <View style={{ flexDirection: 'row', gap: 15 }}>
+                                <View style={{ flexDirection: 'row', gap: 15, paddingVertical:10 }}>
                                     {/* Index Number for the Card */}
-                                    <View style={{ width: 'auto',justifyContent: 'center' }}>
+                                    <View style={{ width: 'auto',justifyContent: 'flex-start' }}>
                                         <Text style={{ color: style.gray_300, fontSize: style.text_md }}>
                                             {index + 1}
                                         </Text>
                                     </View>
 
                                     {/* Title for Deck */}
-                                    <View style={{ width: '60%', justifyContent: 'center' }}>
+                                    <View style={{ width: '60%', justifyContent: 'flex-start' }}>
                                         <Text style={{ color: style.gray_500, fontWeight: '500', fontSize: style.text_md }}>
-                                            { limitLength(item.name, 20) } 
+                                            {item.name}
                                         </Text>
                                     </View>
                                 </View>
@@ -252,7 +252,8 @@ const styles = StyleSheet.create({
 
     wordCard: {
         backgroundColor: style.white, 
-        height: 60, 
+        height: 'auto', 
+        minHeight:60,
         borderRadius: style.rounded_md, 
         borderColor: style.gray_200,
         borderWidth: style.border_sm,

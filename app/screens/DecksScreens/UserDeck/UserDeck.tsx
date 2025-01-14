@@ -307,32 +307,33 @@ const UserDeck = ({route}) => {
                                     styles.item, 
                                     getStarred(currentLang, deckId, item.term) === 1 && { borderWidth: 1, borderColor: '#facc15' }
                                 ]}>
+                                <View style={{ flexDirection: 'row', gap: 15, paddingVertical:10 }}>
+                                    <View style={{ width: 'auto', justifyContent: 'flex-start' }}>
+                                        <Text style={{ color: style.gray_300, fontSize: style.text_md }}>
+                                            {index + 1}
+                                        </Text>
+                                    </View>
 
-                                <View style={{ width: 'auto',justifyContent: 'center' }}>
-                                    <Text style={{ color: style.gray_300, fontSize: style.text_md }}>
-                                        {index + 1}
-                                    </Text>
-                                </View>
+                                    {/* Container for Term */}
+                                    <View style={{ width: '40%', justifyContent: 'flex-start' }}>
+                                        <Text style={{ color: style.gray_500, fontSize: style.text_md }}> 
+                                        { item.term } 
+                                        </Text>
+                                    </View>
 
-                                {/* Container for Term */}
-                                <View style={{ width: '40%', height: 60, justifyContent: 'center', paddingVertical:2 }}>
-                                    <Text style={{ color: style.gray_500, fontSize: style.text_md, padding: 1 }}> 
-                                    { limitLength(item.term, 15) } 
-                                    </Text>
-                                </View>
+                                    {/* Container for Translation */}
+                                    <View style={{ width: '30%', justifyContent: 'flex-start'}}>
+                                        <Text style={{ color: style.gray_400, fontSize: style.text_md }}> 
+                                        { item.translation } 
+                                        </Text>
+                                    </View>
 
-                                {/* Container for Translation */}
-                                <View style={{ width: '30%', height: 60, justifyContent: 'center', paddingVertical:2 }}>
-                                    <Text style={{ color: style.gray_400, fontSize: style.text_md }}> 
-                                    { limitLength(item.translation, 20) } 
-                                    </Text>
-                                </View>
-
-                                {/* Container for end to get part of speech */}
-                                <View style={{ width: '15%', height: 60, justifyContent: 'center', paddingVertical:2 }}>
-                                    <Text style={{ color: style.gray_400, fontStyle:'italic', fontSize: style.text_sm }}> 
-                                        {getPartOfSpeech(item.notes)}
-                                    </Text>
+                                    {/* Container for end to get part of speech */}
+                                    <View style={{ width: '15%', justifyContent: 'flex-start' }}>
+                                        <Text style={{ color: style.gray_400, fontStyle:'italic', fontSize: style.text_sm }}> 
+                                            {getPartOfSpeech(item.notes)}
+                                        </Text>
+                                    </View>
                                 </View>
 
                             </TouchableOpacity>
@@ -409,7 +410,8 @@ const styles = StyleSheet.create({
     },
     item: {
         backgroundColor: style.white, 
-        height: 60, 
+        height:'auto',
+        minHeight: 60, 
         borderRadius: style.rounded_md, 
         borderColor: style.gray_200,
         borderWidth: style.border_sm,
@@ -418,7 +420,8 @@ const styles = StyleSheet.create({
         gap:15,
         alignItems:'center',
         paddingHorizontal: 15,
-        marginBottom: 10
+        marginBottom: 10,
+
     },
 
 
