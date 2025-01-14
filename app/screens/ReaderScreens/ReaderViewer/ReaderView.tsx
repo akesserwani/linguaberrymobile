@@ -198,7 +198,7 @@ const ReaderViewer = ({route}) => {
                     </TouchableOpacity>
                 </View>
 
-                <ScrollView style={{ flex:1}} contentContainerStyle={{ paddingBottom:100, paddingTop:20}}>
+                <ScrollView style={{ flex:1}} contentContainerStyle={{ paddingBottom:100, paddingTop:20}} showsVerticalScrollIndicator={false}>
                     {entryData ? (
                         <>
                             {/* Main Text here in the Target Language */}

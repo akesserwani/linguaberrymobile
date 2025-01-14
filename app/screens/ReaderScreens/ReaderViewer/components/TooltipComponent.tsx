@@ -55,7 +55,7 @@ const TooltipComponent = ({ entryId, contents, refresh }) => {
             
     // Example usage to generate the `words` array
     const words = processText(contents);
-      
+
     // Set the selected word
     const [selectedWord, setWord] = useState("");
 
@@ -124,22 +124,27 @@ const TooltipComponent = ({ entryId, contents, refresh }) => {
 
             {/* Render the Text */}
             <View style={{ flexDirection: isRTL ? 'row-reverse' : 'row', flexWrap: 'wrap', marginBottom: 50 }}>
-                {/* Render the Text */}
-                <Text style={{ flexWrap: 'wrap', flexDirection: 'row', direction: isRTL ? 'rtl' : 'ltr' }}>
-                    {words.map((word, index) => (
-                        <Text
-                            key={index}
-                            style={[styles.word, visibleTooltip === index && styles.highlightedWordWrapper]}
-                            onPress={() => {
-                                setVisibleTooltip(index);
-                                setWord(cleanString(word));
-                                setPopup(true);
-                                console.log(word)
-                            }}>
+                {words.map((word, index) => {
+                    if (word === "\n") {
+                        // Render a line break for "\n"
+                        return (
+                            <Text key={index} style={{ width: '100%' }}></Text>
+                        );
+                    }
+                    return (
+                        <Text key={index} style={[
+                                styles.word,
+                                visibleTooltip === index && styles.highlightedWordWrapper,
+                            ]}
+                                onPress={() => {
+                                    setVisibleTooltip(index);
+                                    setWord(cleanString(word));
+                                    setPopup(true);
+                                }}>
                             {word + " "}
                         </Text>
-                    ))}
-                </Text>
+                    );
+                })}
             </View>
 
 

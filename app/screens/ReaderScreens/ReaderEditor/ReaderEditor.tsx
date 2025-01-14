@@ -77,9 +77,9 @@ const ReaderEditor = ({route}) => {
         const entryContents = getEntryContents(entryId, currentLang);
 
         setContentsForm(entryContents);
-
+        console.log(entryContents)
         //detect initial text direction based on entry contents
-        detectDirection(entryTitle)
+        detectDirection(entryContents)
 
         // Mark initialization as complete
         setIsInitialized(true);
@@ -126,7 +126,7 @@ const ReaderEditor = ({route}) => {
     <>
     <View style={{flex:1, backgroundColor:style.slate_100}}>
         <KeyboardAvoidingView behavior={'padding'} keyboardVerticalOffset={20}>
-            <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{paddingRight:10, paddingBottom:100}}>
+            <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{paddingRight:10, paddingBottom:100}} showsVerticalScrollIndicator={false}>
 
                 {/* title form - can be edited */}
                 <TextInput  style={[ styles.titleContainer, {textAlign: direction === 'rtl' ? 'right' : 'left', paddingHorizontal: responsiveHorizontalPadding + 10} ]}
