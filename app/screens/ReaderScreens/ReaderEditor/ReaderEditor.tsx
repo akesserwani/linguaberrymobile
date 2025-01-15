@@ -141,7 +141,7 @@ const ReaderEditor = ({route}) => {
                 <View style={[styles.mainContainer, { paddingHorizontal: responsiveHorizontalPadding }]}>
 
                     {/* Main body data here */}
-                    <TextInput  style={{fontSize:style.text_lg, color: style.gray_500, fontWeight:'500', width:'100%', flexWrap:'wrap', paddingBottom:100,
+                    <TextInput  style={{fontSize:style.text_lg, color: style.gray_600, fontWeight:'400', width:'100%', flexWrap:'wrap', paddingBottom:100,
                         padding:10, textAlign: direction === 'rtl' ? 'right' : 'left' 
                     }}
                                 placeholder= { "Start writing here..." }

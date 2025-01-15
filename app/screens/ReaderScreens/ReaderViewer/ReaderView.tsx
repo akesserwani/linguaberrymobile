@@ -210,7 +210,7 @@ const ReaderViewer = ({route}) => {
                                     <Text style={{color:style.gray_700, fontSize:style.text_lg, fontWeight:'600', fontStyle:'italic'}}>
                                         Translation:
                                     </Text>
-                                    <Text style={{color:style.gray_700, fontSize:style.text_lg, fontWeight:'400'}}>
+                                    <Text style={{color:style.gray_700, fontSize:style.text_lg, fontWeight:'400', lineHeight:30}}>
                                         { entryData.translation_data }
                                     </Text>
                                 </View>    

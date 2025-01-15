@@ -134,7 +134,9 @@ const TooltipComponent = ({ entryId, contents, refresh }) => {
                     return (
                         <Text key={index} style={[
                                 styles.word,
-                                visibleTooltip === index && styles.highlightedWordWrapper,
+                                isRTL && { marginRight: 8 },    
+                                !isRTL && { marginRight: 4 },                        
+                                 visibleTooltip === index && styles.highlightedWordWrapper,
                             ]}
                                 onPress={() => {
                                     setVisibleTooltip(index);
@@ -247,7 +249,7 @@ const styles = StyleSheet.create({
     },
     highlightedWordWrapper: {
         backgroundColor: style.blue_200, 
-        borderRadius: 5, 
+        borderRadius: 6, 
         paddingHorizontal: 3,
     },
     modalOverlay: {
