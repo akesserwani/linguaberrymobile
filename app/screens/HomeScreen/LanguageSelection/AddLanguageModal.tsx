@@ -1,7 +1,7 @@
 
 
 import React, { useState } from 'react';
-import { ScrollView, Text, View, TextInput, StyleSheet,useWindowDimensions } from 'react-native';
+import { ScrollView, Text, View, TextInput, StyleSheet,useWindowDimensions, TouchableOpacity } from 'react-native';
 
 //components
 import CustomModal from '@/app/components/CustomModal';
@@ -62,7 +62,7 @@ const AddLanguageModal = ({ languagesSupported, userLanguages, addLanguage, onCl
         <CustomModal title='Add a Language' onClose={onClose} >
             {/* Wrap the language items in a ScrollView */}
             <ScrollView style={{ maxHeight: useWindowDimensions().height * 0.6, paddingRight:20 }} persistentScrollbar={true}>
-
+            <TouchableOpacity activeOpacity={1}>
                 {/* CUSTOM LANGUAGE FUNCTIONALITY */}
                 {/* Ability to Add Custom Language */}
                 <View style={{ flexDirection: "row", justifyContent: "space-between", paddingVertical: 10}}>
@@ -146,6 +146,7 @@ const AddLanguageModal = ({ languagesSupported, userLanguages, addLanguage, onCl
                     )
                 ))}
 
+            </TouchableOpacity>
             </ScrollView>
         </CustomModal>
 

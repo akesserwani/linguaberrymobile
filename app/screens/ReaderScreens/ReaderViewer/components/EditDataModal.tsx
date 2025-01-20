@@ -214,7 +214,7 @@ const EditDataModal = ({onClose, entryId, setRefresh}) => {
     const { width } = useWindowDimensions(); // Get screen width
 
     return ( 
-        <CustomModal title="Edit Data" onClose={onClose} horizontalPadding={0} overrideStyle={{maxHeight:'80%'}} allowBackdropClose={false}>
+        <CustomModal title="Edit Data" onClose={onClose} horizontalPadding={0} overrideStyle={{maxHeight:'80%'}} allowBackdropClose={false} topPadding={0}>
             {/* Main Content here */}
             <KeyboardAvoidingView behavior={'padding'} keyboardVerticalOffset={50} style={{maxHeight:'95%'}} >
                 <ScrollView contentContainerStyle={{ gap: 20, padding:35, flexDirection:'column' }}>

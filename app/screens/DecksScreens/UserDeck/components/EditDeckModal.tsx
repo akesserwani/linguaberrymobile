@@ -148,7 +148,7 @@ const EditDeckModal = ({onClose, currentLang, deckId, deckName, refreshDeck, ref
     
 
     return ( 
-        <CustomModal title="Edit Deck" onClose={onClose} horizontalPadding={0} overrideStyle={{maxHeight:'80%'}} allowBackdropClose={false}>
+        <CustomModal title="Edit Deck" onClose={onClose} horizontalPadding={0} overrideStyle={{maxHeight:'80%'}} allowBackdropClose={false} topPadding={0}>
 
             <KeyboardAvoidingView behavior={'padding'} keyboardVerticalOffset={50} style={{maxHeight:'95%'}}>
                 <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ gap: 10, padding:35, flexDirection:'column' }}>

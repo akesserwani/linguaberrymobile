@@ -133,16 +133,23 @@ const DecksHome = ({ navigation }) => {
                     ) : (
                         <FlatList
                             ref={flatListRef}
-                            data={renderedData.reverse()}
+                            data={createdFirst ? renderedData : [...renderedData].reverse()} 
                             keyExtractor={(item, index) => item.id.toString()}
                             contentContainerStyle={{ paddingBottom: 150, paddingTop:20, paddingRight:10 }} 
                             ListHeaderComponent={
-                                //this text will appear on top prompting the user whether to render decks by created first or created last
-                                <TouchableOpacity style={{paddingVertical:10, paddingHorizontal:5, marginBottom:5}} onPress={()=>toggleCreatedFirst(!createdFirst)}>
-                                    <Text style={{color:style.blue_500, fontWeight:'400', fontSize:style.text_sm}}>
-                                        {createdFirst ? 'Oldest' : 'Newest'} First
+                                //Top container that shows the current way text is organized and button to switch it
+                                <View style={{flexDirection:'row', justifyContent:'space-between', paddingVertical:10, paddingHorizontal:8, marginBottom:5}}>
+                                    {/* Indication text */}
+                                    <Text style={{color:style.gray_400, fontWeight:'500', fontSize:style.text_sm}}>
+                                        By {createdFirst ? 'oldest' : 'newest'}
                                     </Text>
-                                </TouchableOpacity>
+                                    {/* // this text will appear on top prompting the user whether to render decks by created first or created last */}
+                                    <TouchableOpacity style={{}} onPress={()=>toggleCreatedFirst(!createdFirst)}>
+                                        <Text style={{color:style.blue_500, fontWeight:'400', fontSize:style.text_sm}}>
+                                            Show by {createdFirst ? 'newest' : 'oldest'}
+                                        </Text>
+                                    </TouchableOpacity>
+                                </View>
                               }                        
                             renderItem={({ item, index }) => (
                             //Individual Box being rendered

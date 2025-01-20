@@ -8,6 +8,7 @@ import { Audio } from 'expo-av'
 import { CurrentLangContext } from '@/app/data/CurrentLangContext.tsx';
 
 //styles
+import Icon from '@expo/vector-icons/FontAwesome6'
 import * as style from '@/assets/styles/styles'
 
 import { compareIgnoringPunctuationAndAccents } from '@/app/data/Functions';
@@ -53,6 +54,7 @@ const PracticeSentence = () => {
     const { story, storyTranslation, title, stack, entryId } = route.params; 
                 
 
+
     //Data variable - this variable will contain the data
     const [sentenceData, setSentenceData] = useState(matchSentences(story, storyTranslation))
 
@@ -74,6 +76,9 @@ const PracticeSentence = () => {
     //FRONT FIRST OR BACK FIRST
     const [frontFirst, setFrontFirst] = useState(true);
 
+    //Random variable - this variable will randomize the data
+    const [random, setRandom] = useState(false); 
+
     //variable to toggle the check button container
     const [buttonContainer, toggleButtonContainer] = useState(true);
 
@@ -90,6 +95,7 @@ const PracticeSentence = () => {
     //this useEffect will reset everything if a user toggles - frontFirst
     useEffect(() => {
         const sentences = matchSentences(story, storyTranslation) 
+
         //rematch sentence data 
         setSentenceData(sentences);
         //set the inital count
@@ -107,6 +113,36 @@ const PracticeSentence = () => {
     }, [sentenceData, currentIndex]);
 
 
+    //randomizer
+    //this useEffect will randomize everything if user hits random button
+    useEffect(()=>{
+        let sentences;
+        //if random is true randomize the data
+        if (random){
+            //randomize the sentence data
+            sentences = matchSentences(story, storyTranslation).sort(() => Math.random() - 0.5);
+
+        } else{
+            //else set the data to the correct sequence
+            //randomize the sentence data
+            sentences = matchSentences(story, storyTranslation) 
+            
+        }
+
+        //set it to the reactive variable
+        setSentenceData(sentences);
+
+        //reset the excercise
+        //set the inital count
+        setEntireCount(sentences.length);
+        //reset current index to 0
+        setCurrentIndex(0);
+        //reset current sentence
+        setCurrentSentence(sentenceData[currentIndex]);
+
+    }, [random])
+
+
     //Render the finish modal if the data has been loaded (isMounted = true)
     //Then if the data is less than 1
     useEffect(() => {
@@ -117,6 +153,7 @@ const PracticeSentence = () => {
             //update the database to have practiced this story 
         }  
     }, [sentenceData]);
+
 
 
     //generate next question
@@ -298,6 +335,9 @@ const PracticeSentence = () => {
     //if width is mobile < 800, make the width 90%, else make it 80%
     const dynamicWidth = windowWidth < 800 ? '90%' : '80%';  // 90% for mobile, 80% for larger screens
 
+    //make the button container column on mobile and row on large
+    const dynamicFlex = windowWidth < 800 ? 'column' : 'row';  
+
     return ( 
         <View style={{flex:1, backgroundColor:style.slate_100}}>
             {/* Main Container */}
@@ -308,13 +348,22 @@ const PracticeSentence = () => {
                         {/* Top Container with Tags */}
                         <View style={{flexDirection:'row', justifyContent:'space-between', borderBottomWidth: style.border_md, borderBottomColor:style.gray_200, paddingBottom: 20, zIndex:1}}>
                             
-                            {/* Button here to toggle language to translate to */}
-                            <CustomButton onPress={()=>setFrontFirst(!frontFirst)} customStyle={null}>
-                                <Text style={{color:style.white}}>Translate to { frontFirst ? currentLang : 'English' }</Text>
-                            </CustomButton>
+                            {/* Button containers */}
+                            <View style={{flexDirection:dynamicFlex, gap:10}}>
+                                {/* Button here to toggle language to translate to */}
+                                <CustomButton onPress={()=>setFrontFirst(!frontFirst)} customStyle={null}>
+                                    <Text style={{color:style.white}}>Translate to { frontFirst ? currentLang : 'English' }</Text>
+                                </CustomButton>
+
+                                {/* button to randomize */}
+                                <CustomButton onPress={()=>setRandom(!random)} customStyle={{backgroundColor: random ? style.blue_200 : style.gray_200, width:60}}>
+                                    <Icon name={"shuffle"} size={15} color={random ? style.blue_500 : style.gray_500}/>
+                                </CustomButton>
+                            </View>
+
 
                             {/* Current Index - Progress Count */}
-                            <Text style={{color:style.gray_500, fontSize:style.text_md, fontWeight:'700', margin:10}}>
+                            <Text style={{color:style.gray_500, fontSize:style.text_lg, fontWeight:'700', margin:5}}>
                                 { entireCount - sentenceData.length } / { entireCount }
                             </Text>          
                         </View>

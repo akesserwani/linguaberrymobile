@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ScrollView, Text, View, useWindowDimensions } from 'react-native';
+import { ScrollView, Text, View, useWindowDimensions, TouchableOpacity } from 'react-native';
 
 //components
 import CustomModal from '@/app/components/CustomModal';
@@ -16,6 +16,7 @@ const EditLanguageModal = ({ userLanguages, deleteLanguage, onClose }) => {
         <CustomModal title='Edit Languages' onClose={onClose} >
         {/* Wrap the language items in a ScrollView */}
         <ScrollView style={{ maxHeight: useWindowDimensions().height * 0.6, paddingRight:20 }} persistentScrollbar={true}>
+        <TouchableOpacity activeOpacity={1}>
 
             {/* Individual Language Box, if trash icon pressed then it will render confirmation and delete */}
             {userLanguages.map((language, index) => (
@@ -31,6 +32,7 @@ const EditLanguageModal = ({ userLanguages, deleteLanguage, onClose }) => {
                     </CustomButton>
                 </View>
             ))}
+            </TouchableOpacity>
         </ScrollView>
     </CustomModal>
 
