@@ -11,7 +11,7 @@ import { CurrentLangContext } from '@/app/data/CurrentLangContext.tsx';
 import Icon from '@expo/vector-icons/FontAwesome6'
 import * as style from '@/assets/styles/styles'
 
-import { compareIgnoringPunctuationAndAccents } from '@/app/data/Functions';
+import { checkCorrect } from '@/app/data/Functions';
 
 //custom components
 import CustomButton from '@/app/components/CustomButton';
@@ -211,7 +211,7 @@ const PracticeSentence = () => {
         setIsEditable(false);
 
         // Compare `userInput` to the `correctAnswer`
-        if (compareIgnoringPunctuationAndAccents(userInput, correctAnswer)) {
+        if (checkCorrect(userInput, correctAnswer)) {
 
             // Play the correct sound
             await playCorrectSound();

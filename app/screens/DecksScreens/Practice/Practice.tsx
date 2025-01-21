@@ -23,7 +23,7 @@ import { getWords } from '../DataDecks';
 
 import { isLanguageRTL } from '../../HomeScreen/LanguageSelection/DataLanguages';
 
-import { shuffleArray, compareIgnoringPunctuationAndAccents } from '@/app/data/Functions';
+import { shuffleArray, checkCorrect } from '@/app/data/Functions';
 
 const Practice = () => {
 
@@ -246,7 +246,7 @@ const Practice = () => {
         setIsEditable(false);
 
         // Compare `userInput` to the `correctAnswer`
-        if (compareIgnoringPunctuationAndAccents(userInput, correctAnswer)) {
+        if (checkCorrect(userInput, correctAnswer)) {
 
             // Play the correct sound
             await playCorrectSound();

@@ -1,6 +1,8 @@
 
-//Function to clean input
-export const  compareIgnoringPunctuationAndAccents = (input, correct) => {
+
+
+//Function to clean input and check if item is correct
+export const  checkCorrect = (input, correct) => {
     // Function to remove punctuation and normalize accents
     const normalizeText = (text) => {
         return text
@@ -11,12 +13,54 @@ export const  compareIgnoringPunctuationAndAccents = (input, correct) => {
             .trim(); // Remove leading and trailing whitespace
     };
 
+
+    // Function to calculate Levenshtein Distance
+    const levenshteinDistance = (a, b) => {
+        const matrix = [];
+        const lenA = a.length;
+        const lenB = b.length;
+
+        // Initialize the matrix
+        for (let i = 0; i <= lenA; i++) {
+            matrix[i] = [i];
+        }
+        for (let j = 0; j <= lenB; j++) {
+            matrix[0][j] = j;
+        }
+
+        // Fill the matrix
+        for (let i = 1; i <= lenA; i++) {
+            for (let j = 1; j <= lenB; j++) {
+                if (a[i - 1] === b[j - 1]) {
+                    matrix[i][j] = matrix[i - 1][j - 1];
+                } else {
+                    matrix[i][j] = Math.min(
+                        matrix[i - 1][j] + 1, // Deletion
+                        matrix[i][j - 1] + 1, // Insertion
+                        matrix[i - 1][j - 1] + 1 // Substitution
+                    );
+                }
+            }
+        }
+
+        return matrix[lenA][lenB];
+    };
+    
+    
     // Normalize both strings
     const normalizedInput = normalizeText(input);
     const normalizedCorrect = normalizeText(correct);
 
-    // Compare normalized strings
-    return normalizedInput === normalizedCorrect;
+    // Calculate similarity
+    const percentSimilar = 98;
+
+    const distance = levenshteinDistance(normalizedInput, normalizedCorrect);
+    const maxLength = Math.max(normalizedInput.length, normalizedCorrect.length);
+    const similarity = ((maxLength - distance) / maxLength) * 100;
+
+    // Return true if similarity is at least 98%
+    return similarity >= percentSimilar;
+
 }
 
 //Function to match senteneces
