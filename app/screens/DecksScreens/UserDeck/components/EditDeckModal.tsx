@@ -172,6 +172,8 @@ const EditDeckModal = ({onClose, currentLang, deckId, deckName, refreshDeck, ref
                                     multiline={true} maxLength={100000} customFormStyle={{height:180, borderTopLeftRadius:0, borderTopRightRadius:0, borderTopWidth:0}}/>
                             </View>
 
+                            <Text style={{color:style.gray_500, fontSize:style.text_xs, margin:5, fontWeight:'400'}}>10,000 character max</Text>                
+
                             {/* Print the errors of the CSV data input */}
                             <Text style={{color:style.red_500, fontWeight:"400"}}>
                                 { dataError }

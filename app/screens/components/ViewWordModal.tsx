@@ -127,7 +127,7 @@ const ViewWordModal = ({onClose, modalTitle, json=false, entryId = null, dataPro
                     // Render words in a flatlist 
                     <FlatList
                         data={wordData}
-                        contentContainerStyle = {{paddingRight:10, paddingTop:20, paddingBottom:20, paddingHorizontal:20 }}
+                        contentContainerStyle = {{paddingRight:10, paddingTop:20, paddingBottom:20, paddingHorizontal:20, borderRadius:style.rounded_md }}
                         keyExtractor={(item, index) => index.toString()} 
                         renderItem={({ item, index }) => (
                         <TouchableOpacity onPress={ 

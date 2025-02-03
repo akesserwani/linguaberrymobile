@@ -9,7 +9,7 @@ import CustomModal from '@/app/components/CustomModal';
 import { toggleStar, getStarred } from '../../DataDecks';
 import { ScrollView } from 'react-native-gesture-handler';
 
-const Card = ({wordData, setWordData, currentLang, deckId, frontFirst}) => {
+const Card = ({wordData, setWordData, currentLang, deckId, frontFirst, currentIndex}) => {
     const rotation = useRef(new Animated.Value(0)).current;
     const [flipped, setFlipped] = useState(false);
 
@@ -65,6 +65,13 @@ const Card = ({wordData, setWordData, currentLang, deckId, frontFirst}) => {
         // Return the first group match truncated to 5 characters or null if not found
         return match ? match[1].substring(0, 5) : null;
     };
+
+    //check to see if currentIndex was changed, if it was changed then set flipped to true
+    useEffect(()=>{
+        if (flipped){
+            flipCard();
+        }
+    },[currentIndex])
 
 
     return (

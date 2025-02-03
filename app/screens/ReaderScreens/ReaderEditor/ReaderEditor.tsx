@@ -19,6 +19,8 @@ const ReaderEditor = ({route}) => {
     //current language
     const { currentLang } = useContext(CurrentLangContext);
 
+    const MAX_CHARACTERS = 10000;
+
     //reactive variable for the language direction
     //can be changed via the keyboard 
     const [direction, setDirection] = useState('ltr'); // Default direction is Left-to-Right
@@ -152,6 +154,12 @@ const ReaderEditor = ({route}) => {
                                 multiline={true}
                                 maxLength={10000}/>
 
+
+                    {MAX_CHARACTERS - contentsForm.length <= 1000 && (
+                        <Text style={{ margin: 10, color: style.gray_500 }}>
+                            {MAX_CHARACTERS - contentsForm.length} characters left
+                        </Text>
+                    )}
 
                 </View>
             </ScrollView>

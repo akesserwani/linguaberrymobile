@@ -20,6 +20,7 @@ import { storyFiles } from "../../../assets/data/ExplorerData";
 
 import * as Clipboard from 'expo-clipboard'; // Import clipboard for copying
 import CustomAlert from "@/app/components/CustomAlert";
+import AddWordToDeck from "./AddWordToDeck";
 
 const ViewSentences = ({onClose, modalTitle, entryId=null}) => {
 
@@ -28,6 +29,11 @@ const ViewSentences = ({onClose, modalTitle, entryId=null}) => {
 
     //Get the data from the database
     const [sentenceData, setSentenceData] = useState([]);
+
+    //Create reactive variable to trigger whether to show AddWordToDeck Component or not
+    const [addToDeck, toggleAddWord] = useState(false);
+    //Reactive variable that carries the word to add to the modal
+    const [wordToAdd, setWordtoAdd] = useState([]);
 
     useEffect(()=>{
         //If entryId is null - means that it is being called from Explorer 
@@ -50,12 +56,24 @@ const ViewSentences = ({onClose, modalTitle, entryId=null}) => {
         }
 
     }, [entryId, currentLang])
+
+    //clean word function
+    const cleanWord = (word) =>{
+        const cleanWord = word.replace(/[^\w\sáéíóúüñ]/gi, ''); 
+        return cleanWord;
+    }
         
 
     
 
     return ( 
         <CustomModal title={limitLength(modalTitle, 25)} onClose={onClose} overrideStyle={{maxHeight:'80%'}} horizontalPadding={0} topPadding={0}>
+
+            {/* Add word to deck component will be triggered at top of page  */}
+            { addToDeck &&
+                <AddWordToDeck onClose={()=>toggleAddWord(false)} wordToAdd={wordToAdd}/>
+            }
+
             {/* Content Container */}
             <View style={styles.contentContainer}>
                 {/* Top bar with labels */}
@@ -79,7 +97,7 @@ const ViewSentences = ({onClose, modalTitle, entryId=null}) => {
                     // Render words in a flatlist 
                     <FlatList
                         data={sentenceData}
-                        contentContainerStyle={{ paddingRight: 20, paddingTop: 20, paddingBottom: 20, paddingHorizontal: 20 }}
+                        contentContainerStyle={{ paddingRight: 20, paddingTop: 20, paddingBottom: 20, paddingHorizontal: 20, borderRadius:style.rounded_md }}
                         keyExtractor={(item, index) => index.toString()}
                         renderItem={({ item, index }) => (
                             <TouchableOpacity activeOpacity={1}>
@@ -98,8 +116,8 @@ const ViewSentences = ({onClose, modalTitle, entryId=null}) => {
                                                 key={index}
                                                 style={{ marginRight: 5 }} // Add spacing between words
                                                 onPress={() => {
-                                                    Clipboard.setString(word); 
-                                                    CustomAlert(`Copied "${word}"`)
+                                                    toggleAddWord(true);
+                                                    setWordtoAdd([ cleanWord(word), "", "" ]);                     
                                                 }}>
                                                 <Text
                                                     style={{
@@ -119,8 +137,8 @@ const ViewSentences = ({onClose, modalTitle, entryId=null}) => {
                                                 key={index}
                                                 style={{ marginRight: 5 }} // Add spacing between words
                                                 onPress={() => {
-                                                    Clipboard.setString(word); 
-                                                    CustomAlert(`Copied "${word}"`)
+                                                    toggleAddWord(true);
+                                                    setWordtoAdd([ cleanWord(word), "", "" ]);                     
                                                 }}>
                                                 <Text
                                                     style={{

@@ -242,7 +242,9 @@ const EditDataModal = ({onClose, entryId, setRefresh}) => {
                                 </View>
                                 <CustomInput showLabel={false} placeholder={"Write csv data here..."} value={wordDataInput} 
                                                 onChangeText={setWordDataInput} maxLength={50000} multiline={true} customFormStyle={{height:180, borderTopLeftRadius:0, borderTopRightRadius:0, borderTopWidth:0}}/>
+
                             </View>
+                            <Text style={{color:style.gray_500, fontSize:style.text_xs}}>10,000 character max</Text>                
 
                             {/* Button Container below the form */}
                             <View style={{flexDirection:'row', gap:5, flexWrap:'wrap'}}>
@@ -284,6 +286,7 @@ const EditDataModal = ({onClose, entryId, setRefresh}) => {
                             {/* Translation Data input form */}
                             <CustomInput showLabel={true} label={"Full Translation"} placeholder={"Write translation here..."} value={textTranslation} 
                                             onChangeText={setTextTranslation} maxLength={50000} multiline={true} customFormStyle={{height:120}}/>
+                            <Text style={{color:style.gray_500, fontSize:style.text_xs}}>10,000 character max</Text>                
 
                             {/*Button container below the form*/}
                             <View style={{flexDirection:'row', gap:5, flexWrap:'wrap'}}>

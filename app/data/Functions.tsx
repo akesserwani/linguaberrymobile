@@ -51,31 +51,37 @@ export const  checkCorrect = (input, correct) => {
     const normalizedInput = normalizeText(input);
     const normalizedCorrect = normalizeText(correct);
 
-    // Calculate similarity
-    const percentSimilar = 98;
-
+    // Calculate Levenshtein distance
     const distance = levenshteinDistance(normalizedInput, normalizedCorrect);
     const maxLength = Math.max(normalizedInput.length, normalizedCorrect.length);
     const similarity = ((maxLength - distance) / maxLength) * 100;
 
+    // **Dynamic accuracy threshold based on string length**
+    let requiredSimilarity = 98; // Default high accuracy for short strings
+
+    if (maxLength > 10) requiredSimilarity = 95; // Allow 5% error for medium length
+    if (maxLength > 20) requiredSimilarity = 90; // Allow 10% error for longer strings
+    if (maxLength > 50) requiredSimilarity = 85; // Allow 15% error for very long texts
+
     // Return true if similarity is at least 98%
-    return similarity >= percentSimilar;
+    return similarity >= requiredSimilarity;
 
 }
 
 //Function to match senteneces
 export const matchSentences = (mainText, translationText) => {
+
     // Regex to split sentences on `.`, `?`, or `!` while avoiding splits on abbreviations and ellipses
-    const sentenceRegex = /(?<!\b(?:Mr|Ms|Mrs|Dr|Jr|Sr|St|etc|e\.g|i\.e|vs)\.)(?<!\.\.\.)([.!?])\s+/;
+    const sentenceRegex = /(?<!\b(?:Mr|Ms|Mrs|Dr|Jr|Sr|St|etc|e\.g|i\.e|vs)\.)(?<!\.\.\.)([.!?])\s+(?=[A-Z])/;
 
     // Split and clean mainText sentences
     const mainSentences = mainText
         .split(sentenceRegex)
         .reduce((acc, curr, idx) => {
-            if (/[.!?]/.test(curr) && idx > 0) {
-                acc[acc.length - 1] += curr; // Append punctuation to the last sentence
-            } else if (curr.trim()) {
+            if (idx % 2 === 0) { 
                 acc.push(curr.trim());
+            } else {
+                acc[acc.length - 1] += curr.trim(); // Append punctuation properly
             }
             return acc;
         }, [])
@@ -85,10 +91,10 @@ export const matchSentences = (mainText, translationText) => {
     const translationSentences = translationText
         .split(sentenceRegex)
         .reduce((acc, curr, idx) => {
-            if (/[.!?]/.test(curr) && idx > 0) {
-                acc[acc.length - 1] += curr; // Append punctuation to the last sentence
-            } else if (curr.trim()) {
+            if (idx % 2 === 0) { 
                 acc.push(curr.trim());
+            } else {
+                acc[acc.length - 1] += curr.trim(); // Append punctuation properly
             }
             return acc;
         }, [])

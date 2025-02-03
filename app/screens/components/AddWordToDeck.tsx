@@ -32,6 +32,18 @@ const AddWordToDeck = ({onClose, wordToAdd}) => {
     const [selectedDeck, setSelectedDeck] = useState("");
     const [selectedDeckId, setSelectedDeckId] = useState(null);
 
+    //text for the the data
+    //get form data for the word
+    const [formWord, setFormWord] = useState(wordToAdd[0]);
+    //get form data for the translation
+    const [formTransl, setFormTransl] = useState(wordToAdd[1]);
+    //get form data for etymology
+    const [formEty, setFormEty] = useState(wordToAdd[2]);
+    
+    //var to toggle etymology form
+    const [etyShow, toggleEty] = useState(false);
+
+
     //Function to get names of decks
     useEffect(()=>{
         const data = getAllDecks(currentLang);
@@ -44,7 +56,7 @@ const AddWordToDeck = ({onClose, wordToAdd}) => {
             CustomAlert("Need to select a deck!");
         } else {
             //createNewWord
-            createNewWord(wordToAdd[0], wordToAdd[1], wordToAdd[2],"None", selectedDeckId, currentLang)
+            createNewWord(formWord, formTransl, formEty, "None", selectedDeckId, currentLang)
             //close the modal
             onClose();
 
@@ -54,7 +66,7 @@ const AddWordToDeck = ({onClose, wordToAdd}) => {
     }
 
     return ( 
-        <CustomModal title="Add Word to Deck" onClose={onClose}>
+        <CustomModal title="Add Word to Deck" onClose={onClose} overrideStyle={{height:'70%'}}>
             <View style={{flexDirection:'column', gap:15}}>
                 {/* Tag Dropdown Button */}
                 <CustomButton onPress={() => openDropdown(!dropdownOpen)} customStyle={styles.tagDropdown}>
@@ -87,59 +99,37 @@ const AddWordToDeck = ({onClose, wordToAdd}) => {
                 }
 
                 {/* Text Message that shows selected word */}   
-                <ScrollView style={{maxHeight: 300}} contentContainerStyle={{width:'90%', paddingBottom:50}}>
+                <ScrollView style={{maxHeight: 400}} contentContainerStyle={{width:'90%', paddingBottom:50}}>
+
                     {/* Selected Term */}
-                    <View style={{flexDirection:'row', gap:5}}>
-                        <Text style={{color: style.gray_600, fontWeight:'500', fontSize: style.text_lg}}>
-                            Term: 
+                    {/* Form to add a word */}
+                    <CustomInput label={ "Term"} placeholder={"Type term..." } value={formWord} onChangeText={setFormWord} 
+                            maxLength={100} multiline={true} customFormStyle={{height: 80}} customStyle={{marginBottom:10}}/>
+
+                    {/* Form to add a translation */}
+                    <CustomInput label={ "Translation"} placeholder={"Type translation..." } value={formTransl} onChangeText={setFormTransl} 
+                                maxLength={100}  multiline={true} customFormStyle={{height: 80}}/>
+
+                    <TouchableOpacity onPress={()=>toggleEty(!etyShow)} activeOpacity={0.6}>
+                        <Text style={{color:style.blue_500, fontWeight:'500', fontSize:style.text_md, marginLeft: 5, marginTop:25}}>
+                                { etyShow ? "Close Notes" : "Add Notes"  }
                         </Text>
-                        <TouchableOpacity onPress={()=>{ 
-                             Clipboard.setString(wordToAdd[0]); 
-                             CustomAlert(`Copied "${wordToAdd[0]}"`)
-                         }}>
-                            <Text style={{color: style.gray_500, fontWeight:'400', fontSize: style.text_lg}}>
-                                {wordToAdd[0]}
-                            </Text>
-                        </TouchableOpacity>
+                    </TouchableOpacity>
 
-                    </View>       
-                    {/* Selected Translation */}      
-                    <View style={{flexDirection:'row', marginTop:15, gap:5}}>
-                        <Text style={{color: style.gray_600, fontWeight:'500', fontSize: style.text_lg}}>
-                            Translation: 
-                        </Text>
 
-                        <TouchableOpacity onPress={()=>{ 
-                             Clipboard.setString(wordToAdd[1]); 
-                             CustomAlert(`Copied "${wordToAdd[1]}"`)
-                         }}>
-                            <Text style={{color: style.gray_500, fontWeight:'400', fontSize: style.text_lg}}>
-                                {wordToAdd[1]}
-                            </Text>
-                        </TouchableOpacity>
-                    </View>       
-                    {/* Notes */}      
-                    <View style={{flexDirection:'column', marginTop:15, gap:5}}>
-                        <Text style={{color: style.gray_600, fontWeight:'500', fontSize: style.text_lg}}>
-                            Notes: 
-                        </Text>
+                    { etyShow &&
+                        //Add etymology input, multiline form
+                        <CustomInput showLabel={false} placeholder={"Type notes..." } value={formEty} 
+                                onChangeText={setFormEty} maxLength={1000} multiline={true} customStyle={{marginTop:25}}
+                                customFormStyle={{height:100}}/>
+                        
+                    }
 
-                        <TouchableOpacity onPress={()=>{ 
-                             Clipboard.setString(wordToAdd[2]); 
-                             CustomAlert(`Copied notes`)
-                         }}>
-                            <Text style={{color: style.gray_500, fontWeight:'400', fontSize: style.text_lg}}>
-                                {wordToAdd[2]}
-                            </Text>
-                        </TouchableOpacity>
-
-                    </View>       
+                    {/* Button to add to deck */}
+                    <CustomButton onPress={addWordToDeckFunc} customStyle={{marginTop:40}}>
+                        <Text style={{color:style.white, fontSize:style.text_md, fontWeight:'500'}}>Add to Deck</Text>
+                    </CustomButton>
                 </ScrollView>
-
-                {/* Button to add to deck */}
-                <CustomButton onPress={addWordToDeckFunc} customStyle={null}>
-                    <Text style={{color:style.white, fontSize:style.text_md, fontWeight:'500'}}>Add to Deck</Text>
-                </CustomButton>
             </View>
         </CustomModal>     
     );

@@ -404,6 +404,7 @@ const Study = () => {
                         currentLang={currentLang} 
                         deckId={deckId} 
                         frontFirst={frontFirst} 
+                        currentIndex={currentIndex}
                     />
                 ) : (
                     <Text style={{color:style.gray_500, fontSize:style.text_lg, fontWeight:'600'}}>No words available</Text>
